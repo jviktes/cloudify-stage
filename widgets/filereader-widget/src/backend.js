@@ -18,51 +18,24 @@ module.exports = function(r) {
 
 module.exports = async function(r) {
     r.register('filesAPI', 'GET', (req, res, next, helper) => {
-    //const moment = require('moment');
+    const moment = require('moment');
     const lodash = require('lodash');
     console.log("filesAPI");
+
+    // parsing parametres:
     const params = { ...req.query };
     console.log(params);
-    
-    // parsing parametres:
-    const fileNameParams = lodash.castArray(params.fileName)[0];
-    const virtualMachinearams = lodash.castArray(params.virtualMachine)[0];
-    const testDatumParams = lodash.castArray(params.testDatum)[0];
-
     const _sortParam = lodash.castArray(params._sort)[0];
     const _searchParam = lodash.castArray(params._search)[0];
     const _sizeParam = lodash.castArray(params._size)[0];
   
-    if (_sortParam) {
-        console.log("_sortParam value:");
-        console.log(_sortParam);
-        console.log(_sortParam.value);
-        //_sizeParam
-    }
-
-    if (_searchParam) {
-        console.log("_searchParam v parameech:");
-        console.log(_searchParam);
-    }
-
-    if (_sizeParam) {
-        console.log("_sizeParam v parameech:");
-        console.log(_sizeParam);
-    }
-
     const testFolder = '/var/log/cloudify/archive/tentant-AA1/';  // TODO!  
     
-    const processedData = data => {
-        //console.log("processedData backroud code:");
+    const processedDataToJson = data => {
+
         let outputData = [];
         //console.log(data);
-
-        //const moment = require('moment');
-
         for (const [key, value] of Object.entries(data)) {
-
-            //console.log(`${key}: ${value}`);
-            //console.log(value);
 
             let _res = [];
             let _fileName = key; //<VM-name>-<ACT-class>-<ACT-set>-<timestamp>.log 
@@ -71,13 +44,24 @@ module.exports = async function(r) {
             let text = _fileName;
             const myArray = text.split("-");
             let _VM = myArray[0];
+
+            //vyhledavani podle VM
+            console.log("_searchParam:"+_searchParam);
+            console.log("_VM:"+_VM);
+            console.log(_VM.indexOf(_searchParam));
+
+            if (_searchParam && _VM.indexOf(_searchParam)== -1) {
+                continue; //skipping file 
+            }
+
+
             let _actClassFromFileName = myArray[1];
             let _actSetFromFileName = myArray[2];
             let _actTimeStampFromFileName = myArray[3].slice(0, -4); //YYYYMMDDhhmmss 
 
-            //let _testDateFormatted = moment(_actTimeStampFromFileName, 'YYYYMMDDhhmmss').format("YYYY-MM-DD hh:mm:ss");
-            let _testDateFormatted = _actTimeStampFromFileName;
-            //console.log(_testDateFormatted);
+            let _testDateFormatted = moment(_actTimeStampFromFileName, 'YYYYMMDDhhmmss').format("YYYY-MM-DD hh:mm:ss");
+
+            console.log(_testDateFormatted);
 
             let _actual_value = [];
             let _class = [];
@@ -170,8 +154,9 @@ module.exports = async function(r) {
             Promise.all(promises).then((_res) => {
                 //console.log("data from files ready2go:");
                 //console.log(result);
-                let preparedData = processedData(result);
+                let preparedData = processedDataToJson(result);
 
+                // sorting:
                 if (_sortParam && _sortParam.indexOf("fileName")) {
                     // prvni verze sortingu podle souboru:
                     if (_sortParam.startsWith("-")) {
@@ -201,10 +186,6 @@ module.exports = async function(r) {
                         preparedData.sort((a,b) => (a.virtualMachine > b.virtualMachine) ? 1 : ((b.virtualMachine > a.virtualMachine) ? -1 : 0));
                     }
                 }
-
-                // prvni verze sortingu podle souboru:
-                //preparedData.sort((a,b) => (a.fileName < b.fileName) ? 1 : ((b.fileName < a.fileName) ? -1 : 0));
-
                 //console.log(preparedData);
                 res.send(preparedData);
             });
