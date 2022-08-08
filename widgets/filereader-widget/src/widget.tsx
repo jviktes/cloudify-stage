@@ -8,7 +8,7 @@ const data1 = 'pokusný text';
 Stage.defineWidget({
     id: 'filereader-widget',
     name: 'Nacteni souboru',
-    description: 'Nacteni souboru',
+    description: 'Test results',
     initialWidth: 12,
     initialHeight: 32,
     color: 'orange',

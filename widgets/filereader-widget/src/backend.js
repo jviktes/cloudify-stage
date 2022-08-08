@@ -46,9 +46,9 @@ module.exports = async function(r) {
             let _VM = myArray[0];
 
             //vyhledavani podle VM
-            console.log("_searchParam:"+_searchParam);
-            console.log("_VM:"+_VM);
-            console.log(_VM.indexOf(_searchParam));
+            //console.log("_searchParam:"+_searchParam);
+            //console.log("_VM:"+_VM);
+            //console.log(_VM.indexOf(_searchParam));
 
             if (_searchParam && _VM.indexOf(_searchParam)== -1) {
                 continue; //skipping file 
@@ -107,7 +107,7 @@ module.exports = async function(r) {
             outputData.push({
                 "fileName":_fileName, 
                 "virtualMachine": _VM,
-                "testDatum": _testDateFormatted,
+                "testDatum": _testDateFormatted,//_testDateFormatted, _actTimeStampFromFileName
                 "requestor": value.requestor,
                 "deployment_id":value.deployment_id,
                 "deployment_name":value.deployment_name, 
@@ -157,7 +157,8 @@ module.exports = async function(r) {
                 let preparedData = processedDataToJson(result);
 
                 // sorting:
-                if (_sortParam && _sortParam.indexOf("fileName")) {
+                if (_sortParam && _sortParam.indexOf("fileName")!== -1) {
+                    //console.log("sorting fileName");
                     // prvni verze sortingu podle souboru:
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.fileName < b.fileName) ? 1 : ((b.fileName < a.fileName) ? -1 : 0));
@@ -167,17 +168,19 @@ module.exports = async function(r) {
                     }
                 }
 
-                if (_sortParam && _sortParam.indexOf("testDatum")) {
+                if (_sortParam && _sortParam.indexOf("testDatum")!== -1) {
                     // prvni verze sortingu podle souboru:
+                    //console.log("sorting testDatum");
                     if (_sortParam.startsWith("-")) {
-                        preparedData.sort((a,b) => (a.testDatum < b.testDatum) ? 1 : ((b.testDatum < a.testDatum) ? -1 : 0));
+                        preparedData.sort((a,b) => (new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss') < new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? 1 : ((new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss') < new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? -1 : 0));
                     }
                     else {
-                        preparedData.sort((a,b) => (a.testDatum > b.testDatum) ? 1 : ((b.testDatum > a.testDatum) ? -1 : 0));
+                        preparedData.sort((a,b) => (new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss') > new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? 1 : ((new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss') > new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? -1 : 0));
                     }
                 }
 
-                if (_sortParam && _sortParam.indexOf("virtualMachine")) {
+                if (_sortParam && _sortParam.indexOf("virtualMachine")!== -1) {
+                    //console.log("sorting virtualMachine");
                     // prvni verze sortingu podle souboru:
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.virtualMachine < b.virtualMachine) ? 1 : ((b.virtualMachine < a.virtualMachine) ? -1 : 0));
