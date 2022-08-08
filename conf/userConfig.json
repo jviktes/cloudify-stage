@@ -23,7 +23,6 @@
 
     "headerTextColor": "white",
     "showVersionDetails": true,
-    "showFirstLoginHint": true,
 
     "loginPageHeaderColor": "white",
     "loginPageTextColor": "white",
@@ -36,6 +35,6 @@
     "customCssPath": ""
   },
   "widgets": {
-    "allowedModules": ["lodash", "body", "elkjs"]
+    "allowedModules": ["lodash", "body", "elkjs","fs-extra"]
   }
 }

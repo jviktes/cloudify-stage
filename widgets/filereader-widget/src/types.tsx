@@ -1,6 +1,10 @@
 export type Tests = {
     requestor: string;
     fileName: string;
+    virtualMachine:string;
+    testDatum:string;
+    passedTestsCount:string;
+    failedTestsCount:string;
     deployment_id: string;
     deployment_name: string;
     actual_value: string;
