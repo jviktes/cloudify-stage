@@ -19,21 +19,49 @@ module.exports = function(r) {
 module.exports = async function(r) {
     r.register('filesAPI', 'GET', (req, res, next, helper) => {
     //const moment = require('moment');
+    const lodash = require('lodash');
     console.log("filesAPI");
-    const testFolder = '/var/log/cloudify/archive/tentant-AA1/';    
+    const params = { ...req.query };
+    console.log(params);
+    
+    // parsing parametres:
+    const fileNameParams = lodash.castArray(params.fileName)[0];
+    const virtualMachinearams = lodash.castArray(params.virtualMachine)[0];
+    const testDatumParams = lodash.castArray(params.testDatum)[0];
+
+    const _sortParam = lodash.castArray(params._sort)[0];
+    const _searchParam = lodash.castArray(params._search)[0];
+    const _sizeParam = lodash.castArray(params._size)[0];
+  
+    if (_sortParam) {
+        console.log("_sortParam value:");
+        console.log(_sortParam);
+        console.log(_sortParam.value);
+        //_sizeParam
+    }
+
+    if (_searchParam) {
+        console.log("_searchParam v parameech:");
+        console.log(_searchParam);
+    }
+
+    if (_sizeParam) {
+        console.log("_sizeParam v parameech:");
+        console.log(_sizeParam);
+    }
+
+    const testFolder = '/var/log/cloudify/archive/tentant-AA1/';  // TODO!  
     
     const processedData = data => {
-        console.log("processedData backroud code:");
+        //console.log("processedData backroud code:");
         let outputData = [];
-        console.log(data);
+        //console.log(data);
 
         //const moment = require('moment');
 
-
-        console.log("before foreach");
         for (const [key, value] of Object.entries(data)) {
 
-            console.log(`${key}: ${value}`);
+            //console.log(`${key}: ${value}`);
             //console.log(value);
 
             let _res = [];
@@ -49,8 +77,8 @@ module.exports = async function(r) {
 
             //let _testDateFormatted = moment(_actTimeStampFromFileName, 'YYYYMMDDhhmmss').format("YYYY-MM-DD hh:mm:ss");
             let _testDateFormatted = _actTimeStampFromFileName;
-            console.log(_testDateFormatted);
-            
+            //console.log(_testDateFormatted);
+
             let _actual_value = [];
             let _class = [];
             let _code = [];
@@ -120,7 +148,7 @@ module.exports = async function(r) {
 
             files.forEach(file => {
                 {
-                    console.log("resolving file: "+file);
+                    //console.log("resolving file: "+file);
                     result[file]="";
                     
                     let promise1 = new Promise(function(resolve, reject) {
@@ -140,14 +168,44 @@ module.exports = async function(r) {
                 }
             });
             Promise.all(promises).then((_res) => {
-                console.log("data from files ready2go:");
+                //console.log("data from files ready2go:");
                 //console.log(result);
                 let preparedData = processedData(result);
 
-                // prvni verze sortingu podle souboru:
-                preparedData.sort((a,b) => (a.fileName < b.fileName) ? 1 : ((b.fileName < a.fileName) ? -1 : 0));
+                if (_sortParam && _sortParam.indexOf("fileName")) {
+                    // prvni verze sortingu podle souboru:
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.fileName < b.fileName) ? 1 : ((b.fileName < a.fileName) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.fileName > b.fileName) ? 1 : ((b.fileName > a.fileName) ? -1 : 0));
+                    }
+                }
 
-                console.log(preparedData);
+                if (_sortParam && _sortParam.indexOf("testDatum")) {
+                    // prvni verze sortingu podle souboru:
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.testDatum < b.testDatum) ? 1 : ((b.testDatum < a.testDatum) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.testDatum > b.testDatum) ? 1 : ((b.testDatum > a.testDatum) ? -1 : 0));
+                    }
+                }
+
+                if (_sortParam && _sortParam.indexOf("virtualMachine")) {
+                    // prvni verze sortingu podle souboru:
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.virtualMachine < b.virtualMachine) ? 1 : ((b.virtualMachine < a.virtualMachine) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.virtualMachine > b.virtualMachine) ? 1 : ((b.virtualMachine > a.virtualMachine) ? -1 : 0));
+                    }
+                }
+
+                // prvni verze sortingu podle souboru:
+                //preparedData.sort((a,b) => (a.fileName < b.fileName) ? 1 : ((b.fileName < a.fileName) ? -1 : 0));
+
+                //console.log(preparedData);
                 res.send(preparedData);
             });
         });

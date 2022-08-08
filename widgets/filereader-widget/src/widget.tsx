@@ -10,32 +10,52 @@ Stage.defineWidget({
     name: 'Nacteni souboru',
     description: 'Nacteni souboru',
     initialWidth: 12,
-    initialHeight: 12,
+    initialHeight: 32,
     color: 'orange',
     isReact: true,
     hasReadme: true,
     categories: [Stage.GenericConfig.CATEGORY.OTHERS],
     permission: Stage.GenericConfig.CUSTOM_WIDGET_PERMISSIONS.CUSTOM_ALL,
-    fetchData(widget, toolbox) {
+    initialConfiguration: [
+        Stage.GenericConfig.SORT_COLUMN_CONFIG('testDatum'),
+        Stage.GenericConfig.SORT_ASCENDING_CONFIG(false),
+    ],
+    fetchData(widget, toolbox,params) {
         console.log('fetch files data...');
-        const params = {
-            deployment_id: "liberec"
-        };
+
+        //const params = this.fetchParams!(widget, toolbox);
+
+        // const params = {
+        //     deployment_id: "liberec"
+        // };
+
+        // return {
+        //     blueprint_id: toolbox.getContext().getValue('blueprintId'),
+        //     deployment_id: toolbox.getContext().getValue('deploymentId'),
+        //     status_display: toolbox.getContext().getValue('executionStatus'),
+        //     _include_system_workflows:
+        //         widget.configuration.showSystemExecutions &&
+        //         !toolbox.getContext().getValue('blueprintId') &&
+        //         !toolbox.getContext().getValue('deploymentId')
+        // };
+
+        //return toolbox.getWidgetBackend().doGet('filesAPI', { params });
         return toolbox.getWidgetBackend().doGet('filesAPI', { params });
     },
 
-    fetchParams(widget, toolbox) {
-        const params = {};
-        const deploymentId = "liberec";//toolbox.getContext().getValue('deploymentId');
-        if (!_.isEmpty(deploymentId)) {
-            params.deployment_id = _.castArray(deploymentId);
-        }
-        //console.log("fetchParams:");
-        //console.log(params);
-        return params;
-    },
+    // fetchParams(widget, toolbox) {
+    //     const params = {};
+    //     const deploymentId = "liberec";//toolbox.getContext().getValue('deploymentId');
+    //     if (!_.isEmpty(deploymentId)) {
+    //         params.deployment_id = _.castArray(deploymentId);
+    //     }
+    //     //console.log("fetchParams:");
+    //     //console.log(params);
+    //     return params;
+    // },
 
     render(widget, data, error, toolbox) {
+        //const params = this.fetchParams!(widget, toolbox);
         const formattedData = {
             items: data,
             deploymentId: 'test results'

@@ -27,8 +27,19 @@ export default class Zobraz extends React.Component<TestDataProps> {
 // deployment_name: PropTypes.string,
 // results:PropTypes.string,
 
+    fetchGridData = fetchParams => {
+        const { toolbox } = this.props;
+        return toolbox.refresh(fetchParams);
+    };
+
+    refreshData() {
+        const { toolbox } = this.props;
+        toolbox.refresh();
+    }
+
     render() {
-        const { data } = this.props;
+        
+        const { data, toolbox, widget } = this.props;
         /* eslint-disable no-console, no-process-exit */
 
         console.log(data);
@@ -36,12 +47,16 @@ export default class Zobraz extends React.Component<TestDataProps> {
         return (
             <div>
                 <span>{data.deploymentId}</span>
-                <DataTable className="agentsTable"
+                <DataTable className="agentsTable" 
+                    fetchData={this.fetchGridData}
+                    sortColumn={widget.configuration.sortColumn}
+                    sortAscending={widget.configuration.sortAscending} 
+                    searchable
                     >
                     
-                    <DataTable.Column label="fileName" />
-                    <DataTable.Column label="Virtual machine" />
-                    <DataTable.Column label="Test datum" />
+                    <DataTable.Column label="fileName" name="fileName"/>
+                    <DataTable.Column label="Virtual machine" name="virtualMachine" />
+                    <DataTable.Column label="Test datum" name="testDatum"/>
                     <DataTable.Column label="Passed" />
                     <DataTable.Column label="Failed" />
                     <DataTable.Column label="Test results" />
