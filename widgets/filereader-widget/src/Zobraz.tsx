@@ -28,6 +28,8 @@ export default class Zobraz extends React.Component<TestDataProps> {
 // deployment_name: PropTypes.string,
 // results:PropTypes.string,
 
+
+
     fetchGridData = fetchParams => {
         const { toolbox } = this.props;
         return toolbox.refresh(fetchParams);
@@ -55,8 +57,12 @@ export default class Zobraz extends React.Component<TestDataProps> {
 
         //console.log(data);
         const { DataTable } = Stage.Basic;
+        const manager = toolbox.getManager();
+        const tenantName=manager.getSelectedTenant();
+
         return (
             <div>
+                <span>Current tenant: {tenantName}</span>
                <DataTable className="agentsTable" 
                     fetchData={this.fetchGridData}
                     sortColumn={widget.configuration.sortColumn}

@@ -28,8 +28,9 @@ module.exports = async function(r) {
     const _sortParam = lodash.castArray(params._sort)[0];
     const _searchParam = lodash.castArray(params._search)[0];
     const _sizeParam = lodash.castArray(params._size)[0];
-  
-    const testFolder = '/var/log/cloudify/archive/tentant-AA1/';  // TODO!  
+    const _tenantName =  lodash.castArray(params.tenant)[0];   
+    //<archive-root-folder>\<tentant-ID> 
+    const testFolder = '/var/log/cloudify/archive/'+_tenantName +'/';  
     
     const processedDataToJson = data => {
 
@@ -129,6 +130,10 @@ module.exports = async function(r) {
     
         let promises = [];
         fs.readdir(folder, (err, files) => {
+            if (!files) {
+                console.log("no files");
+                return res.send();
+            }
 
             files.forEach(file => {
                 {

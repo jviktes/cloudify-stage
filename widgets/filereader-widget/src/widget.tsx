@@ -22,6 +22,8 @@ Stage.defineWidget({
     ],
     fetchData(widget, toolbox,params) {
         console.log('fetch files data...');
+        const manager = toolbox.getManager();
+        const tenantName=manager.getSelectedTenant();
 
         //const params = this.fetchParams!(widget, toolbox);
 
@@ -38,7 +40,7 @@ Stage.defineWidget({
         //         !toolbox.getContext().getValue('blueprintId') &&
         //         !toolbox.getContext().getValue('deploymentId')
         // };
-
+        params.tenant = tenantName;
         //return toolbox.getWidgetBackend().doGet('filesAPI', { params });
         return toolbox.getWidgetBackend().doGet('filesAPI', { params });
     },
@@ -56,6 +58,7 @@ Stage.defineWidget({
 
     render(widget, data, error, toolbox) {
         //const params = this.fetchParams!(widget, toolbox);
+        
         const formattedData = {
             items: data
             //deploymentId: 'test results'
