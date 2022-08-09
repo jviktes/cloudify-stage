@@ -17,15 +17,15 @@ export type Tests = {
     testResultArray: string;
 };
 
-// export type TestResult = {
-//     actual_value: string;
-//     class: string;
-//     code:  string; 
-//     description:  string;
-//     expected_value:  string;
-//     name:  string;
-//     result:  string;
-// };
+export type TestResult = {
+    actual_value: string;
+    class: string;
+    code:  string; 
+    description:  string;
+    expected_value:  string;
+    name:  string;
+    result:  string;
+};
 
 // Log file structure (JSON string): 
 

@@ -57,8 +57,8 @@ Stage.defineWidget({
     render(widget, data, error, toolbox) {
         //const params = this.fetchParams!(widget, toolbox);
         const formattedData = {
-            items: data,
-            deploymentId: 'test results'
+            items: data
+            //deploymentId: 'test results'
         };
 
         return <Zobraz widget={widget} data={formattedData} toolbox={toolbox} />;

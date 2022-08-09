@@ -61,7 +61,7 @@ module.exports = async function(r) {
 
             let _testDateFormatted = moment(_actTimeStampFromFileName, 'YYYYMMDDhhmmss').format("YYYY-MM-DD hh:mm:ss");
 
-            console.log(_testDateFormatted);
+            // console.log(_testDateFormatted);
 
             let _actual_value = [];
             let _class = [];

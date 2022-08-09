@@ -7,7 +7,7 @@ interface TestDataProps {
     data: {
         items: Tests;
         total: number;
-        deploymentId: string;
+        //deploymentId: string;
         nodeId: string;
         nodeInstanceId: string;
     };
@@ -35,8 +35,18 @@ export default class Zobraz extends React.Component<TestDataProps> {
     refreshData() {
         const { toolbox } = this.props;
         toolbox.refresh();
-    }
+    };
 
+    onRowClick(_item) {
+        console.log("on click...");
+        console.log(_item.fileName);
+        const el = document.getElementById(_item.fileName+"_ext");
+        if (el.style.display === "none") {
+            el.style.display = "block";
+          } else {
+            el.style.display = "none";
+          }
+    };
     render() {
         
         const { data, toolbox, widget } = this.props;
@@ -46,33 +56,36 @@ export default class Zobraz extends React.Component<TestDataProps> {
         const { DataTable } = Stage.Basic;
         return (
             <div>
-                <span>{data.deploymentId}</span>
-                <DataTable className="agentsTable" 
+               <DataTable className="agentsTable" 
                     fetchData={this.fetchGridData}
                     sortColumn={widget.configuration.sortColumn}
                     sortAscending={widget.configuration.sortAscending} 
                     searchable
                     >
-                    
                     <DataTable.Column label="fileName" name="fileName"/>
                     <DataTable.Column label="Virtual machine" name="virtualMachine" />
                     <DataTable.Column label="Test datum" name="testDatum"/>
                     <DataTable.Column label="Passed" />
                     <DataTable.Column label="Failed" />
-                    <DataTable.Column label="Test results" />
-
                     {_.map(data.items, item => (
-                        <DataTable.Row key={item.fileName}>                  
-                            <DataTable.Data>{item.fileName}</DataTable.Data>
-                            <DataTable.Data>{item.virtualMachine}</DataTable.Data>
-                            <DataTable.Data>{item.testDatum}</DataTable.Data>
-                            <DataTable.Data>{item.passedTestsCount}</DataTable.Data>
-                            <DataTable.Data>{item.failedTestsCount}</DataTable.Data>
-                            <DataTable.Data>{item.testResultArray}</DataTable.Data>
+                        
+                        <DataTable.RowExpandable key={item.fileName} >
+                            <DataTable.Row key={item.fileName+"_main"} onClick={()=>this.onRowClick(item)}>                  
+                                <DataTable.Data>{item.fileName}</DataTable.Data>
+                                <DataTable.Data>{item.virtualMachine}</DataTable.Data>
+                                <DataTable.Data>{item.testDatum}</DataTable.Data>
+                                <DataTable.Data>{item.passedTestsCount}</DataTable.Data>
+                                <DataTable.Data>{item.failedTestsCount}</DataTable.Data>
+                            </DataTable.Row>
+                            <DataTable.Row key={item.fileName+"_ext"} style={{display:"none"}} id={item.fileName+"_ext"} onClick={()=>this.onRowClick(item)}>
+                                    <DataTable.Data numberOfColumns={1} colSpan={1}>{item.testResultArray}</DataTable.Data>
+                            </DataTable.Row>
+                        </DataTable.RowExpandable>
 
-                        </DataTable.Row>
+
                     ))}
                 </DataTable>
+                
             </div>
         );
     }
@@ -81,6 +94,6 @@ export default class Zobraz extends React.Component<TestDataProps> {
 Zobraz.propTypes = {
     data: PropTypes.shape({
         items: AgentsPropType,
-        deploymentId: 'Data'
+        //deploymentId: 'Data'
     })
 };
