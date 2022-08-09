@@ -7,14 +7,7 @@ export type Tests = {
     failedTestsCount:string;
     deployment_id: string;
     deployment_name: string;
-    actual_value: string;
-    class: string;
-    code:  string; 
-    description:  string;
-    expected_value:  string;
-    name:  string;
-    result:  string;
-    testResultArray: string;
+    testResultArray: TestResult;
 };
 
 export type TestResult = {

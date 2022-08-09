@@ -2,10 +2,11 @@
 import PropTypes from 'prop-types';
 import type { Tests } from './types';
 import AgentsPropType from './props/AgentsPropType';
+import TestDetails from './TestDetails';
 
 interface TestDataProps {
     data: {
-        items: Tests;
+        items: PropTypes.array;
         total: number;
         //deploymentId: string;
         nodeId: string;
@@ -38,8 +39,8 @@ export default class Zobraz extends React.Component<TestDataProps> {
     };
 
     onRowClick(_item) {
-        console.log("on click...");
-        console.log(_item.fileName);
+        //console.log("on click...");
+        //console.log(_item.fileName);
         const el = document.getElementById(_item.fileName+"_ext");
         if (el.style.display === "none") {
             el.style.display = "";
@@ -52,7 +53,7 @@ export default class Zobraz extends React.Component<TestDataProps> {
         const { data, toolbox, widget } = this.props;
         /* eslint-disable no-console, no-process-exit */
 
-        console.log(data);
+        //console.log(data);
         const { DataTable } = Stage.Basic;
         return (
             <div>
@@ -78,7 +79,9 @@ export default class Zobraz extends React.Component<TestDataProps> {
                                 <DataTable.Data>{item.failedTestsCount}</DataTable.Data>
                             </DataTable.Row>
                             <DataTable.Row key={item.fileName+"_ext"} style={{display:"none"}} id={item.fileName+"_ext"} onClick={()=>this.onRowClick(item)}>
-                                    <DataTable.Data colSpan={5}>{item.testResultArray}</DataTable.Data>
+                                        <DataTable.Data colSpan={5}>
+                                            <TestDetails widget={widget} data={item.testResultArray} toolbox={toolbox}></TestDetails>
+                                        </DataTable.Data>
                             </DataTable.Row>
                         </DataTable.RowExpandable>
                     ))}
@@ -90,8 +93,9 @@ export default class Zobraz extends React.Component<TestDataProps> {
 }
 
 Zobraz.propTypes = {
-    data: PropTypes.shape({
-        items: AgentsPropType,
-        //deploymentId: 'Data'
-    })
+    data: PropTypes.array,
+    // data: PropTypes.shape({
+    //     items: AgentsPropType,
+    //     //deploymentId: 'Data'
+    // })
 };

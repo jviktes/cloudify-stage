@@ -113,7 +113,7 @@ module.exports = async function(r) {
                 "deployment_name":value.deployment_name, 
                 "passedTestsCount" : _passedTestsCount,
                 "failedTestsCount": _failedTestsCount,
-                "testResultArray":JSON.stringify(_testResultArray)
+                "testResultArray":_testResultArray,
             });
         }
         //console.log(outputData);
