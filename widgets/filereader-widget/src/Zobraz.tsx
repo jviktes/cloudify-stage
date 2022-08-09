@@ -42,7 +42,7 @@ export default class Zobraz extends React.Component<TestDataProps> {
         console.log(_item.fileName);
         const el = document.getElementById(_item.fileName+"_ext");
         if (el.style.display === "none") {
-            el.style.display = "block";
+            el.style.display = "";
           } else {
             el.style.display = "none";
           }
@@ -78,11 +78,9 @@ export default class Zobraz extends React.Component<TestDataProps> {
                                 <DataTable.Data>{item.failedTestsCount}</DataTable.Data>
                             </DataTable.Row>
                             <DataTable.Row key={item.fileName+"_ext"} style={{display:"none"}} id={item.fileName+"_ext"} onClick={()=>this.onRowClick(item)}>
-                                    <DataTable.Data numberOfColumns={1} colSpan={1}>{item.testResultArray}</DataTable.Data>
+                                    <DataTable.Data colSpan={5}>{item.testResultArray}</DataTable.Data>
                             </DataTable.Row>
                         </DataTable.RowExpandable>
-
-
                     ))}
                 </DataTable>
                 
