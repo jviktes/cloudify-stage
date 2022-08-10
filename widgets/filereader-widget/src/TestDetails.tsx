@@ -65,8 +65,8 @@ export default class TestDetails extends React.Component<TestResultProps> {
                                 <DataTable.Data>{this.renderTestResult(item)}</DataTable.Data>
                                 <DataTable.Data>{item.description}</DataTable.Data>
                                 <DataTable.Data>{item.class}</DataTable.Data>
-                                <DataTable.Data><pre>{item.actual_value}</pre></DataTable.Data>
-                                <DataTable.Data><pre>{item.expected_value}</pre></DataTable.Data>
+                                <DataTable.Data><p style={{"textAlign":"justify"},{"textAlign":"inter-word"}}>{item.actual_value}</p></DataTable.Data>
+                                <DataTable.Data><p style={{"textAlign":"justify"},{"textAlign":"inter-word"}}>{item.expected_value}</p></DataTable.Data>
                             </DataTable.Row>
                     ))}
                 </DataTable>

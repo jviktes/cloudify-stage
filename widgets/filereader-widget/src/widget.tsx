@@ -14,6 +14,7 @@ Stage.defineWidget({
     color: 'orange',
     isReact: true,
     hasReadme: true,
+    hasStyle:true,
     categories: [Stage.GenericConfig.CATEGORY.OTHERS],
     permission: Stage.GenericConfig.CUSTOM_WIDGET_PERMISSIONS.CUSTOM_ALL,
     initialConfiguration: [

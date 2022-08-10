@@ -77,7 +77,7 @@ export default class Zobraz extends React.Component<TestDataProps> {
         return (
             <div>
                 <span>Current tenant: {tenantName}</span>
-               <DataTable className="agentsTable" style={{height:50}, {overflow:"scrollbars"}}
+               <DataTable className="agentsTable table-scroll"
                     fetchData={this.fetchGridData}
                     sortColumn={widget.configuration.sortColumn}
                     sortAscending={widget.configuration.sortAscending} 
@@ -85,9 +85,9 @@ export default class Zobraz extends React.Component<TestDataProps> {
                     >
                     <DataTable.Column label="Test datum" name="testDatum"/>
                     <DataTable.Column label="Virtual machine" name="virtualMachine" />
-                    <DataTable.Column label="Class" name="class" />
-                    <DataTable.Column label="Passed" name="passed"/>
-                    <DataTable.Column label="Failed" name="failed"/>
+                    <DataTable.Column label="Class" name="class"  width="15%"/>
+                    <DataTable.Column label="Passed" name="passed" width="5%"/>
+                    <DataTable.Column label="Failed" name="failed"  width="5%"/>
                     <DataTable.Column label="Result" name="result"/>
                     <DataTable.Column label="File name" name="fileName"/>
                     {_.map(data.items, item => (
