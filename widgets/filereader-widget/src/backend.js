@@ -30,7 +30,7 @@ module.exports = async function(r) {
     const _sizeParam = lodash.castArray(params._size)[0];
     const _tenantName =  lodash.castArray(params.tenant)[0];   
     //<archive-root-folder>\<tentant-ID> 
-    const testFolder = '/var/log/cloudify/archive/'+_tenantName +'/';  
+    const testFolder = '/opt/manager/resources/archive/'+_tenantName +'/';  
     
     const processedDataToJson = data => {
 
