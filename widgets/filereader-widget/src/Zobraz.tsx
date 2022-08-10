@@ -50,6 +50,20 @@ export default class Zobraz extends React.Component<TestDataProps> {
             el.style.display = "none";
           }
     };
+    renderTestResultSummary(itemData) {
+        //console.log(itemData.testResultSummary);
+        //console.log(itemData.testResultSummary.indexOf("Succeeded"));
+        //console.log(itemData.testResultSummary.indexOf("Failed"));
+        
+        if (itemData.testResultSummary && itemData.testResultSummary.toLowerCase().indexOf("succeeded")!== -1) {
+            return <i aria-hidden="true" className="green checkmark icon"></i>;
+        }
+        if (itemData.testResultSummary && itemData.testResultSummary.toLowerCase().indexOf("failed")!== -1) {
+            return <i aria-hidden="true" className="red remove icon"></i>;
+        }
+        return '';
+    };
+
     render() {
         
         const { data, toolbox, widget } = this.props;
@@ -63,29 +77,36 @@ export default class Zobraz extends React.Component<TestDataProps> {
         return (
             <div>
                 <span>Current tenant: {tenantName}</span>
-               <DataTable className="agentsTable" 
+               <DataTable className="agentsTable" style={{height:50}, {overflow:"scrollbars"}}
                     fetchData={this.fetchGridData}
                     sortColumn={widget.configuration.sortColumn}
                     sortAscending={widget.configuration.sortAscending} 
                     searchable
                     >
-                    <DataTable.Column label="fileName" name="fileName"/>
-                    <DataTable.Column label="Virtual machine" name="virtualMachine" />
                     <DataTable.Column label="Test datum" name="testDatum"/>
-                    <DataTable.Column label="Passed" />
-                    <DataTable.Column label="Failed" />
+                    <DataTable.Column label="Virtual machine" name="virtualMachine" />
+                    <DataTable.Column label="Class" name="class" />
+                    <DataTable.Column label="Passed" name="passed"/>
+                    <DataTable.Column label="Failed" name="failed"/>
+                    <DataTable.Column label="Result" name="result"/>
+                    <DataTable.Column label="File name" name="fileName"/>
                     {_.map(data.items, item => (
                         
-                        <DataTable.RowExpandable key={item.fileName} >
+                        <DataTable.RowExpandable key={item.fileName}>
                             <DataTable.Row key={item.fileName+"_main"} onClick={()=>this.onRowClick(item)}>                  
-                                <DataTable.Data>{item.fileName}</DataTable.Data>
-                                <DataTable.Data>{item.virtualMachine}</DataTable.Data>
                                 <DataTable.Data>{item.testDatum}</DataTable.Data>
-                                <DataTable.Data>{item.passedTestsCount}</DataTable.Data>
-                                <DataTable.Data>{item.failedTestsCount}</DataTable.Data>
+                                <DataTable.Data>{item.virtualMachine}</DataTable.Data>
+                                <DataTable.Data>{item.class}</DataTable.Data>
+                                <DataTable.Data style={{color:"green"}}>{item.passedTestsCount}</DataTable.Data>
+                                <DataTable.Data style={{color:"red"}}>{item.failedTestsCount}</DataTable.Data>
+                                <DataTable.Data>
+                                    {this.renderTestResultSummary(item)}
+                                    {item.testResultSummary}
+                                </DataTable.Data>
+                                <DataTable.Data>{item.fileName}</DataTable.Data>
                             </DataTable.Row>
                             <DataTable.Row key={item.fileName+"_ext"} style={{display:"none"}} id={item.fileName+"_ext"} onClick={()=>this.onRowClick(item)}>
-                                        <DataTable.Data colSpan={5}>
+                                        <DataTable.Data colSpan={7}>
                                             <TestDetails widget={widget} data={item.testResultArray} toolbox={toolbox}></TestDetails>
                                         </DataTable.Data>
                             </DataTable.Row>

@@ -25,34 +25,48 @@ export default class TestDetails extends React.Component<TestResultProps> {
         return this.keyCount++;
     }
 
+    renderTestResult(itemData) {
+        //console.log(itemData.testResultSummary);
+        //console.log(itemData.testResultSummary.indexOf("Succeeded"));
+        //console.log(itemData.testResultSummary.indexOf("Failed"));
+        
+        if (itemData.result && itemData.result.toLowerCase().indexOf("passed")!== -1) {
+            return <span style={{color:"green"}}>{itemData.result}</span>;
+        }
+        if (itemData.result && itemData.result.toLowerCase().indexOf("failed")!== -1) {
+            return <span style={{color:"red"}}>{itemData.result}</span>;
+        }
+        return itemData.result;
+    };
+
     render() {
         
         const { data, toolbox, widget } = this.props;
         /* eslint-disable no-console, no-process-exit */
-        console.log("rendering TestResults:");
-        console.log(data);
+        // console.log("rendering TestResults:");
+        // console.log(data);
         const { DataTable } = Stage.Basic;
         return (
             <div>
                <DataTable className="agentsTable" 
                     >
+                    <DataTable.Column label="Code" />
                     <DataTable.Column label="Test name" />
+                    <DataTable.Column label="Result" />
                     <DataTable.Column label="Description" />
                     <DataTable.Column label="Class" />
-                    <DataTable.Column label="Code" />
                     <DataTable.Column label="Actual value" />
                     <DataTable.Column label="Expected value" />
-                    <DataTable.Column label="Result" />
 
                     {_.map(data, item => (                       
                             <DataTable.Row key={this.getKey()}>                  
+                                <DataTable.Data>{item.code}</DataTable.Data>
                                 <DataTable.Data>{item.name}</DataTable.Data>
+                                <DataTable.Data>{this.renderTestResult(item)}</DataTable.Data>
                                 <DataTable.Data>{item.description}</DataTable.Data>
                                 <DataTable.Data>{item.class}</DataTable.Data>
-                                <DataTable.Data>{item.code}</DataTable.Data>
-                                <DataTable.Data>{item.actual_value}</DataTable.Data>
-                                <DataTable.Data>{item.expected_value}</DataTable.Data>
-                                <DataTable.Data>{item.result}</DataTable.Data>
+                                <DataTable.Data><pre>{item.actual_value}</pre></DataTable.Data>
+                                <DataTable.Data><pre>{item.expected_value}</pre></DataTable.Data>
                             </DataTable.Row>
                     ))}
                 </DataTable>

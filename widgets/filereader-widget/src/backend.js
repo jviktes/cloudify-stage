@@ -32,6 +32,10 @@ module.exports = async function(r) {
     //<archive-root-folder>\<tentant-ID> 
     const testFolder = '/opt/manager/resources/archive/'+_tenantName +'/';  
     
+    //TODO tady nějaka authorizace:
+    //const _actualTenant = helper.Manager.getSelectedTenant();
+    //console.log("Actual tenant: "+_actualTenant);
+
     const processedDataToJson = data => {
 
         let outputData = [];
@@ -44,6 +48,7 @@ module.exports = async function(r) {
             //funkce pro splitting:
             let text = _fileName;
             const myArray = text.split("-");
+
             let _VM = myArray[0];
 
             //vyhledavani podle VM
@@ -52,7 +57,7 @@ module.exports = async function(r) {
             //console.log(_VM.indexOf(_searchParam));
 
             if (_searchParam && _VM.indexOf(_searchParam)== -1) {
-                continue; //skipping file 
+                continue; //skipping file if _searchParam contains some value not eaquals with loaded
             }
 
 
@@ -64,19 +69,14 @@ module.exports = async function(r) {
 
             // console.log(_testDateFormatted);
 
-            let _actual_value = [];
             let _class = [];
             let _code = [];
-            let _description= [];
-            let _expected_value= [];
-            let _name= [];
-            let _result= [];
             let _testResultArray = [];
             let _passedTestsCount = 0;
             let _failedTestsCount = 0;
+            let _testResultSummary = [];
 
-            //prerovnani vysledku testu, podle pole result:
-
+            //filling test details into _testResultArray
             value.results.forEach(_testData => {
                 _actual_value = _testData.actual_value;
                 _class = _testData.class;
@@ -84,6 +84,7 @@ module.exports = async function(r) {
                 _description= _testData.description;
                 _expected_value= _testData.expected_value;
                 _name= _testData.name;
+
                 _result = _testData.result;
                 if (_testData.result.toString().toLowerCase() && _testData.result.toString().toLowerCase().indexOf("passed")!== -1) {
                     _passedTestsCount++;
@@ -105,15 +106,25 @@ module.exports = async function(r) {
                 );
             });
 
+            if (_failedTestsCount===0 && _passedTestsCount>0) {
+                _testResultSummary = "Succeeded";    
+            }
+            else {
+                _testResultSummary = "Failed"; 
+            }
+
             outputData.push({
                 "fileName":_fileName, 
                 "virtualMachine": _VM,
-                "testDatum": _testDateFormatted,//_testDateFormatted, _actTimeStampFromFileName
+                "class": _actClassFromFileName,
+                "code": _actSetFromFileName,
+                "testDatum": _testDateFormatted,
                 "requestor": value.requestor,
                 "deployment_id":value.deployment_id,
                 "deployment_name":value.deployment_name, 
                 "passedTestsCount" : _passedTestsCount,
                 "failedTestsCount": _failedTestsCount,
+                "testResultSummary": _testResultSummary,
                 "testResultArray":_testResultArray,
             });
         }
@@ -161,7 +172,8 @@ module.exports = async function(r) {
                 //console.log(result);
                 let preparedData = processedDataToJson(result);
 
-                // sorting:
+                // sorting, TODO: substitude by generic!
+
                 if (_sortParam && _sortParam.indexOf("fileName")!== -1) {
                     //console.log("sorting fileName");
                     // prvni verze sortingu podle souboru:
@@ -194,6 +206,46 @@ module.exports = async function(r) {
                         preparedData.sort((a,b) => (a.virtualMachine > b.virtualMachine) ? 1 : ((b.virtualMachine > a.virtualMachine) ? -1 : 0));
                     }
                 }
+
+                if (_sortParam && _sortParam.indexOf("result")!== -1) {
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.testResultSummary < b.testResultSummary) ? 1 : ((b.testResultSummary < a.testResultSummary) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.testResultSummary > b.testResultSummary) ? 1 : ((b.testResultSummary > a.testResultSummary) ? -1 : 0));
+                    }
+                }
+
+                if (_sortParam && _sortParam.indexOf("class")!== -1) {
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.class < b.class) ? 1 : ((b.class < a.class) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.class > b.class) ? 1 : ((b.class > a.class) ? -1 : 0));
+                    }
+                }
+                
+
+                if (_sortParam && _sortParam.indexOf("passed")!== -1) {
+                    console.log("sorting passed");
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.passedTestsCount < b.passedTestsCount) ? 1 : ((b.passedTestsCount < a.passedTestsCount) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.passedTestsCount > b.passedTestsCount) ? 1 : ((b.passedTestsCount > a.passedTestsCount) ? -1 : 0));
+                    }
+                }
+
+                if (_sortParam && _sortParam.indexOf("failed")!== -1) {
+                    console.log("sorting failed");
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.failedTestsCount < b.failedTestsCount) ? 1 : ((b.failedTestsCount < a.failedTestsCount) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.failedTestsCount > b.failedTestsCount) ? 1 : ((b.failedTestsCount > a.failedTestsCount) ? -1 : 0));
+                    }
+                }
+
                 //console.log(preparedData);
                 res.send(preparedData);
             });

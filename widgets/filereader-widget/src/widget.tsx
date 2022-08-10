@@ -24,24 +24,7 @@ Stage.defineWidget({
         console.log('fetch files data...');
         const manager = toolbox.getManager();
         const tenantName=manager.getSelectedTenant();
-
-        //const params = this.fetchParams!(widget, toolbox);
-
-        // const params = {
-        //     deployment_id: "liberec"
-        // };
-
-        // return {
-        //     blueprint_id: toolbox.getContext().getValue('blueprintId'),
-        //     deployment_id: toolbox.getContext().getValue('deploymentId'),
-        //     status_display: toolbox.getContext().getValue('executionStatus'),
-        //     _include_system_workflows:
-        //         widget.configuration.showSystemExecutions &&
-        //         !toolbox.getContext().getValue('blueprintId') &&
-        //         !toolbox.getContext().getValue('deploymentId')
-        // };
         params.tenant = tenantName;
-        //return toolbox.getWidgetBackend().doGet('filesAPI', { params });
         return toolbox.getWidgetBackend().doGet('filesAPI', { params });
     },
 
