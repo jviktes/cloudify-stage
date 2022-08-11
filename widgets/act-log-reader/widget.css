@@ -1,0 +1,30 @@
+
+.table-scroll tbody {
+  max-height: 400px !important;
+  display: block; 
+  position:relative;
+  width:100%; 
+  overflow-y:scroll;
+}
+
+.table-scroll thead{
+  position:relative;
+  display: block;
+  width:100%;
+  overflow-y: scroll;
+}
+
+
+.table-scroll tr{
+  width: 100%;
+  display:flex;
+} 
+
+.table-scroll td,
+.table-scroll th{
+  flex-basis:100%;
+  /* flex-grow:2;
+  display: block;
+  padding: 1rem;
+  text-align:left;  */
+} 
