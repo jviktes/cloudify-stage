@@ -139,15 +139,14 @@ module.exports = async function(r) {
                     );
                 }
             });
-            
+
             Promise.all(promises).then((_res) => {
 
                 let preparedData = processedDataToJson(result);
 
                 // sorting, TODO: substitude by generic!
                 if (_sortParam && _sortParam.indexOf("fileName")!== -1) {
-                    //console.log("sorting fileName");
-                    // prvni verze sortingu podle souboru:
+                    console.log("sorting by field: -fileName-");
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.fileName < b.fileName) ? 1 : ((b.fileName < a.fileName) ? -1 : 0));
                     }
@@ -157,8 +156,7 @@ module.exports = async function(r) {
                 }
 
                 if (_sortParam && _sortParam.indexOf("testDatum")!== -1) {
-                    // prvni verze sortingu podle souboru:
-                    //console.log("sorting testDatum");
+                    console.log("sorting by field: -testDatum-");
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss') < new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? 1 : ((new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss') < new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? -1 : 0));
                     }
@@ -168,8 +166,7 @@ module.exports = async function(r) {
                 }
 
                 if (_sortParam && _sortParam.indexOf("virtualMachine")!== -1) {
-                    //console.log("sorting virtualMachine");
-                    // prvni verze sortingu podle souboru:
+                    console.log("sorting by field: -virtualMachine-");
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.virtualMachine < b.virtualMachine) ? 1 : ((b.virtualMachine < a.virtualMachine) ? -1 : 0));
                     }
@@ -179,6 +176,7 @@ module.exports = async function(r) {
                 }
 
                 if (_sortParam && _sortParam.indexOf("result")!== -1) {
+                    console.log("sorting by field: -result-");
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.testResultSummary < b.testResultSummary) ? 1 : ((b.testResultSummary < a.testResultSummary) ? -1 : 0));
                     }
@@ -188,6 +186,7 @@ module.exports = async function(r) {
                 }
 
                 if (_sortParam && _sortParam.indexOf("class")!== -1) {
+                    console.log("sorting by field: -class-");
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.class < b.class) ? 1 : ((b.class < a.class) ? -1 : 0));
                     }
@@ -197,7 +196,7 @@ module.exports = async function(r) {
                 }
                 
                 if (_sortParam && _sortParam.indexOf("passed")!== -1) {
-                    console.log("sorting passed");
+                    console.log("sorting by field: -passed-");
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.passedTestsCount < b.passedTestsCount) ? 1 : ((b.passedTestsCount < a.passedTestsCount) ? -1 : 0));
                     }
@@ -207,7 +206,7 @@ module.exports = async function(r) {
                 }
 
                 if (_sortParam && _sortParam.indexOf("failed")!== -1) {
-                    console.log("sorting failed");
+                    console.log("sorting by field: -failed-");
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.failedTestsCount < b.failedTestsCount) ? 1 : ((b.failedTestsCount < a.failedTestsCount) ? -1 : 0));
                     }

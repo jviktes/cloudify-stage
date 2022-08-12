@@ -94,8 +94,8 @@ export default class TestsTable extends React.Component<TestDataProps> {
                                     {this.renderTestResultSummary(item)}
                                     {item.testResultSummary}
                                 </DataTable.Data>
-                                <DataTable.Data style={{color:"green"},{width:"5%"}}>{item.passedTestsCount}</DataTable.Data>
-                                <DataTable.Data style={{color:"red"},{width:"5%"}}>{item.failedTestsCount}</DataTable.Data>
+                                <DataTable.Data style={{width:"5%"}}><span style={{color:"green"}}>{item.passedTestsCount}</span></DataTable.Data>
+                                <DataTable.Data style={{width:"5%"}}><span style={{color:"red"}}>{item.failedTestsCount}</span></DataTable.Data>
                                 <DataTable.Data style={{width:"35%"}}>{item.fileName}</DataTable.Data>
                             </DataTable.Row>
                             <DataTable.Row key={item.fileName+"_ext"} style={{display:"none"}} id={item.fileName+"_ext"} onClick={()=>this.onRowClick(item)}>
