@@ -41,7 +41,7 @@ export default class TestDetails extends React.Component<TestResultProps> {
         const { DataTable } = Stage.Basic;
         return (
             <div>
-               <DataTable className="agentsTable" 
+               <DataTable className="agentsTable table-scroll-details" 
                     >
                     <DataTable.Column label="Code" />
                     <DataTable.Column label="Name" />

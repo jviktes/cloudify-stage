@@ -72,27 +72,31 @@ export default class TestsTable extends React.Component<TestDataProps> {
                     sortAscending={widget.configuration.sortAscending} 
                     searchable
                     >
-                    <DataTable.Column label="Test date" name="testDatum"/>
-                    <DataTable.Column label="Virtual machine" name="virtualMachine" />
-                    <DataTable.Column label="Test class" name="class"  width="15%"/>
-                    <DataTable.Column label="Result" name="result"/>
+                          <colgroup>
+                            <col style={{backgroundColor:"red"}}/>
+                            <col style={{backgroundColor:"yellow"}}/>
+                         </colgroup>
+                    <DataTable.Column label="Test date" name="testDatum" width="10%"/>
+                    <DataTable.Column label="Virtual machine" name="virtualMachine" width="25%" />
+                    <DataTable.Column label="Test class" name="class" width="10%"/>
+                    <DataTable.Column label="Result" name="result" width="10%"/>
                     <DataTable.Column label="Passed" name="passed" width="5%"/>
-                    <DataTable.Column label="Failed" name="failed"  width="5%"/>
-                    <DataTable.Column label="File name" name="fileName"/>
+                    <DataTable.Column label="Failed" name="failed" width="5%"/>
+                    <DataTable.Column label="File name" name="fileName" width="35%"/>
                     {_.map(data.items, item => (
                         
                         <DataTable.RowExpandable key={item.fileName}  >
                             <DataTable.Row key={item.fileName+"_main"} onClick={()=>this.onRowClick(item)} id={item.fileName+"_main"} >                  
-                                <DataTable.Data>{item.testDatum}</DataTable.Data>
-                                <DataTable.Data>{item.virtualMachine}</DataTable.Data>
-                                <DataTable.Data>{item.class}</DataTable.Data>
-                                <DataTable.Data>
+                                <DataTable.Data style={{width:"10%"}}>{item.testDatum}</DataTable.Data>
+                                <DataTable.Data style={{width:"25%"}}>{item.virtualMachine}</DataTable.Data>
+                                <DataTable.Data style={{width:"10%"}}>{item.class}</DataTable.Data>
+                                <DataTable.Data style={{width:"10%"}}>
                                     {this.renderTestResultSummary(item)}
                                     {item.testResultSummary}
                                 </DataTable.Data>
-                                <DataTable.Data style={{color:"green"}}>{item.passedTestsCount}</DataTable.Data>
-                                <DataTable.Data style={{color:"red"}}>{item.failedTestsCount}</DataTable.Data>
-                                <DataTable.Data>{item.fileName}</DataTable.Data>
+                                <DataTable.Data style={{color:"green"},{width:"5%"}}>{item.passedTestsCount}</DataTable.Data>
+                                <DataTable.Data style={{color:"red"},{width:"5%"}}>{item.failedTestsCount}</DataTable.Data>
+                                <DataTable.Data style={{width:"35%"}}>{item.fileName}</DataTable.Data>
                             </DataTable.Row>
                             <DataTable.Row key={item.fileName+"_ext"} style={{display:"none"}} id={item.fileName+"_ext"} onClick={()=>this.onRowClick(item)}>
                                         <DataTable.Data colSpan={7} style={{marginLeft:50}}>
