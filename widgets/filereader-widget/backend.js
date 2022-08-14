@@ -28,9 +28,14 @@ module.exports = async function(r) {
     const _sortParam = lodash.castArray(params._sort)[0];
     const _searchParam = lodash.castArray(params._search)[0];
     const _sizeParam = lodash.castArray(params._size)[0];
-  
-    const testFolder = '/var/log/cloudify/archive/tentant-AA1/';  // TODO!  
+    const _tenantName =  lodash.castArray(params.tenant)[0];   
+    //<archive-root-folder>\<tentant-ID> 
+    const testFolder = '/opt/manager/resources/archive/'+_tenantName +'/';  
     
+    //TODO tady nějaka authorizace:
+    //const _actualTenant = helper.Manager.getSelectedTenant();
+    //console.log("Actual tenant: "+_actualTenant);
+
     const processedDataToJson = data => {
 
         let outputData = [];
@@ -43,15 +48,16 @@ module.exports = async function(r) {
             //funkce pro splitting:
             let text = _fileName;
             const myArray = text.split("-");
+
             let _VM = myArray[0];
 
             //vyhledavani podle VM
-            console.log("_searchParam:"+_searchParam);
-            console.log("_VM:"+_VM);
-            console.log(_VM.indexOf(_searchParam));
+            //console.log("_searchParam:"+_searchParam);
+            //console.log("_VM:"+_VM);
+            //console.log(_VM.indexOf(_searchParam));
 
             if (_searchParam && _VM.indexOf(_searchParam)== -1) {
-                continue; //skipping file 
+                continue; //skipping file if _searchParam contains some value not eaquals with loaded
             }
 
 
@@ -61,21 +67,16 @@ module.exports = async function(r) {
 
             let _testDateFormatted = moment(_actTimeStampFromFileName, 'YYYYMMDDhhmmss').format("YYYY-MM-DD hh:mm:ss");
 
-            console.log(_testDateFormatted);
+            // console.log(_testDateFormatted);
 
-            let _actual_value = [];
             let _class = [];
             let _code = [];
-            let _description= [];
-            let _expected_value= [];
-            let _name= [];
-            let _result= [];
             let _testResultArray = [];
             let _passedTestsCount = 0;
             let _failedTestsCount = 0;
+            let _testResultSummary = [];
 
-            //prerovnani vysledku testu, podle pole result:
-
+            //filling test details into _testResultArray
             value.results.forEach(_testData => {
                 _actual_value = _testData.actual_value;
                 _class = _testData.class;
@@ -83,6 +84,7 @@ module.exports = async function(r) {
                 _description= _testData.description;
                 _expected_value= _testData.expected_value;
                 _name= _testData.name;
+
                 _result = _testData.result;
                 if (_testData.result.toString().toLowerCase() && _testData.result.toString().toLowerCase().indexOf("passed")!== -1) {
                     _passedTestsCount++;
@@ -104,16 +106,26 @@ module.exports = async function(r) {
                 );
             });
 
+            if (_failedTestsCount===0 && _passedTestsCount>0) {
+                _testResultSummary = "Succeeded";    
+            }
+            else {
+                _testResultSummary = "Failed"; 
+            }
+
             outputData.push({
                 "fileName":_fileName, 
                 "virtualMachine": _VM,
+                "class": _actClassFromFileName,
+                "code": _actSetFromFileName,
                 "testDatum": _testDateFormatted,
                 "requestor": value.requestor,
                 "deployment_id":value.deployment_id,
                 "deployment_name":value.deployment_name, 
                 "passedTestsCount" : _passedTestsCount,
                 "failedTestsCount": _failedTestsCount,
-                "testResultArray":JSON.stringify(_testResultArray)
+                "testResultSummary": _testResultSummary,
+                "testResultArray":_testResultArray,
             });
         }
         //console.log(outputData);
@@ -129,6 +141,10 @@ module.exports = async function(r) {
     
         let promises = [];
         fs.readdir(folder, (err, files) => {
+            if (!files) {
+                console.log("no files");
+                return res.send();
+            }
 
             files.forEach(file => {
                 {
@@ -156,8 +172,10 @@ module.exports = async function(r) {
                 //console.log(result);
                 let preparedData = processedDataToJson(result);
 
-                // sorting:
-                if (_sortParam && _sortParam.indexOf("fileName")) {
+                // sorting, TODO: substitude by generic!
+
+                if (_sortParam && _sortParam.indexOf("fileName")!== -1) {
+                    //console.log("sorting fileName");
                     // prvni verze sortingu podle souboru:
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.fileName < b.fileName) ? 1 : ((b.fileName < a.fileName) ? -1 : 0));
@@ -167,17 +185,19 @@ module.exports = async function(r) {
                     }
                 }
 
-                if (_sortParam && _sortParam.indexOf("testDatum")) {
+                if (_sortParam && _sortParam.indexOf("testDatum")!== -1) {
                     // prvni verze sortingu podle souboru:
+                    //console.log("sorting testDatum");
                     if (_sortParam.startsWith("-")) {
-                        preparedData.sort((a,b) => (a.testDatum < b.testDatum) ? 1 : ((b.testDatum < a.testDatum) ? -1 : 0));
+                        preparedData.sort((a,b) => (new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss') < new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? 1 : ((new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss') < new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? -1 : 0));
                     }
                     else {
-                        preparedData.sort((a,b) => (a.testDatum > b.testDatum) ? 1 : ((b.testDatum > a.testDatum) ? -1 : 0));
+                        preparedData.sort((a,b) => (new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss') > new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? 1 : ((new moment(b.testDatum).format('YYYY-MM-DD hh:mm:ss') > new moment(a.testDatum).format('YYYY-MM-DD hh:mm:ss')) ? -1 : 0));
                     }
                 }
 
-                if (_sortParam && _sortParam.indexOf("virtualMachine")) {
+                if (_sortParam && _sortParam.indexOf("virtualMachine")!== -1) {
+                    //console.log("sorting virtualMachine");
                     // prvni verze sortingu podle souboru:
                     if (_sortParam.startsWith("-")) {
                         preparedData.sort((a,b) => (a.virtualMachine < b.virtualMachine) ? 1 : ((b.virtualMachine < a.virtualMachine) ? -1 : 0));
@@ -186,6 +206,46 @@ module.exports = async function(r) {
                         preparedData.sort((a,b) => (a.virtualMachine > b.virtualMachine) ? 1 : ((b.virtualMachine > a.virtualMachine) ? -1 : 0));
                     }
                 }
+
+                if (_sortParam && _sortParam.indexOf("result")!== -1) {
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.testResultSummary < b.testResultSummary) ? 1 : ((b.testResultSummary < a.testResultSummary) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.testResultSummary > b.testResultSummary) ? 1 : ((b.testResultSummary > a.testResultSummary) ? -1 : 0));
+                    }
+                }
+
+                if (_sortParam && _sortParam.indexOf("class")!== -1) {
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.class < b.class) ? 1 : ((b.class < a.class) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.class > b.class) ? 1 : ((b.class > a.class) ? -1 : 0));
+                    }
+                }
+                
+
+                if (_sortParam && _sortParam.indexOf("passed")!== -1) {
+                    console.log("sorting passed");
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.passedTestsCount < b.passedTestsCount) ? 1 : ((b.passedTestsCount < a.passedTestsCount) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.passedTestsCount > b.passedTestsCount) ? 1 : ((b.passedTestsCount > a.passedTestsCount) ? -1 : 0));
+                    }
+                }
+
+                if (_sortParam && _sortParam.indexOf("failed")!== -1) {
+                    console.log("sorting failed");
+                    if (_sortParam.startsWith("-")) {
+                        preparedData.sort((a,b) => (a.failedTestsCount < b.failedTestsCount) ? 1 : ((b.failedTestsCount < a.failedTestsCount) ? -1 : 0));
+                    }
+                    else {
+                        preparedData.sort((a,b) => (a.failedTestsCount > b.failedTestsCount) ? 1 : ((b.failedTestsCount > a.failedTestsCount) ? -1 : 0));
+                    }
+                }
+
                 //console.log(preparedData);
                 res.send(preparedData);
             });
