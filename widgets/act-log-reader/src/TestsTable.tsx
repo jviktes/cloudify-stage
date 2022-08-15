@@ -33,8 +33,8 @@ export default class TestsTable extends React.Component<TestDataProps> {
     };
 
     onRowClick(_item) {
-        const el = document.getElementById(_item.fileName+"_ext");
-        const elMain = document.getElementById(_item.fileName+"_main");
+        const el = document.getElementById(_item.id+"_ext");
+        const elMain = document.getElementById(_item.id+"_main");
         if (el.style.display === "none") {
             el.style.display = "";
             el.style.backgroundColor="#e0e0e0";
@@ -63,6 +63,8 @@ export default class TestsTable extends React.Component<TestDataProps> {
         const manager = toolbox.getManager();
         const tenantName=manager.getSelectedTenant();
 
+        console.log(data);
+
         return (
             <div>
                 <span>Current tenant: {tenantName}</span>
@@ -85,8 +87,8 @@ export default class TestsTable extends React.Component<TestDataProps> {
                     <DataTable.Column label="File name" name="fileName" width="35%"/>
                     {_.map(data.items, item => (
                         
-                        <DataTable.RowExpandable key={item.fileName}  >
-                            <DataTable.Row key={item.fileName+"_main"} onClick={()=>this.onRowClick(item)} id={item.fileName+"_main"} >                  
+                        <DataTable.RowExpandable key={item.id}  >
+                            <DataTable.Row key={item.id+"_main"} onClick={()=>this.onRowClick(item)} id={item.id+"_main"} >                  
                                 <DataTable.Data style={{width:"10%"}}>{item.testDatum}</DataTable.Data>
                                 <DataTable.Data style={{width:"25%"}}>{item.virtualMachine}</DataTable.Data>
                                 <DataTable.Data style={{width:"10%"}}>{item.class}</DataTable.Data>
@@ -98,7 +100,7 @@ export default class TestsTable extends React.Component<TestDataProps> {
                                 <DataTable.Data style={{width:"5%"}}><span style={{color:"red"}}>{item.failedTestsCount}</span></DataTable.Data>
                                 <DataTable.Data style={{width:"35%"}}>{item.fileName}</DataTable.Data>
                             </DataTable.Row>
-                            <DataTable.Row key={item.fileName+"_ext"} style={{display:"none"}} id={item.fileName+"_ext"} onClick={()=>this.onRowClick(item)}>
+                            <DataTable.Row key={item.id+"_ext"} style={{display:"none"}} id={item.id+"_ext"} onClick={()=>this.onRowClick(item)}>
                                         <DataTable.Data colSpan={7} style={{marginLeft:50}}>
                                             <TestDetails widget={widget} data={item.testResultArray} toolbox={toolbox}></TestDetails>
                                         </DataTable.Data>

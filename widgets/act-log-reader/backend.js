@@ -23,6 +23,13 @@ module.exports = async function(r) {
     //const _actualTenant = helper.Manager.getSelectedTenant();
     //console.log("Actual tenant: "+_actualTenant);
 
+    var uniqueID = function () {
+        // Math.random should be unique because of its seeding algorithm.
+        // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+        // after the decimal.
+        return '_' + Math.random().toString(36).slice(2, 11);
+      };
+
     const processedDataToJson = data => {
 
         let outputData = [];
@@ -93,6 +100,7 @@ module.exports = async function(r) {
             }
 
             outputData.push({
+                "id":uniqueID(),
                 "fileName":_fileName, 
                 "virtualMachine": _VMFromFileName,
                 "class": _actClassFromFileName,

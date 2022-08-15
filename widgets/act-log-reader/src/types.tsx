@@ -1,5 +1,6 @@
 export type Tests = {
     requestor: string;
+    id:string;
     fileName: string;
     virtualMachine:string;
     class: string;
