@@ -33,9 +33,13 @@ export default class TestDetails extends React.Component<TestResultProps> {
         }
         return itemData.result;
     };
+    renderActualValues(itemData) {
+        // replacing \\n --> <br>
+        const _content = itemData?.actual_value?.replace(/\\n/g,"<br>");
+        return <div dangerouslySetInnerHTML={{__html: _content}}></div>;
+    };
 
     render() {
-        
         const { data, toolbox, widget } = this.props;
         /* eslint-disable no-console, no-process-exit */
         const { DataTable } = Stage.Basic;
@@ -58,8 +62,8 @@ export default class TestDetails extends React.Component<TestResultProps> {
                                 <DataTable.Data>{item.class}</DataTable.Data>
                                 <DataTable.Data>{this.renderTestResult(item)}</DataTable.Data>
                                 <DataTable.Data>{item.description}</DataTable.Data>
-                                <DataTable.Data><p style={{"textAlign":"justify"},{"textAlign":"inter-word"}}>{item.actual_value}</p></DataTable.Data>
-                                <DataTable.Data><p style={{"textAlign":"justify"},{"textAlign":"inter-word"}}>{item.expected_value}</p></DataTable.Data>
+                                <DataTable.Data>{this.renderActualValues(item)}</DataTable.Data>
+                                <DataTable.Data>{item.expected_value}</DataTable.Data>
                             </DataTable.Row>
                     ))}
                 </DataTable>
