@@ -19,25 +19,30 @@ export default class TestDetails extends React.Component<TestResultProps> {
         this.keyCount = 0;
         this.getKey = this.getKey.bind(this);
     }
-    //react key generator:
-    getKey(){
-        return this.keyCount++;
+
+    // react key generator:
+    getKey() {
+        this.keyCount += 1;
+        return this.keyCount;
     }
 
+    // eslint-disable-next-line class-methods-use-this
     renderTestResult(itemData) {
-        if (itemData.result && itemData.result.toLowerCase().indexOf("passed")!== -1) {
-            return <span style={{color:"green"}}>{itemData.result}</span>;
+        if (itemData.result && itemData.result.toLowerCase().indexOf('passed') !== -1) {
+            return <span style={{ color: 'green' }}>{itemData.result}</span>;
         }
-        if (itemData.result && itemData.result.toLowerCase().indexOf("failed")!== -1) {
-            return <span style={{color:"red"}}>{itemData.result}</span>;
+        if (itemData.result && itemData.result.toLowerCase().indexOf('failed') !== -1) {
+            return <span style={{ color: 'red' }}>{itemData.result}</span>;
         }
         return itemData.result;
-    };
+    }
+
+    // eslint-disable-next-line class-methods-use-this
     renderActualValues(itemData) {
         // replacing \\n --> <br>
-        const _content = itemData?.actual_value?.replace(/\\n/g,"<br>");
-        return <div dangerouslySetInnerHTML={{__html: _content}}></div>;
-    };
+        const content = itemData?.actual_value?.replace(/\\n/g, '<br>');
+        return <div dangerouslySetInnerHTML={{ __html: content }} />;
+    }
 
     render() {
         const { data, toolbox, widget } = this.props;
@@ -45,8 +50,7 @@ export default class TestDetails extends React.Component<TestResultProps> {
         const { DataTable } = Stage.Basic;
         return (
             <div>
-               <DataTable className="agentsTable table-scroll-details" 
-                    >
+                <DataTable className="agentsTable table-scroll-details">
                     <DataTable.Column label="Code" />
                     <DataTable.Column label="Name" />
                     <DataTable.Column label="Class" />
@@ -55,24 +59,24 @@ export default class TestDetails extends React.Component<TestResultProps> {
                     <DataTable.Column label="Actual value" />
                     <DataTable.Column label="Expected value" />
 
-                    {_.map(data, item => (                       
-                            <DataTable.Row key={this.getKey()}>                  
-                                <DataTable.Data>{item.code}</DataTable.Data>
-                                <DataTable.Data>{item.name}</DataTable.Data>
-                                <DataTable.Data>{item.class}</DataTable.Data>
-                                <DataTable.Data>{this.renderTestResult(item)}</DataTable.Data>
-                                <DataTable.Data>{item.description}</DataTable.Data>
-                                <DataTable.Data>{this.renderActualValues(item)}</DataTable.Data>
-                                <DataTable.Data>{item.expected_value}</DataTable.Data>
-                            </DataTable.Row>
+                    {_.map(data, item => (
+                        <DataTable.Row key={this.getKey()}>
+                            <DataTable.Data>{item.code}</DataTable.Data>
+                            <DataTable.Data>{item.name}</DataTable.Data>
+                            <DataTable.Data>{item.class}</DataTable.Data>
+                            <DataTable.Data>{this.renderTestResult(item)}</DataTable.Data>
+                            <DataTable.Data>{item.description}</DataTable.Data>
+                            <DataTable.Data>{this.renderActualValues(item)}</DataTable.Data>
+                            <DataTable.Data>{item.expected_value}</DataTable.Data>
+                        </DataTable.Row>
                     ))}
                 </DataTable>
-                
             </div>
         );
     }
 }
 
 TestDetails.propTypes = {
-    data: PropTypes.array,
+    // eslint-disable-next-line react/forbid-prop-types
+    data: PropTypes.array
 };
