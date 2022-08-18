@@ -7,7 +7,7 @@ import Consts from '../../common/src/Consts';
 import LabelsInput from '../../common/src/labels/LabelsInput';
 import MissingSecretsError from '../../common/src/secrets/MissingSecretsError';
 import AccordionSectionWithDivider from '../../common/src/components/accordion/AccordionSectionWithDivider';
-import DeploymentInputs from '../../common/src/deployModal/DeploymentInputs';
+import DeploymentInputs from './DeploymentInputsWizard';
 import DeployModalActions, { Buttons as ApproveButtons } from '../../common/src/deployModal/DeployModalActions';
 import { ExecuteWorkflowInputs, executeWorkflow } from '../../common/src/executeWorkflow';
 import type {
@@ -409,6 +409,9 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             deploymentId
         } = this.state;
         const deploymentsList: string[] = _.compact([deploymentId]);
+
+        //console.log(deploymentsList);
+
         this.setState({ activeSection: -1, loading: true, errors: {} });
         return this.validateInputs()
             .then(() =>
@@ -532,6 +535,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             actions
                 .doGetFullBlueprintData(id)
                 .then(blueprint => {
+                    console.log(blueprint);
                     const deploymentInputs = getInputsInitialValues(blueprint.plan);
                     const installWorkflow = {
                         ...(blueprint.plan.workflows.install as Record<string, unknown>),
@@ -577,7 +581,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             if (_.isEmpty(blueprint.id)) {
                 errors.blueprintName = t('errors.noBlueprintName');
             }
-
+            console.log("validateInputs:");
+            console.log(stateDeploymentInputs);
             const inputsWithoutValue = getInputsWithoutValues(blueprint.plan.inputs, stateDeploymentInputs);
             addErrors(inputsWithoutValue, errors);
 
@@ -588,6 +593,28 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             }
         });
     }
+    getDeploymentInputsByCategories( _deploymentInputs: Record<string, unknown>) {
+        //return this.state.deploymentInputs;//["location"];
+        //return this.state.deploymentInputs.find(el => el.key === "location");
+        //let neco = this.state.deploymentInputs["location"]; 
+        
+        //const { Json } = Stage.Utils;
+        const inputsWithoutValues: Record<string, unknown> = {};
+
+        _.forEach(_deploymentInputs, (inputObj, inputName) => {
+
+            let tt = inputObj;
+            String(tt);
+            if (inputName=="location") {
+                inputsWithoutValues[inputName] = this.state.deploymentInputs["location"];
+            }
+            if (inputName=="image_version") {
+                inputsWithoutValues[inputName] = this.state.deploymentInputs["image_version"];
+            }
+        });
+        console.log(inputsWithoutValues);
+        return inputsWithoutValues;
+    }   
 
     render() {
         const { Accordion, Form, Icon, LoadingOverlay, Message, Modal, VisibilityField } = Stage.Basic;
@@ -634,14 +661,14 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         return (
             <Modal open={open} onClose={onHide} className="deployBlueprintModal">
                 <Modal.Header>
-                    <Icon name="blackberry" /> {i18n.t(i18nHeaderKey, { blueprintId: blueprint.id })}
+                    <Icon name="wizard" /> {i18n.t(i18nHeaderKey, { blueprintId: blueprint.id })}
                     <VisibilityField
                         visibility={visibility}
                         className="rightFloated"
                         onVisibilityChange={v => this.setState({ visibility: v })}
                     />
                 </Modal.Header>
-                <div>pokus</div>
+
                 <Modal.Content>
                    
                     <Form
@@ -697,7 +724,9 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                                 />
                             </Form.Field>
                         )}
+
                         <Accordion fluid>
+                             {/* Inputs            */}
                             <AccordionSectionWithDivider
                                 title={t('sections.deploymentInputs')}
                                 index={DEPLOYMENT_SECTIONS.deploymentInputs}
@@ -710,10 +739,12 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                                     onYamlFileChange={this.handleYamlFileChange}
                                     fileLoading={fileLoading}
                                     onDeploymentInputChange={this.handleDeploymentInputChange}
-                                    deploymentInputs={deploymentInputs}
+                                    deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
                                     errors={errors}
                                 />
+   
                             </AccordionSectionWithDivider>
+                            {/* Metadata:             */}
                             <AccordionSectionWithDivider
                                 title={t('sections.deploymentMetadata')}
                                 index={DEPLOYMENT_SECTIONS.deploymentMetadata}
@@ -809,6 +840,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                                     />
                                 </Form.Field>
                             </AccordionSectionWithDivider>
+
                             {selectedApproveButton === ApproveButtons.install && (
                                 <AccordionSectionWithDivider
                                     title={t('sections.install')}

@@ -107,7 +107,7 @@ export default function BlueprintsTable({
                                             }}
                                         />
                                         <Icon
-                                            name="ship"
+                                            name="wizard"
                                             link
                                             bordered
                                             title="Create deployment wizard"
