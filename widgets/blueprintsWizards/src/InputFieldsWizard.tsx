@@ -1,6 +1,6 @@
 import Help from  '../../common/src/inputs/InputHelp'; //'./InputHelp';
 import InputField from './InputFieldWizard';
-import getInputFieldInitialValue from '../../common/src/inputs/utils/getInputFieldInitialValue'; //'./utils/getInputFieldInitialValue';
+//import getInputFieldInitialValue from '../../common/src/inputs/utils/getInputFieldInitialValue'; //'./utils/getInputFieldInitialValue';
 import type { DataType, Input, OnChange } from '../../common/src/inputs/types'; //'./types';
 
 function normalizeValue(input: Input, inputsState: Record<string, any>, dataType: DataType) {
@@ -8,8 +8,8 @@ function normalizeValue(input: Input, inputsState: Record<string, any>, dataType
         return '';
     }
     if (_.isUndefined(inputsState[input.name])) {
-        
-        return getInputFieldInitialValue(input.default, input.type, dataType);
+        dataType;
+        return '';//getInputFieldInitialValue(input.default, input.type, dataType);
     }
     return inputsState[input.name];
 }
