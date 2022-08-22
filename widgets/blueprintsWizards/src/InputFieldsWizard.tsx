@@ -76,8 +76,8 @@ export default function InputFields({
         .reject('hidden')
         .sortBy([input => !_.isUndefined(input.default), 'name'])
         .map(input => {
-            console.log(input.name);   
-            console.log(inputsState); 
+            //console.log(input.name);   
+            //console.log(inputsState); 
             const dataType = !_.isEmpty(dataTypes) && !!input.type ? dataTypes![input.type] : undefined;
             const value = normalizeValue(input, inputsState, dataType);
 

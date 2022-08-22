@@ -7,7 +7,7 @@ import Consts from '../../common/src/Consts';
 import LabelsInput from '../../common/src/labels/LabelsInput';
 import MissingSecretsError from '../../common/src/secrets/MissingSecretsError';
 import AccordionSectionWithDivider from '../../common/src/components/accordion/AccordionSectionWithDivider';
-import DeploymentInputs from './DeploymentInputsWizard';
+//import DeploymentInputs from './DeploymentInputsWizard';
 import DeployModalActions, { Buttons as ApproveButtons } from '../../common/src/deployModal/DeployModalActions';
 import { ExecuteWorkflowInputs, executeWorkflow } from '../../common/src/executeWorkflow';
 import type {
@@ -27,6 +27,7 @@ import getInputsInitialValues from '../../common/src/inputs/utils/getInputsIniti
 import { addErrors } from '../../common/src/inputs/utils/errors';
 import getInputsWithoutValues from '../../common/src/inputs/utils/getInputsWithoutValues';
 import type { FilterRule } from '../../common/src/filters/types';
+import InstallKrok from './kroky/InstallKrok';
 
 const { i18n } = Stage;
 const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
@@ -727,7 +728,20 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
                         <Accordion fluid>
                              {/* Inputs            */}
-                            <AccordionSectionWithDivider
+                             <InstallKrok
+                                    title='sections.deploymentInputs'
+                                    index={DEPLOYMENT_SECTIONS.deploymentInputs}
+                                    activeSection={activeSection}
+                                    toolbox={toolbox}
+                                    blueprint={blueprint}
+                                    onYamlFileChange={this.handleYamlFileChange}
+                                    fileLoading={fileLoading}
+                                    onDeploymentInputChange={this.handleDeploymentInputChange}
+                                    deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+                                    errors={errors}
+                             ></InstallKrok>
+                             
+                            {/* <AccordionSectionWithDivider
                                 title={t('sections.deploymentInputs')}
                                 index={DEPLOYMENT_SECTIONS.deploymentInputs}
                                 activeSection={activeSection}
@@ -744,6 +758,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                                 />
    
                             </AccordionSectionWithDivider>
+                            */}
+
                             {/* Metadata:             */}
                             <AccordionSectionWithDivider
                                 title={t('sections.deploymentMetadata')}
