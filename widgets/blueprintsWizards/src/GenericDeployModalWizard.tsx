@@ -1,5 +1,5 @@
 import type { AccordionTitleProps, CheckboxProps } from 'semantic-ui-react';
-import type { ChangeEvent, SyntheticEvent } from 'react';
+import { ChangeEvent, SyntheticEvent } from 'react';
 import FileActions from '../../common/src/actions/FileActions';//'../actions/FileActions';
 import BlueprintActions from '../../common/src/blueprints/BlueprintActions';
 import DynamicDropdown from '../../common/src/components/DynamicDropdown';
@@ -27,7 +27,8 @@ import getInputsInitialValues from '../../common/src/inputs/utils/getInputsIniti
 import { addErrors } from '../../common/src/inputs/utils/errors';
 import getInputsWithoutValues from '../../common/src/inputs/utils/getInputsWithoutValues';
 import type { FilterRule } from '../../common/src/filters/types';
-import InstallKrok from './kroky/InstallKrok';
+// import InstallKrok from './kroky/InstallKrok';
+// import SetupKrok from './kroky/SetupKrok';
 
 const { i18n } = Stage;
 const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
@@ -157,6 +158,19 @@ const defaultProps: Partial<GenericDeployModalProps> = {
     blueprintFilterRules: []
 };
 
+const InstallKrokComponent = () => {
+    return <div>First Component</div>
+  }
+  const SetupKrokComponent = () => {
+    return <div>Second Component</div>
+  }
+
+
+const stepsDefinition = [
+    { key: 'firstStep', label: 'My First Step', isDone: true, component: InstallKrokComponent },
+    { key: 'secondStep', label: 'My Second Step', isDone: false, component: SetupKrokComponent },
+    ]
+
 type GenericDeployModalState = {
     activeSection: any;
     areSecretsMissing: boolean;
@@ -182,7 +196,16 @@ type GenericDeployModalState = {
     schedule: boolean;
     scheduledTime: string;
     selectedApproveButton: ApproveButtons;
+    steps: WizardState[],
+    activeStep: WizardState,
 };
+
+type WizardState = {
+    key: string, 
+    label: string, 
+    isDone: boolean, 
+    component: any,
+}
 
 class GenericDeployModal extends React.Component<GenericDeployModalProps, GenericDeployModalState> {
     // eslint-disable-next-line react/static-property-placement
@@ -205,6 +228,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         plugin: '',
         is_available: true
     };
+
+
 
     static initialState = {
         blueprint: GenericDeployModal.EMPTY_BLUEPRINT,
@@ -230,7 +255,9 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         queue: false,
         schedule: false,
         scheduledTime: '',
-        selectedApproveButton: ApproveButtons.install
+        selectedApproveButton: ApproveButtons.install,
+        steps:stepsDefinition,
+        activeStep: {key: 'firstStep', label: 'My First Step', isDone: true, component: InstallKrokComponent },
     };
 
     constructor(props: GenericDeployModalProps) {
@@ -619,6 +646,42 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
     render() {
         const { Accordion, Form, Icon, LoadingOverlay, Message, Modal, VisibilityField } = Stage.Basic;
+
+        // const InstallKrokComponent = () => {
+        //     return <InstallKrok
+        //     title='Install krok 1'
+        //     index={DEPLOYMENT_SECTIONS.deploymentInputs}
+        //     activeSection={activeSection}
+        //     toolbox={toolbox}
+        //     blueprint={blueprint}
+        //     onYamlFileChange={this.handleYamlFileChange}
+        //     fileLoading={fileLoading}
+        //     onDeploymentInputChange={this.handleDeploymentInputChange}
+        //     deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+        //     errors={errors}
+        //     ></InstallKrok>
+        //   }
+
+        //   const SetupKrokComponent = () => {
+        //     return <SetupKrok
+        //         title='Install krok 1'
+        //         index={DEPLOYMENT_SECTIONS.deploymentInputs}
+        //         activeSection={activeSection}
+        //         toolbox={toolbox}
+        //         blueprint={blueprint}
+        //         onYamlFileChange={this.handleYamlFileChange}
+        //         fileLoading={fileLoading}
+        //         onDeploymentInputChange={this.handleDeploymentInputChange}
+        //         deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+        //         errors={errors}
+        //     ></SetupKrok>
+        //   }
+
+        //   const steps = [
+        //     { key: 'firstStep', label: 'My First Step', isDone: true, component: InstallKrokComponent },
+        //     { key: 'secondStep', label: 'My Second Step', isDone: false, component: SetupKrokComponent },
+        //     ]
+
         const {
             onHide,
             open,
@@ -655,10 +718,59 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             queue,
             schedule,
             scheduledTime,
-            selectedApproveButton
+            selectedApproveButton,
+            steps,
+            activeStep,
         } = this.state;
         const { DEPLOYMENT_SECTIONS } = GenericDeployModal;
 
+        console.log(deploymentInputs);
+
+        // const [activeStep, setActiveStep] = useState(steps[0]);
+
+        const handleNext = () => {
+            if (steps[steps.length - 1].key === activeStep.key) {
+              alert('You have completed all steps.');
+              return;
+            }
+         
+            const index = steps.findIndex(x => x.key === activeStep.key);
+
+            // setSteps(prevStep => prevStep.map(x => {
+            //   if (x.key === activeStep.key) x.isDone = true;
+            //   return x;
+            // }))
+            
+            steps.forEach(x => {
+                if (x.key === activeStep.key) {
+                    x.isDone = true;
+                    this.setState({steps:steps});
+                }
+            });
+
+            this.setState({ activeStep: steps[index + 1] });
+
+            //setActiveStep(steps[index + 1]);
+          }
+        const handleBack = () => {
+            const index = steps.findIndex(x => x.key === activeStep.key);
+            if (index === 0) return;
+        
+            // setSteps(prevStep => prevStep.map(x => {
+            // if (x.key === activeStep.key) x.isDone = false;
+            // return x;
+            // }))
+
+            steps.forEach(x => {
+                if (x.key === activeStep.key) {
+                    x.isDone = false;
+                    this.setState({steps:steps});
+                }
+            });
+
+            this.setState({ activeStep: steps[index - 1] });
+            // setActiveStep(steps[index - 1]);
+        }
         return (
             <Modal open={open} onClose={onHide} className="deployBlueprintModal">
                 <Modal.Header>
@@ -726,10 +838,29 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                             </Form.Field>
                         )}
 
+                    <div className="box">
+                        <div className="steps">
+                            <ul className="nav">
+                                {steps.map((step, i) => {
+                                return <li key={i} className={`${activeStep.key === step.key ? 'active' : ''} ${step.isDone ? 'done' : ''}`}>
+                                    <div>Step {i + 1}<br /><span>{step.label}</span></div>
+                                </li>
+                                })}
+                            </ul>
+                        </div>
+                        <div className="step-component">
+                            {activeStep.component()}
+                        </div>
+                        <div className="btn-component">
+                            <input type="button" value="Back" onClick={handleBack} disabled={steps[0].key === activeStep.key} />
+                            <input type="button" value={steps[steps.length - 1].key !== activeStep.key ? 'Next' : 'Submit'} onClick={handleNext} />
+                        </div>
+                    </div>
+
                         <Accordion fluid>
                              {/* Inputs            */}
-                             <InstallKrok
-                                    title='sections.deploymentInputs'
+                             {/* <InstallKrok
+                                    title='Install krok 1'
                                     index={DEPLOYMENT_SECTIONS.deploymentInputs}
                                     activeSection={activeSection}
                                     toolbox={toolbox}
@@ -739,7 +870,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                                     onDeploymentInputChange={this.handleDeploymentInputChange}
                                     deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
                                     errors={errors}
-                             ></InstallKrok>
+                             ></InstallKrok> */}
                              
                             {/* <AccordionSectionWithDivider
                                 title={t('sections.deploymentInputs')}
