@@ -98,9 +98,9 @@
   }
    
   .box .step-component {
-    padding: 20px;
-    height: 200px;
-    display: flex;
+    /* padding: 20px; */
+    /* height: 200px; */
+    display: block;
     align-items: center;
     justify-content: center;
     width: 100%;

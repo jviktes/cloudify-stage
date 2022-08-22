@@ -1,4 +1,5 @@
 import React from "react";
+
 import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
 import DeploymentInputs from "../DeploymentInputsWizard";
 
@@ -15,12 +16,13 @@ interface DeploymentsInfoProps {
     onDeploymentInputChange:any,
 }
 
-export default function SetupKrok(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange}: DeploymentsInfoProps) {
+export default function SWConfigStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange}: DeploymentsInfoProps) {
 
-    console.log("SetupKrok");
+    console.log("SWConfigStep:");
     console.log(deploymentInputs);
     console.log(title);
-    return (      
+    return (
+        
         <AccordionSectionWithDivider
             title={title}
             index={index}
@@ -37,5 +39,6 @@ export default function SetupKrok(this: any, { toolbox, blueprint, index,title,d
             />
 
         </AccordionSectionWithDivider>
+        
     );
 }

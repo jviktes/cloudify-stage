@@ -2,14 +2,15 @@ import type { AccordionTitleProps, CheckboxProps } from 'semantic-ui-react';
 import { ChangeEvent, SyntheticEvent } from 'react';
 import FileActions from '../../common/src/actions/FileActions';//'../actions/FileActions';
 import BlueprintActions from '../../common/src/blueprints/BlueprintActions';
-import DynamicDropdown from '../../common/src/components/DynamicDropdown';
+//import DynamicDropdown from '../../common/src/components/DynamicDropdown';
 import Consts from '../../common/src/Consts';
-import LabelsInput from '../../common/src/labels/LabelsInput';
+//import LabelsInput from '../../common/src/labels/LabelsInput';
 import MissingSecretsError from '../../common/src/secrets/MissingSecretsError';
-import AccordionSectionWithDivider from '../../common/src/components/accordion/AccordionSectionWithDivider';
+//import AccordionSectionWithDivider from '../../common/src/components/accordion/AccordionSectionWithDivider';
 //import DeploymentInputs from './DeploymentInputsWizard';
 import DeployModalActions, { Buttons as ApproveButtons } from '../../common/src/deployModal/DeployModalActions';
-import { ExecuteWorkflowInputs, executeWorkflow } from '../../common/src/executeWorkflow';
+//import { ExecuteWorkflowInputs, executeWorkflow } from '../../common/src/executeWorkflow';
+import { executeWorkflow } from '../../common/src/executeWorkflow';
 import type {
     BaseWorkflowInputs,
     UserWorkflowInputsState,
@@ -27,8 +28,12 @@ import getInputsInitialValues from '../../common/src/inputs/utils/getInputsIniti
 import { addErrors } from '../../common/src/inputs/utils/errors';
 import getInputsWithoutValues from '../../common/src/inputs/utils/getInputsWithoutValues';
 import type { FilterRule } from '../../common/src/filters/types';
-import InstallKrok from './kroky/InstallKrok';
-import SetupKrok from './kroky/SetupKrok';
+
+import GeneralStep from './wizardSteps/GeneralStep';
+import ClusteringStep from './wizardSteps/ClusteringStep';
+import GSNStep from './wizardSteps/GSNStep';
+import SWConfigStep from './wizardSteps/SWConfigStep';
+import VMConfigStep from './wizardSteps/VMConfigStep';
 
 const { i18n } = Stage;
 const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
@@ -158,17 +163,16 @@ const defaultProps: Partial<GenericDeployModalProps> = {
     blueprintFilterRules: []
 };
 
-const InstallKrokComponent = () => {
-    return <div>First Component</div>
+const EmptyComponent = () => {
+    return <div></div>
   }
-  const SetupKrokComponent = () => {
-    return <div>Second Component</div>
-  }
-
 
 const stepsDefinition = [
-    { key: 'firstStep', label: 'My First Step', isDone: true, component: InstallKrokComponent },
-    { key: 'secondStep', label: 'My Second Step', isDone: false, component: SetupKrokComponent },
+    { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
+    { key: 'ClusteringStep', label: 'Clustering', isDone: false, component: EmptyComponent },
+    { key: 'VMConfigStep', label: 'VM configuration', isDone: false, component: EmptyComponent },
+    { key: 'SWConfigStep', label: 'SW configuration', isDone: false, component: EmptyComponent },
+    { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
     ]
 
 type GenericDeployModalState = {
@@ -257,7 +261,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         scheduledTime: '',
         selectedApproveButton: ApproveButtons.install,
         steps:stepsDefinition,
-        activeStep: {key: 'firstStep', label: 'My First Step', isDone: true, component: InstallKrokComponent },
+        activeStep: {key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent},
     };
 
     constructor(props: GenericDeployModalProps) {
@@ -350,7 +354,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     onAccordionClick(_: React.MouseEvent<HTMLDivElement, MouseEvent>, { index }: AccordionTitleProps) {
         const { activeSection } = this.state;
         const newIndex = activeSection === index ? -1 : index;
-
+        console.log("onAccordionClick");
         this.setState({ activeSection: newIndex });
     }
 
@@ -645,22 +649,32 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     }   
 
     render() {
-        const { Accordion, Form, Icon, LoadingOverlay, Message, Modal, VisibilityField } = Stage.Basic;
+        const { Form, Icon, LoadingOverlay, Modal, VisibilityField } = Stage.Basic;
 
         const renderWizardStepContent= () =>{
 
-            if (activeStep.key==="firstStep") {
-                return InstallKrokComponent();
+            if (activeStep.key==="GeneralStep") {
+                return GeneralStepComponent();
             }
-            if (activeStep.key==="secondStep") {
-                return SetupKrokComponent();
+            if (activeStep.key==="ClusteringStep") {
+                return ClusteringStepComponent();
             }
+            if (activeStep.key==="GSNStep") {
+                return GSNStepComponent();
+            }
+            if (activeStep.key==="SWConfigStep") {
+                return SWConfigStepComponent();
+            }
+            if (activeStep.key==="VMConfigStep") {
+                return VMConfigStepComponent();
+            }
+
             return "";
         }
 
-        const InstallKrokComponent = () => {
-            return <InstallKrok
-            title='Install krok 1'
+        const GeneralStepComponent = () => {
+            return <GeneralStep
+            title='General'
             index={DEPLOYMENT_SECTIONS.deploymentInputs}
             activeSection={activeSection}
             toolbox={toolbox}
@@ -670,12 +684,12 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             onDeploymentInputChange={this.handleDeploymentInputChange}
             deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
             errors={errors}
-            ></InstallKrok>
-          }
+            ></GeneralStep>
+        }
 
-          const SetupKrokComponent = () => {
-            return <SetupKrok
-                title='Install krok 2'
+        const ClusteringStepComponent = () => {
+            return <ClusteringStep
+                title='Clustering'
                 index={DEPLOYMENT_SECTIONS.deploymentInputs}
                 activeSection={activeSection}
                 toolbox={toolbox}
@@ -685,45 +699,90 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 onDeploymentInputChange={this.handleDeploymentInputChange}
                 deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
                 errors={errors}
-            ></SetupKrok>
+            ></ClusteringStep>
           }
+
+        const GSNStepComponent = () => {
+            return <GSNStep
+                title='GSN'
+                index={DEPLOYMENT_SECTIONS.deploymentInputs}
+                activeSection={activeSection}
+                toolbox={toolbox}
+                blueprint={blueprint}
+                onYamlFileChange={this.handleYamlFileChange}
+                fileLoading={fileLoading}
+                onDeploymentInputChange={this.handleDeploymentInputChange}
+                deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+                errors={errors}
+            ></GSNStep>
+        }
+
+        const SWConfigStepComponent = () => {
+            return <SWConfigStep
+                title='SW Config'
+                index={DEPLOYMENT_SECTIONS.deploymentInputs}
+                activeSection={activeSection}
+                toolbox={toolbox}
+                blueprint={blueprint}
+                onYamlFileChange={this.handleYamlFileChange}
+                fileLoading={fileLoading}
+                onDeploymentInputChange={this.handleDeploymentInputChange}
+                deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+                errors={errors}
+            ></SWConfigStep>
+        }
+
+        const VMConfigStepComponent = () => {
+            return <VMConfigStep
+                title='VM Config'
+                index={DEPLOYMENT_SECTIONS.deploymentInputs}
+                activeSection={activeSection}
+                toolbox={toolbox}
+                blueprint={blueprint}
+                onYamlFileChange={this.handleYamlFileChange}
+                fileLoading={fileLoading}
+                onDeploymentInputChange={this.handleDeploymentInputChange}
+                deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+                errors={errors}
+            ></VMConfigStep>
+        }
 
         const {
             onHide,
             open,
             toolbox,
             i18nHeaderKey,
-            showInstallOptions,
-            showDeploymentIdInput,
+            //showInstallOptions,
+            //showDeploymentIdInput,
             showDeploymentNameInput,
             showDeployButton,
-            showSitesInput,
+            //showSitesInput,
             deploymentNameLabel,
             deploymentNameHelp,
-            blueprintFilterRules
+            //blueprintFilterRules
         } = this.props;
         const {
             activeSection,
             blueprint,
             deploymentInputs,
-            deploymentId,
+            //deploymentId,
             deploymentName,
             errors,
             areSecretsMissing,
             fileLoading,
             loading,
             loadingMessage,
-            runtimeOnlyEvaluation,
-            skipPluginsValidation,
-            siteName,
+            //runtimeOnlyEvaluation,
+            //skipPluginsValidation,
+            //siteName,
             visibility,
-            baseInstallWorkflowParams,
-            userInstallWorkflowParams,
-            force,
-            dryRun,
-            queue,
-            schedule,
-            scheduledTime,
+            //baseInstallWorkflowParams,
+            //userInstallWorkflowParams,
+            //force,
+            //dryRun,
+            //queue,
+            //schedule,
+            //scheduledTime,
             selectedApproveButton,
             steps,
             activeStep,
@@ -806,7 +865,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                     >
                         {loading && <LoadingOverlay message={loadingMessage} />}
 
-                        {this.isBlueprintSelectable() && (
+                        {/* {this.isBlueprintSelectable() && (
                             <Form.Field
                                 error={errors.blueprintName}
                                 label={t('inputs.blueprintName.label')}
@@ -823,7 +882,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                                     prefetch
                                 />
                             </Form.Field>
-                        )}
+                        )} */}
 
                         {showDeploymentNameInput && (
                             <Form.Field
@@ -847,7 +906,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                             <ul className="nav">
                                 {steps.map((step, i) => {
                                 return <li key={i} className={`${activeStep.key === step.key ? 'active' : ''} ${step.isDone ? 'done' : ''}`}>
-                                    <div>Step {i + 1}<br /><span>{step.label}</span></div>
+                                    <div><span>{step.label}</span></div>
                                 </li>
                                 })}
                             </ul>
@@ -856,140 +915,11 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                             {renderWizardStepContent()}
                         </div>
                         <div className="btn-component">
-                            <input type="button" value="Back" onClick={handleBack} disabled={steps[0].key === activeStep.key} />
-                            <input type="button" value={steps[steps.length - 1].key !== activeStep.key ? 'Next' : 'Submit'} onClick={handleNext} />
+                            <input type="button" className='ui button basic cancel' value="Back" onClick={handleBack} disabled={steps[0].key === activeStep.key} />
+                            <input type="button" className='ui positive button ok' value={steps[steps.length - 1].key !== activeStep.key ? 'Next' : 'Submit'} onClick={handleNext} />
                         </div>
                     </div>
 
-                        <Accordion fluid>
-
-                            {/* Metadata:             */}
-                            <AccordionSectionWithDivider
-                                title={t('sections.deploymentMetadata')}
-                                index={DEPLOYMENT_SECTIONS.deploymentMetadata}
-                                activeSection={activeSection}
-                                onClick={this.onAccordionClick}
-                            >
-                                {showSitesInput && (
-                                    <Form.Field
-                                        error={errors.siteName}
-                                        label={t('inputs.siteName.label')}
-                                        help={t('inputs.siteName.help')}
-                                    >
-                                        <DynamicDropdown
-                                            value={siteName}
-                                            onChange={value =>
-                                                typeof value === 'string' && this.setState({ siteName: value })
-                                            }
-                                            name="siteName"
-                                            fetchUrl="/sites?_include=name"
-                                            valueProp="name"
-                                            toolbox={toolbox}
-                                        />
-                                    </Form.Field>
-                                )}
-
-                                <Form.Field
-                                    label={i18n.t('widgets.common.labels.input.label')}
-                                    help={i18n.t('widgets.common.labels.input.help')}
-                                >
-                                    <LabelsInput
-                                        toolbox={toolbox}
-                                        hideInitialLabels
-                                        onChange={(labels: Label[]) => this.setState({ labels })}
-                                    />
-                                </Form.Field>
-                            </AccordionSectionWithDivider>
-                            <AccordionSectionWithDivider
-                                title={t('sections.executionParameters')}
-                                index={DEPLOYMENT_SECTIONS.executionParameters}
-                                activeSection={activeSection}
-                                onClick={this.onAccordionClick}
-                            >
-                                <Form.Field className="skipPluginsValidationCheckbox">
-                                    <Form.Checkbox
-                                        toggle
-                                        label={t('inputs.skipPluginsValidation.label')}
-                                        name="skipPluginsValidation"
-                                        checked={skipPluginsValidation}
-                                        onChange={(_, { checked }) =>
-                                            this.setState({ skipPluginsValidation: !!checked })
-                                        }
-                                        help=""
-                                    />
-                                </Form.Field>
-                            </AccordionSectionWithDivider>
-                            <AccordionSectionWithDivider
-                                title={t('sections.advanced')}
-                                index={DEPLOYMENT_SECTIONS.advanced}
-                                activeSection={activeSection}
-                                onClick={this.onAccordionClick}
-                            >
-                                {showDeploymentIdInput && (
-                                    <Form.Field
-                                        error={errors.deploymentId}
-                                        label={t('inputs.deploymentId.label')}
-                                        required
-                                        help={t('inputs.deploymentId.help')}
-                                    >
-                                        <Form.Input
-                                            name="deploymentId"
-                                            value={deploymentId}
-                                            onChange={(
-                                                _: ChangeEvent<HTMLInputElement>,
-                                                { value }: { value: string }
-                                            ) => this.setState({ deploymentId: value })}
-                                        />
-                                    </Form.Field>
-                                )}
-                                {skipPluginsValidation && (
-                                    <Message>{t('inputs.skipPluginsValidation.message')}</Message>
-                                )}
-
-                                <Form.Field help={t('inputs.runtimeOnlyEvaluation.help')}>
-                                    <Form.Checkbox
-                                        toggle
-                                        label={t('inputs.runtimeOnlyEvaluation.label')}
-                                        name="runtimeOnlyEvaluation"
-                                        checked={runtimeOnlyEvaluation}
-                                        onChange={(_, { checked }) =>
-                                            this.setState({ runtimeOnlyEvaluation: !!checked })
-                                        }
-                                        help=""
-                                    />
-                                </Form.Field>
-                            </AccordionSectionWithDivider>
-
-                            {selectedApproveButton === ApproveButtons.install && (
-                                <AccordionSectionWithDivider
-                                    title={t('sections.install')}
-                                    index={DEPLOYMENT_SECTIONS.install}
-                                    activeSection={activeSection}
-                                    onClick={this.onAccordionClick}
-                                >
-                                    <ExecuteWorkflowInputs
-                                        toolbox={toolbox}
-                                        baseWorkflowInputs={baseInstallWorkflowParams}
-                                        userWorkflowInputsState={userInstallWorkflowParams}
-                                        onYamlFileChange={this.handleYamlFileChange}
-                                        onWorkflowInputChange={this.handleExecuteInputChange}
-                                        fileLoading={fileLoading}
-                                        errors={errors}
-                                        showInstallOptions={showInstallOptions || false}
-                                        force={force}
-                                        dryRun={dryRun}
-                                        queue={queue}
-                                        schedule={schedule}
-                                        scheduledTime={scheduledTime}
-                                        onForceChange={this.onForceChange}
-                                        onDryRunChange={this.onDryRunChange}
-                                        onQueueChange={this.onQueueChange}
-                                        onScheduleChange={this.onScheduleChange}
-                                        onScheduledTimeChange={this.onScheduledTimeChange}
-                                    />
-                                </AccordionSectionWithDivider>
-                            )}
-                        </Accordion>
                     </Form>
                 </Modal.Content>
 
