@@ -27,8 +27,8 @@ import getInputsInitialValues from '../../common/src/inputs/utils/getInputsIniti
 import { addErrors } from '../../common/src/inputs/utils/errors';
 import getInputsWithoutValues from '../../common/src/inputs/utils/getInputsWithoutValues';
 import type { FilterRule } from '../../common/src/filters/types';
-// import InstallKrok from './kroky/InstallKrok';
-// import SetupKrok from './kroky/SetupKrok';
+import InstallKrok from './kroky/InstallKrok';
+import SetupKrok from './kroky/SetupKrok';
 
 const { i18n } = Stage;
 const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
@@ -647,40 +647,46 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     render() {
         const { Accordion, Form, Icon, LoadingOverlay, Message, Modal, VisibilityField } = Stage.Basic;
 
-        // const InstallKrokComponent = () => {
-        //     return <InstallKrok
-        //     title='Install krok 1'
-        //     index={DEPLOYMENT_SECTIONS.deploymentInputs}
-        //     activeSection={activeSection}
-        //     toolbox={toolbox}
-        //     blueprint={blueprint}
-        //     onYamlFileChange={this.handleYamlFileChange}
-        //     fileLoading={fileLoading}
-        //     onDeploymentInputChange={this.handleDeploymentInputChange}
-        //     deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
-        //     errors={errors}
-        //     ></InstallKrok>
-        //   }
+        const renderWizardStepContent= () =>{
 
-        //   const SetupKrokComponent = () => {
-        //     return <SetupKrok
-        //         title='Install krok 1'
-        //         index={DEPLOYMENT_SECTIONS.deploymentInputs}
-        //         activeSection={activeSection}
-        //         toolbox={toolbox}
-        //         blueprint={blueprint}
-        //         onYamlFileChange={this.handleYamlFileChange}
-        //         fileLoading={fileLoading}
-        //         onDeploymentInputChange={this.handleDeploymentInputChange}
-        //         deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
-        //         errors={errors}
-        //     ></SetupKrok>
-        //   }
+            if (activeStep.key==="firstStep") {
+                return InstallKrokComponent();
+            }
+            if (activeStep.key==="secondStep") {
+                return SetupKrokComponent();
+            }
+            return "";
+        }
 
-        //   const steps = [
-        //     { key: 'firstStep', label: 'My First Step', isDone: true, component: InstallKrokComponent },
-        //     { key: 'secondStep', label: 'My Second Step', isDone: false, component: SetupKrokComponent },
-        //     ]
+        const InstallKrokComponent = () => {
+            return <InstallKrok
+            title='Install krok 1'
+            index={DEPLOYMENT_SECTIONS.deploymentInputs}
+            activeSection={activeSection}
+            toolbox={toolbox}
+            blueprint={blueprint}
+            onYamlFileChange={this.handleYamlFileChange}
+            fileLoading={fileLoading}
+            onDeploymentInputChange={this.handleDeploymentInputChange}
+            deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+            errors={errors}
+            ></InstallKrok>
+          }
+
+          const SetupKrokComponent = () => {
+            return <SetupKrok
+                title='Install krok 2'
+                index={DEPLOYMENT_SECTIONS.deploymentInputs}
+                activeSection={activeSection}
+                toolbox={toolbox}
+                blueprint={blueprint}
+                onYamlFileChange={this.handleYamlFileChange}
+                fileLoading={fileLoading}
+                onDeploymentInputChange={this.handleDeploymentInputChange}
+                deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+                errors={errors}
+            ></SetupKrok>
+          }
 
         const {
             onHide,
@@ -725,8 +731,6 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         const { DEPLOYMENT_SECTIONS } = GenericDeployModal;
 
         console.log(deploymentInputs);
-
-        // const [activeStep, setActiveStep] = useState(steps[0]);
 
         const handleNext = () => {
             if (steps[steps.length - 1].key === activeStep.key) {
@@ -849,7 +853,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                             </ul>
                         </div>
                         <div className="step-component">
-                            {activeStep.component()}
+                            {renderWizardStepContent()}
                         </div>
                         <div className="btn-component">
                             <input type="button" value="Back" onClick={handleBack} disabled={steps[0].key === activeStep.key} />
@@ -858,38 +862,6 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                     </div>
 
                         <Accordion fluid>
-                             {/* Inputs            */}
-                             {/* <InstallKrok
-                                    title='Install krok 1'
-                                    index={DEPLOYMENT_SECTIONS.deploymentInputs}
-                                    activeSection={activeSection}
-                                    toolbox={toolbox}
-                                    blueprint={blueprint}
-                                    onYamlFileChange={this.handleYamlFileChange}
-                                    fileLoading={fileLoading}
-                                    onDeploymentInputChange={this.handleDeploymentInputChange}
-                                    deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
-                                    errors={errors}
-                             ></InstallKrok> */}
-                             
-                            {/* <AccordionSectionWithDivider
-                                title={t('sections.deploymentInputs')}
-                                index={DEPLOYMENT_SECTIONS.deploymentInputs}
-                                activeSection={activeSection}
-                                onClick={this.onAccordionClick}
-                            >
-                                <DeploymentInputs
-                                    toolbox={toolbox}
-                                    blueprint={blueprint}
-                                    onYamlFileChange={this.handleYamlFileChange}
-                                    fileLoading={fileLoading}
-                                    onDeploymentInputChange={this.handleDeploymentInputChange}
-                                    deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
-                                    errors={errors}
-                                />
-   
-                            </AccordionSectionWithDivider>
-                            */}
 
                             {/* Metadata:             */}
                             <AccordionSectionWithDivider

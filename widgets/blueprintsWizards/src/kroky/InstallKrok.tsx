@@ -44,7 +44,7 @@ export default function InstallKrok(this: any, { toolbox, blueprint, index,title
     console.log(deploymentInputs);
     console.log(title);
     return (
-        <div>Instalační krok 1:
+        
         <AccordionSectionWithDivider
             title={title}
             index={index}
@@ -62,6 +62,6 @@ export default function InstallKrok(this: any, { toolbox, blueprint, index,title
             />
 
         </AccordionSectionWithDivider>
-        </div>
+        
     );
 }

@@ -20,8 +20,7 @@ export default function SetupKrok(this: any, { toolbox, blueprint, index,title,d
     console.log("SetupKrok");
     console.log(deploymentInputs);
     console.log(title);
-    return (
-        <div>Setup krok 2:
+    return (      
         <AccordionSectionWithDivider
             title={title}
             index={index}
@@ -38,6 +37,5 @@ export default function SetupKrok(this: any, { toolbox, blueprint, index,title,d
             />
 
         </AccordionSectionWithDivider>
-        </div>
     );
 }
