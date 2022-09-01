@@ -34,6 +34,7 @@ import ClusteringStep from './wizardSteps/ClusteringStep';
 import GSNStep from './wizardSteps/GSNStep';
 import SWConfigStep from './wizardSteps/SWConfigStep';
 import VMConfigStep from './wizardSteps/VMConfigStep';
+//import getDeploymentInputsByCategories from './wizardUtils';
 
 const { i18n } = Stage;
 const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
@@ -233,8 +234,6 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         is_available: true
     };
 
-
-
     static initialState = {
         blueprint: GenericDeployModal.EMPTY_BLUEPRINT,
         deploymentInputs: {},
@@ -290,6 +289,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     }
 
     componentDidMount() {
+        
         const { installWorkflow } = this.state;
         this.setState({
             baseInstallWorkflowParams: installWorkflow.parameters,
@@ -567,7 +567,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             actions
                 .doGetFullBlueprintData(id)
                 .then(blueprint => {
-                    console.log(blueprint);
+                    //console.log(blueprint);
                     const deploymentInputs = getInputsInitialValues(blueprint.plan);
                     const installWorkflow = {
                         ...(blueprint.plan.workflows.install as Record<string, unknown>),
@@ -595,6 +595,11 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         } else {
             this.setState({ blueprint: GenericDeployModal.EMPTY_BLUEPRINT, errors: {} });
         }
+        //fix reseting
+        this.state.steps.forEach(x => {
+                x.isDone = false;
+        });
+        
     }
 
     validateInputs() {
@@ -625,28 +630,35 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             }
         });
     }
-    getDeploymentInputsByCategories( _deploymentInputs: Record<string, unknown>) {
-        //return this.state.deploymentInputs;//["location"];
-        //return this.state.deploymentInputs.find(el => el.key === "location");
-        //let neco = this.state.deploymentInputs["location"]; 
+
+
+
+    // getDeploymentInputsByCategories( _deploymentInputs: Record<string, unknown>) {
+    //     //return this.state.deploymentInputs;//["location"];
+    //     //return this.state.deploymentInputs.find(el => el.key === "location");
+    //     //let neco = this.state.deploymentInputs["location"]; 
         
-        //const { Json } = Stage.Utils;
-        const inputsWithoutValues: Record<string, unknown> = {};
+    //     //const { Json } = Stage.Utils;
+    //     const inputsWithoutValues: Record<string, unknown> = {};
 
-        _.forEach(_deploymentInputs, (inputObj, inputName) => {
+    //     _.forEach(_deploymentInputs, (inputObj, inputName) => {
 
-            let tt = inputObj;
-            String(tt);
-            if (inputName=="location") {
-                inputsWithoutValues[inputName] = this.state.deploymentInputs["location"];
-            }
-            if (inputName=="image_version") {
-                inputsWithoutValues[inputName] = this.state.deploymentInputs["image_version"];
-            }
-        });
-        console.log(inputsWithoutValues);
-        return inputsWithoutValues;
-    }   
+    //         let tt = inputObj;
+    //         String(tt);
+            
+    //         if (inputName=="location") {
+    //             inputsWithoutValues[inputName] = this.state.deploymentInputs["location"];
+    //         }
+    //         if (inputName=="image_version") {
+    //             inputsWithoutValues[inputName] = this.state.deploymentInputs["image_version"];
+    //         }
+    //         if (inputName=="environment") {
+    //             inputsWithoutValues[inputName] = this.state.deploymentInputs["environment"];
+    //         }
+    //     });
+    //     //console.log(inputsWithoutValues);
+    //     return inputsWithoutValues;
+    // }   
 
     render() {
         const { Form, Icon, LoadingOverlay, Modal, VisibilityField } = Stage.Basic;
@@ -682,7 +694,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             onYamlFileChange={this.handleYamlFileChange}
             fileLoading={fileLoading}
             onDeploymentInputChange={this.handleDeploymentInputChange}
-            deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+            deploymentInputs={deploymentInputs}
             errors={errors}
             ></GeneralStep>
         }
@@ -697,7 +709,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 onYamlFileChange={this.handleYamlFileChange}
                 fileLoading={fileLoading}
                 onDeploymentInputChange={this.handleDeploymentInputChange}
-                deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+                deploymentInputs={deploymentInputs}
                 errors={errors}
             ></ClusteringStep>
           }
@@ -712,7 +724,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 onYamlFileChange={this.handleYamlFileChange}
                 fileLoading={fileLoading}
                 onDeploymentInputChange={this.handleDeploymentInputChange}
-                deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+                deploymentInputs={deploymentInputs}
                 errors={errors}
             ></GSNStep>
         }
@@ -727,7 +739,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 onYamlFileChange={this.handleYamlFileChange}
                 fileLoading={fileLoading}
                 onDeploymentInputChange={this.handleDeploymentInputChange}
-                deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+                deploymentInputs={deploymentInputs}
                 errors={errors}
             ></SWConfigStep>
         }
@@ -742,7 +754,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 onYamlFileChange={this.handleYamlFileChange}
                 fileLoading={fileLoading}
                 onDeploymentInputChange={this.handleDeploymentInputChange}
-                deploymentInputs={this.getDeploymentInputsByCategories(deploymentInputs)}
+                deploymentInputs={deploymentInputs}
                 errors={errors}
             ></VMConfigStep>
         }
@@ -789,7 +801,9 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         } = this.state;
         const { DEPLOYMENT_SECTIONS } = GenericDeployModal;
 
-        console.log(deploymentInputs);
+        //console.log(deploymentInputs);
+
+        //console.log("render");
 
         const handleNext = () => {
             if (steps[steps.length - 1].key === activeStep.key) {
@@ -811,6 +825,10 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 }
             });
 
+            // steps.forEach(x => {
+            //     console.log(x.key +":"+x.isDone +" , ");
+            // });
+
             this.setState({ activeStep: steps[index + 1] });
 
             //setActiveStep(steps[index + 1]);
@@ -831,8 +849,17 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 }
             });
 
+            // steps.forEach(x => {
+            //     console.log(x.key +":"+x.isDone +" , ");
+            // });
+
             this.setState({ activeStep: steps[index - 1] });
             // setActiveStep(steps[index - 1]);
+        }
+
+        const showCurrentSettings = () => {
+            console.log(this.state.deploymentInputs);
+            alert(JSON.stringify(this.state.deploymentInputs, null, "  "));
         }
         return (
             <Modal open={open} onClose={onHide} className="deployBlueprintModal">
@@ -865,25 +892,6 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                     >
                         {loading && <LoadingOverlay message={loadingMessage} />}
 
-                        {/* {this.isBlueprintSelectable() && (
-                            <Form.Field
-                                error={errors.blueprintName}
-                                label={t('inputs.blueprintName.label')}
-                                required
-                                help={t('inputs.blueprintName.help')}
-                            >
-                                <DynamicDropdown
-                                    value={blueprint.id}
-                                    name="blueprintName"
-                                    fetchUrl="/searches/blueprints?_include=id&state=uploaded"
-                                    onChange={this.selectBlueprint}
-                                    toolbox={toolbox}
-                                    filterRules={blueprintFilterRules}
-                                    prefetch
-                                />
-                            </Form.Field>
-                        )} */}
-
                         {showDeploymentNameInput && (
                             <Form.Field
                                 error={errors.deploymentName}
@@ -906,8 +914,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                             <ul className="nav">
                                 {steps.map((step, i) => {
                                 return <li key={i} className={`${activeStep.key === step.key ? 'active' : ''} ${step.isDone ? 'done' : ''}`}>
-                                    <div><span>{step.label}</span></div>
-                                </li>
+                                            <div><span>{step.label}</span></div>
+                                        </li>
                                 })}
                             </ul>
                         </div>
@@ -923,6 +931,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                     </Form>
                 </Modal.Content>
 
+                <input type="button" className='ui button basic cancel' value="Show current settings" onClick={showCurrentSettings}/>
+                
                 <DeployModalActions
                     loading={loading}
                     showDeployButton={showDeployButton}
@@ -934,6 +944,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                         this.setState({ selectedApproveButton: field ? field.value ?? field.checked : value })
                     }
                 />
+
             </Modal>
         );
     }

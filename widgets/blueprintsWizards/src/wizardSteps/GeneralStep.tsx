@@ -1,7 +1,7 @@
 import React from "react";
-
 import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
 import DeploymentInputs from "../DeploymentInputsWizard";
+import getDeploymentInputsByCategories from '../../src/wizardUtils';
 
 interface DeploymentsInfoProps {
     toolbox: Stage.Types.Toolbox;
@@ -16,11 +16,47 @@ interface DeploymentsInfoProps {
     onDeploymentInputChange:any,
 }
 
-export default function GeneralStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange}: DeploymentsInfoProps) {
+export default  function GeneralStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange}: DeploymentsInfoProps) {
 
+    console.log(blueprint); 
+
+    const pokusny = {
+        "default": 1,
+        "description": "Poksuný vstup",
+        "type": "integer",
+        "constraints": [
+            {
+                "valid_values": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                ]
+            }
+        ]
+    }
+
+    blueprint.plan.inputs["quantity"] = pokusny;
+    const [data, setData] = React.useState({});
     console.log("GeneralStep");
-    console.log(deploymentInputs);
-    console.log(title);
+
+      const fetchOnline = async () => {
+        const response = await fetch("https://jsonplaceholder.typicode.com/users");
+        const data = await response.json();
+        setData(data);
+      };
+
+      const fetchInternalData = async () => {
+        const response = await toolbox.getWidgetBackend().doGet('files');
+        const data = await response;
+        setData(data);
+      };
+
+    console.log("data:"+data); 
+
+    const category = "general";
+
     return (
         
         <AccordionSectionWithDivider
@@ -34,10 +70,12 @@ export default function GeneralStep(this: any, { toolbox, blueprint, index,title
                 onYamlFileChange={onYamlFileChange}
                 fileLoading={fileLoading}
                 onDeploymentInputChange={onDeploymentInputChange}
-                deploymentInputs={deploymentInputs}
+                deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)} 
                 errors={errors}
             />
-
+            <button onClick={fetchOnline}>Load example data from external source</button>
+            <button onClick={fetchInternalData}>Load example data from internal source</button>
+<pre>{JSON.stringify(data, null, "  ")}</pre>
         </AccordionSectionWithDivider>
         
     );

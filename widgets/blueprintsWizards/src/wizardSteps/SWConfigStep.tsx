@@ -2,6 +2,7 @@ import React from "react";
 
 import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
 import DeploymentInputs from "../DeploymentInputsWizard";
+import getDeploymentInputsByCategories from '../../src/wizardUtils';
 
 interface DeploymentsInfoProps {
     toolbox: Stage.Types.Toolbox;
@@ -18,9 +19,10 @@ interface DeploymentsInfoProps {
 
 export default function SWConfigStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange}: DeploymentsInfoProps) {
 
-    console.log("SWConfigStep:");
-    console.log(deploymentInputs);
-    console.log(title);
+    //console.log("SWConfigStep:");
+    //console.log(deploymentInputs);
+    //console.log(title);
+    const category = "swconfig";
     return (
         
         <AccordionSectionWithDivider
@@ -34,7 +36,7 @@ export default function SWConfigStep(this: any, { toolbox, blueprint, index,titl
                 onYamlFileChange={onYamlFileChange}
                 fileLoading={fileLoading}
                 onDeploymentInputChange={onDeploymentInputChange}
-                deploymentInputs={deploymentInputs}
+                deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
                 errors={errors}
             />
 

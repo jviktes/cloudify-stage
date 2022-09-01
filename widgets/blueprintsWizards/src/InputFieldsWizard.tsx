@@ -86,7 +86,6 @@ export default function InputFields({
                 return ;
             }
 
-            //if (input.name=="location") {
                 return (
                     <FormField
                         input={input}
@@ -97,8 +96,6 @@ export default function InputFields({
                         dataType={dataType}
                     />
                 );
-            //}
-            //else {return }
 
         })
         .value();

@@ -1,6 +1,7 @@
 import React from "react";
 import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
 import DeploymentInputs from "../DeploymentInputsWizard";
+import getDeploymentInputsByCategories from '../../src/wizardUtils';
 
 interface DeploymentsInfoProps {
     toolbox: Stage.Types.Toolbox;
@@ -18,8 +19,10 @@ interface DeploymentsInfoProps {
 export default function ClusteringStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange}: DeploymentsInfoProps) {
 
     console.log("ClusteringStep:");
-    console.log(deploymentInputs);
-    console.log(title);
+    //console.log(deploymentInputs);
+    //console.log(title);
+    console.log(blueprint);
+    const category = "clustering";
     return (
         
         <AccordionSectionWithDivider
@@ -33,7 +36,7 @@ export default function ClusteringStep(this: any, { toolbox, blueprint, index,ti
                 onYamlFileChange={onYamlFileChange}
                 fileLoading={fileLoading}
                 onDeploymentInputChange={onDeploymentInputChange}
-                deploymentInputs={deploymentInputs}
+                deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
                 errors={errors}
             />
 

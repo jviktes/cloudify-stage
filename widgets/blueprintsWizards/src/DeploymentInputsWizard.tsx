@@ -1,12 +1,12 @@
 import type { FunctionComponent } from 'react';
 import type { FullBlueprintData } from '../../common/src/blueprints/BlueprintActions';//'../blueprints/BlueprintActions'; //'../blueprints/BlueprintActions';
-import DataTypesButton from '../../common/src/inputs/DataTypesButton';
-import InputsHelpIcon from '../../common/src/inputs/InputsHelpIcon';
+// import DataTypesButton from '../../common/src/inputs/DataTypesButton';
+//import InputsHelpIcon from '../../common/src/inputs/InputsHelpIcon';
 import InputFields from './InputFieldsWizard';
 import type { OnChange } from '../../common/src/inputs/types';
-import YamlFileButton from '../../common/src/inputs/YamlFileButton';//../inputs/YamlFileButton';
+// import YamlFileButton from '../../common/src/inputs/YamlFileButton';//../inputs/YamlFileButton';
 
-const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
+// const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
 
 interface Props {
     blueprint: FullBlueprintData;
@@ -20,35 +20,35 @@ interface Props {
 
 const DeploymentInputs: FunctionComponent<Props> = ({
     blueprint,
-    onYamlFileChange,
-    fileLoading,
+    //onYamlFileChange,
+    //fileLoading,
     onDeploymentInputChange,
     deploymentInputs,
     errors,
     toolbox
 }) => {
-    const { Message } = Stage.Basic;
-    const deploymentHasInputs = !_.isEmpty(blueprint.plan.inputs);
+    //const { Message } = Stage.Basic;
+    //const deploymentHasInputs = !_.isEmpty(blueprint.plan.inputs);
     return (
         <>
             {blueprint.id && (
                 <>
-                    {deploymentHasInputs && (
+                    {/* {deploymentHasInputs && (
                         <YamlFileButton
                             onChange={onYamlFileChange}
                             dataType="deployment's inputs"
                             fileLoading={fileLoading}
                             iconButton
                         />
-                    )}
-                    {!_.isEmpty(blueprint.plan.data_types) && (
+                    )} */}
+                    {/* {!_.isEmpty(blueprint.plan.data_types) && (
                         <DataTypesButton iconButton types={blueprint.plan.data_types} />
-                    )}
-                    {deploymentHasInputs ? (
+                    )} */}
+                    {/* {deploymentHasInputs ? (
                         <InputsHelpIcon />
                     ) : (
                         <Message content={t('inputs.deploymentInputs.noInputs')} />
-                    )}
+                    )} */}
                 </>
             )}
 
