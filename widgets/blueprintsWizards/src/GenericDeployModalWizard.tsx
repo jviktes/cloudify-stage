@@ -1,5 +1,5 @@
-import type { AccordionTitleProps, CheckboxProps } from 'semantic-ui-react';
-import { ChangeEvent, SyntheticEvent } from 'react';
+import { AccordionTitleProps, Button, CheckboxProps } from 'semantic-ui-react';
+import React, { ChangeEvent, SyntheticEvent } from 'react';
 import FileActions from '../../common/src/actions/FileActions';//'../actions/FileActions';
 import BlueprintActions from '../../common/src/blueprints/BlueprintActions';
 //import DynamicDropdown from '../../common/src/components/DynamicDropdown';
@@ -870,6 +870,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                         className="rightFloated"
                         onVisibilityChange={v => this.setState({ visibility: v })}
                     />
+                   
                 </Modal.Header>
 
                 <Modal.Content>
@@ -923,27 +924,30 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                             {renderWizardStepContent()}
                         </div>
                         <div className="btn-component">
+                            <input type="button" className='ui button basic cancel' style={{float:"left", "width":"200px"}} value="Show current settings" onClick={showCurrentSettings}/>
                             <input type="button" className='ui button basic cancel' value="Back" onClick={handleBack} disabled={steps[0].key === activeStep.key} />
                             <input type="button" className='ui positive button ok' value={steps[steps.length - 1].key !== activeStep.key ? 'Next' : 'Submit'} onClick={handleNext} />
+                     <DeployModalActions
+                            loading={loading}
+                            showDeployButton={showDeployButton}
+                            onCancel={this.onCancel}
+                            onInstall={this.onDeployAndInstall}
+                            onDeploy={this.onDeploy}
+                            
+                            selectedApproveButton={selectedApproveButton}
+                            onApproveButtonChange={(value, field) =>
+                                this.setState({ selectedApproveButton: field ? field.value ?? field.checked : value })
+                            }
+                        />
                         </div>
                     </div>
 
                     </Form>
                 </Modal.Content>
 
-                <input type="button" className='ui button basic cancel' value="Show current settings" onClick={showCurrentSettings}/>
-                
-                <DeployModalActions
-                    loading={loading}
-                    showDeployButton={showDeployButton}
-                    onCancel={this.onCancel}
-                    onInstall={this.onDeployAndInstall}
-                    onDeploy={this.onDeploy}
-                    selectedApproveButton={selectedApproveButton}
-                    onApproveButtonChange={(value, field) =>
-                        this.setState({ selectedApproveButton: field ? field.value ?? field.checked : value })
-                    }
-                />
+
+
+
 
             </Modal>
         );
