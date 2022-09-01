@@ -20,27 +20,38 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
 
     console.log(blueprint); 
 
-    const pokusny = {
-        "default": 1,
-        "description": "Poksuný vstup",
-        "type": "integer",
-        "constraints": [
-            {
-                "valid_values": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                ]
-            }
-        ]
-    }
-
-    blueprint.plan.inputs["quantity"] = pokusny;
+    
     const [data, setData] = React.useState({});
     console.log("GeneralStep");
 
+    // const pokusny = {
+    //     "default": 5,
+    //     "description": "Poksuný vstup",
+    //     "type": "integer",
+    //     "constraints": [
+    //         {
+    //             "valid_values": [
+    //                 1,
+    //                 2,
+    //                 3,
+    //                 4,
+    //                 5,
+    //             ]
+    //         }
+    //     ]
+    // }
+
+    // blueprint.plan.inputs["quantity"] = pokusny;
+
+    const fetchQuantity = async () => {
+        const response = await toolbox.getWidgetBackend().doGet('quantity');
+        const data = await response;
+        //setData(data);
+        console.log(data);
+        blueprint.plan.inputs["quantity"] = data;
+        setData(data);
+      };
+      
       const fetchOnline = async () => {
         const response = await fetch("https://jsonplaceholder.typicode.com/users");
         const data = await response.json();
@@ -53,6 +64,7 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
         setData(data);
       };
 
+    fetchQuantity();
     console.log("data:"+data); 
 
     const category = "general";
@@ -75,7 +87,7 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
             />
             <button onClick={fetchOnline}>Load example data from external source</button>
             <button onClick={fetchInternalData}>Load example data from internal source</button>
-<pre>{JSON.stringify(data, null, "  ")}</pre>
+            <pre>{JSON.stringify(data, null, "  ")}</pre>
         </AccordionSectionWithDivider>
         
     );

@@ -13,6 +13,29 @@ app.get('/', function(req, res) {
     number: 1
   });
 });
+// Defining get request at '/array' route
+app.get('/quantity', function(req, res) {
+  console.log("quantity");
+  res.json(
+    {
+      "default": 20,
+      "description": "Poksuný vstup",
+      "type": "integer",
+      "constraints": [
+          {
+              "valid_values": [
+                  10,
+                  20,
+                  30,
+                  40,
+                  50,
+              ]
+          }
+      ]
+    }
+  );
+});
+
 
 // Defining get request at '/array' route
 app.get('/array', function(req, res) {

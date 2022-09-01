@@ -1,4 +1,4 @@
-import { AccordionTitleProps, Button, CheckboxProps } from 'semantic-ui-react';
+import { AccordionTitleProps, CheckboxProps } from 'semantic-ui-react';
 import React, { ChangeEvent, SyntheticEvent } from 'react';
 import FileActions from '../../common/src/actions/FileActions';//'../actions/FileActions';
 import BlueprintActions from '../../common/src/blueprints/BlueprintActions';
