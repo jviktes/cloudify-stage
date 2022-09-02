@@ -49,7 +49,7 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
         //setData(data);
         console.log(data);
         blueprint.plan.inputs["quantity"] = data;
-        setData(data);
+        //setData(data);
       };
       
       const fetchOnline = async () => {

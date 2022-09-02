@@ -631,35 +631,6 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         });
     }
 
-
-
-    // getDeploymentInputsByCategories( _deploymentInputs: Record<string, unknown>) {
-    //     //return this.state.deploymentInputs;//["location"];
-    //     //return this.state.deploymentInputs.find(el => el.key === "location");
-    //     //let neco = this.state.deploymentInputs["location"]; 
-        
-    //     //const { Json } = Stage.Utils;
-    //     const inputsWithoutValues: Record<string, unknown> = {};
-
-    //     _.forEach(_deploymentInputs, (inputObj, inputName) => {
-
-    //         let tt = inputObj;
-    //         String(tt);
-            
-    //         if (inputName=="location") {
-    //             inputsWithoutValues[inputName] = this.state.deploymentInputs["location"];
-    //         }
-    //         if (inputName=="image_version") {
-    //             inputsWithoutValues[inputName] = this.state.deploymentInputs["image_version"];
-    //         }
-    //         if (inputName=="environment") {
-    //             inputsWithoutValues[inputName] = this.state.deploymentInputs["environment"];
-    //         }
-    //     });
-    //     //console.log(inputsWithoutValues);
-    //     return inputsWithoutValues;
-    // }   
-
     render() {
         const { Form, Icon, LoadingOverlay, Modal, VisibilityField } = Stage.Basic;
 

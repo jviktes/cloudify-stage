@@ -22,7 +22,7 @@ Stage.defineWidget<unknown, unknown, BlueprintsWidgetConfiguration>({
     categories: [Stage.GenericConfig.CATEGORY.BLUEPRINTS],
 
     initialConfiguration: [
-        Stage.GenericConfig.POLLING_TIME_CONFIG(10),
+        Stage.GenericConfig.POLLING_TIME_CONFIG(30),
         Stage.GenericConfig.PAGE_SIZE_CONFIG(5),
         {
             id: 'fieldsToShow',

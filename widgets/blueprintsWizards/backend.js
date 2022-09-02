@@ -13,7 +13,6 @@ module.exports = function(r) {
     });
 });
 }
-
 module.exports = function(r) {
     r.register('quantity', 'GET', (req, res, next, helper) => {
     console.log("quantity");
