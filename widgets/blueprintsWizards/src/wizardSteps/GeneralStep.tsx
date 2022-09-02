@@ -85,9 +85,12 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
                 deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)} 
                 errors={errors}
             />
+
             <button onClick={fetchOnline}>Load example data from external source</button>
             <button onClick={fetchInternalData}>Load example data from internal source</button>
+
             <pre>{JSON.stringify(data, null, "  ")}</pre>
+            
         </AccordionSectionWithDivider>
         
     );

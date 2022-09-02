@@ -8,6 +8,7 @@ export default function BlueprintsCatalog({
     fetchData,
     noDataMessage,
     onCreateDeployment,
+    onCreateDeploymentWizard,
     onDeleteBlueprint,
     onSelectBlueprint,
     onSetVisibility,
@@ -162,6 +163,16 @@ export default function BlueprintsCatalog({
                                                 onClick={event => {
                                                     event.stopPropagation();
                                                     onCreateDeployment(item);
+                                                }}
+                                            />
+
+                                            <Button
+                                                icon="wizard"
+                                                content="Wizard"
+                                                labelPosition="left"
+                                                onClick={event => {
+                                                    event.stopPropagation();
+                                                    onCreateDeploymentWizard(item);
                                                 }}
                                             />
 

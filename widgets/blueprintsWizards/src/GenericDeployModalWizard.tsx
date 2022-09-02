@@ -832,6 +832,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             console.log(this.state.deploymentInputs);
             alert(JSON.stringify(this.state.deploymentInputs, null, "  "));
         }
+
         return (
             <Modal open={open} onClose={onHide} className="deployBlueprintModal">
                 <Modal.Header>
@@ -898,6 +899,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                             <input type="button" className='ui button basic cancel' style={{float:"left", "width":"200px"}} value="Show current settings" onClick={showCurrentSettings}/>
                             <input type="button" className='ui button basic cancel' value="Back" onClick={handleBack} disabled={steps[0].key === activeStep.key} />
                             <input type="button" className='ui positive button ok' value={steps[steps.length - 1].key !== activeStep.key ? 'Next' : 'Submit'} onClick={handleNext} />
+                            
                      <DeployModalActions
                             loading={loading}
                             showDeployButton={showDeployButton}
