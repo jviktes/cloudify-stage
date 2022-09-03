@@ -74,7 +74,7 @@ export default function InputFields({
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
         .reject('hidden')
-        .sortBy([input => !_.isUndefined(input.default), 'name'])
+        //.sortBy([input => !_.isUndefined(input.default), 'name'])
         .map(input => {
             //console.log(input.name);   
             //console.log(inputsState); 
