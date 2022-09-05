@@ -110,7 +110,7 @@ export default function BlueprintsTable({
                                             name="wizard"
                                             link
                                             bordered
-                                            title="Create deployment wizard"
+                                            title="Run deployment wizard"
                                             onClick={(event: Event) => {
                                                 event.stopPropagation();
                                                 onCreateDeploymentWizard(item);
