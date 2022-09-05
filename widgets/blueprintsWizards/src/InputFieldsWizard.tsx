@@ -81,6 +81,18 @@ export default function InputFields({
             const dataType = !_.isEmpty(dataTypes) && !!input.type ? dataTypes![input.type] : undefined;
             const value = normalizeValue(input, inputsState, dataType);
 
+
+            if (input.name=="product_name") {
+                console.log("form type product_name");
+                console.log("product_name:"+input);
+                console.log("product_name:"+JSON.stringify(input));
+                return <div className="field">
+                        <label style={{display:"inline-block"}}>{input.display_label}</label>
+                        <div className="field"><div className="ui fluid icon input"><input value={value} readOnly/></div></div>
+                    </div>
+               
+            }
+
             if (_.isUndefined(inputsState[input.name])) {
         
                 return ;
