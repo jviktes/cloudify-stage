@@ -1,5 +1,5 @@
 import React from "react";
-import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
+// import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
 import DeploymentInputs from "../DeploymentInputsWizard";
 import getDeploymentInputsByCategories from '../../src/wizardUtils';
 
@@ -18,17 +18,12 @@ interface DeploymentsInfoProps {
 
 export default function VMConfigStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange}: DeploymentsInfoProps) {
 
-    //console.log("VMConfigStep:");
+    console.log("VMConfigStep:"+index+","+title+","+activeSection);
     //console.log(deploymentInputs);
     //console.log(title);
     const category = "vmconfig";
     return (
-        
-        <AccordionSectionWithDivider
-            title={title}
-            index={index}
-            activeSection={activeSection}
-        >
+        <div style={{overflow: "visible",padding:"10px"}}>
             <DeploymentInputs
                 toolbox={toolbox}
                 blueprint={blueprint}
@@ -38,8 +33,6 @@ export default function VMConfigStep(this: any, { toolbox, blueprint, index,titl
                 deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
                 errors={errors}
             />
-
-        </AccordionSectionWithDivider>
-        
+        </div>        
     );
 }

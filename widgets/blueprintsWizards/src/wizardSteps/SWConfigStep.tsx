@@ -1,6 +1,5 @@
 import React from "react";
-
-import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
+// import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
 import DeploymentInputs from "../DeploymentInputsWizard";
 import getDeploymentInputsByCategories from '../../src/wizardUtils';
 
@@ -19,28 +18,21 @@ interface DeploymentsInfoProps {
 
 export default function SWConfigStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange}: DeploymentsInfoProps) {
 
-    //console.log("SWConfigStep:");
+    console.log("SWConfigStep:"+index+","+title+","+activeSection);;
     //console.log(deploymentInputs);
     //console.log(title);
     const category = "swconfig";
     return (
-        
-        <AccordionSectionWithDivider
-            title={title}
-            index={index}
-            activeSection={activeSection}
-        >
-            <DeploymentInputs
-                toolbox={toolbox}
-                blueprint={blueprint}
-                onYamlFileChange={onYamlFileChange}
-                fileLoading={fileLoading}
-                onDeploymentInputChange={onDeploymentInputChange}
-                deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
-                errors={errors}
-            />
-
-        </AccordionSectionWithDivider>
-        
+        <div style={{overflow: "visible",padding:"10px"}}>
+                    <DeploymentInputs
+                        toolbox={toolbox}
+                        blueprint={blueprint}
+                        onYamlFileChange={onYamlFileChange}
+                        fileLoading={fileLoading}
+                        onDeploymentInputChange={onDeploymentInputChange}
+                        deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
+                        errors={errors}
+                    />
+        </div>
     );
 }

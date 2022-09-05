@@ -1,5 +1,5 @@
 import React from "react";
-import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
+// import AccordionSectionWithDivider from "../../../common/src/components/accordion/AccordionSectionWithDivider";
 import DeploymentInputs from "../DeploymentInputsWizard";
 import getDeploymentInputsByCategories from '../../src/wizardUtils';
 
@@ -22,7 +22,7 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
 
     
     const [data, setData] = React.useState({});
-    console.log("GeneralStep");
+    console.log("GeneralStep"+index+","+title+","+activeSection);
 
     // const pokusny = {
     //     "default": 5,
@@ -43,14 +43,12 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
 
     // blueprint.plan.inputs["quantity"] = pokusny;
 
-    const fetchQuantity = async () => {
-        const response = await toolbox.getWidgetBackend().doGet('quantity');
-        const data = await response;
-        //setData(data);
-        console.log(data);
-        blueprint.plan.inputs["quantity"] = data;
-        //setData(data);
-      };
+    // const fetchQuantity = async () => {
+    //     const response = await toolbox.getWidgetBackend().doGet('quantity');
+    //     const data = await response;
+    //     console.log(data);
+    //     blueprint.plan.inputs["quantity"] = data;
+    //   };
       
       const fetchOnline = async () => {
         const response = await fetch("https://jsonplaceholder.typicode.com/users");
@@ -64,18 +62,14 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
         setData(data);
       };
 
-    fetchQuantity();
+    // fetchQuantity();
     console.log("data:"+data); 
 
     const category = "general";
 
     return (
         
-        <AccordionSectionWithDivider
-            title={title}
-            index={index}
-            activeSection={activeSection}
-        >
+        <div style={{overflow: "visible",padding:"10px"}}>
             <DeploymentInputs
                 toolbox={toolbox}
                 blueprint={blueprint}
@@ -90,8 +84,7 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
             <button onClick={fetchInternalData}>Load example data from internal source</button>
 
             <pre>{JSON.stringify(data, null, "  ")}</pre>
-            
-        </AccordionSectionWithDivider>
-        
+            </div>
+
     );
 }

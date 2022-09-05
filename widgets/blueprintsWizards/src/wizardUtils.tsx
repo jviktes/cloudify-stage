@@ -32,11 +32,23 @@ export default function getDeploymentInputsByCategories( _deploymentInputs: Reco
             if (inputName=="availability_zone") {
                 inputsWithoutValues[inputName] = _deploymentInputs["availability_zone"];
             }
+            if (inputName=="ha_concept") {
+                inputsWithoutValues[inputName] = _deploymentInputs["ha_concept"];
+            }
+            if (inputName=="availability_set") {
+                inputsWithoutValues[inputName] = _deploymentInputs["availability_set"];
+            }
         }
 
         if (category=="gsn") {
             if (inputName=="impact") {
                 inputsWithoutValues[inputName] = _deploymentInputs["impact"];
+            }
+            if (inputName=="impacted_region") {
+                inputsWithoutValues[inputName] = _deploymentInputs["impacted_region"];
+            }
+            if (inputName=="impacted_country") {
+                inputsWithoutValues[inputName] = _deploymentInputs["impacted_country"];
             }
         }
 
@@ -56,7 +68,9 @@ export default function getDeploymentInputsByCategories( _deploymentInputs: Reco
             if (inputName=="os_disk_type") {
                 inputsWithoutValues[inputName] = _deploymentInputs["os_disk_type"];
             }
-            
+            if (inputName=="data_disks") {
+                inputsWithoutValues[inputName] = _deploymentInputs["data_disks"];
+            }           
         }
 
     });
@@ -83,6 +97,46 @@ export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<
         }
     }
     
+    if (category=="clustering") {
+        const clusteringOrder = ["ha_concept","availability_zone","availability_set"];
+        for (let index = 0; index < clusteringOrder.length; index++) {
+            const element = clusteringOrder[index];
+            if (_deploymentInputs[element]!=null) {
+                orderedInputsWithoutValues[element]=_deploymentInputs[element];
+            }
+        }
+    }
+
+    if (category=="vmconfig") {
+        const vmconfigOrder = ["size","os_disk_type","disk_size","data_disks"];
+        for (let index = 0; index < vmconfigOrder.length; index++) {
+            const element = vmconfigOrder[index];
+            if (_deploymentInputs[element]!=null) {
+                orderedInputsWithoutValues[element]=_deploymentInputs[element];
+            }
+        }
+    }
+
+    if (category=="swconfig") {
+        const swconfigOrder = ["sw_apps"];
+        for (let index = 0; index < swconfigOrder.length; index++) {
+            const element = swconfigOrder[index];
+            if (_deploymentInputs[element]!=null) {
+                orderedInputsWithoutValues[element]=_deploymentInputs[element];
+            }
+        }
+    }
+
+    if (category=="gsn") {
+        const gsnOrder = ["impact","impacted_region","impacted_country"];
+        for (let index = 0; index < gsnOrder.length; index++) {
+            const element = gsnOrder[index];
+            if (_deploymentInputs[element]!=null) {
+                orderedInputsWithoutValues[element]=_deploymentInputs[element];
+            }
+        }
+    }
+
     console.log("orderedInputsWithoutValues:");
     console.log(orderedInputsWithoutValues);
     return orderedInputsWithoutValues;
