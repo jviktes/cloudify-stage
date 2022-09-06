@@ -82,9 +82,15 @@ export default function InputFields({
             const value = normalizeValue(input, inputsState, dataType);
 
 
+
+
+            if (_.isUndefined(inputsState[input.name])) {
+        
+                return ;
+            }
+
             if (input.name=="product_name") {
                 console.log("form type product_name");
-                console.log("product_name:"+input);
                 console.log("product_name:"+JSON.stringify(input));
                 return <div className="field">
                         <label style={{display:"inline-block"}}>{input.display_label}</label>
@@ -92,12 +98,6 @@ export default function InputFields({
                     </div>
                
             }
-
-            if (_.isUndefined(inputsState[input.name])) {
-        
-                return ;
-            }
-
                 return (
                     <FormField
                         input={input}
