@@ -13,3 +13,16 @@ module.exports = function(r) {
     });
 });
 }
+module.exports = function(r) {
+    r.register('quantity', 'GET', (req, res, next, helper) => {
+    console.log("quantity");
+    helper.Request.doGet(`http://localhost:3000/quantity`)
+    .then(data => {
+        console.log(data);
+        res.send(data);
+    })
+    .catch(err => {
+        dispatch(errorClusterStatus(err));
+    });
+});
+}
