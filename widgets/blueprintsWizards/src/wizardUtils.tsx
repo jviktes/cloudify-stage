@@ -2,7 +2,7 @@
 export default function getDeploymentInputsByCategories( _deploymentInputs: Record<string, unknown>, category:string) {
 
     const inputsWithoutValues: Record<string, unknown> = {};
-
+    
     _.forEach(_deploymentInputs, (inputObj, inputName) => {
 
         let tt = inputObj; //TODO out?
@@ -49,6 +49,9 @@ export default function getDeploymentInputsByCategories( _deploymentInputs: Reco
             }
             if (inputName=="impacted_country") {
                 inputsWithoutValues[inputName] = _deploymentInputs["impacted_country"];
+            }
+            if (inputName=="business_service") {
+                inputsWithoutValues[inputName] = _deploymentInputs["business_service"];
             }
         }
 
@@ -128,7 +131,7 @@ export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<
     }
 
     if (category=="gsn") {
-        const gsnOrder = ["impact","impacted_region","impacted_country"];
+        const gsnOrder = ["impact","impacted_region","impacted_country","business_service"];
         for (let index = 0; index < gsnOrder.length; index++) {
             const element = gsnOrder[index];
             if (_deploymentInputs[element]!=null) {
@@ -137,7 +140,7 @@ export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<
         }
     }
 
-    console.log("orderedInputsWithoutValues:");
-    console.log(orderedInputsWithoutValues);
+    //console.log("orderedInputsWithoutValues:");
+    //console.log(orderedInputsWithoutValues);
     return orderedInputsWithoutValues;
 }
