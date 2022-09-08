@@ -17,36 +17,6 @@ function normalizeValue(input: Input, inputsState: Record<string, any>, dataType
     return inputsState[input.name];
 }
 
-// EventsTable.propTypes = {
-//     data: PropTypes.shape({
-//         executionId: PropTypes.arrayOf(PropTypes.string),
-//         items: PropTypes.arrayOf(
-//             PropTypes.shape({
-//                 blueprint_id: PropTypes.string,
-//                 deployment_id: PropTypes.string,
-//                 deployment_display_name: PropTypes.string,
-//                 error_causes: ErrorCausesPropType,
-//                 event_type: PropTypes.string,
-//                 id: PropTypes.number,
-//                 isSelected: PropTypes.bool,
-//                 level: PropTypes.string,
-//                 message: PropTypes.string,
-//                 node_instance_id: PropTypes.string,
-//                 node_name: PropTypes.string,
-//                 operation: PropTypes.string,
-//                 type: PropTypes.string,
-//                 workflow_id: PropTypes.string
-//             })
-//         ),
-//         nodeInstanceId: PropTypes.arrayOf(PropTypes.string),
-//         timestamp: PropTypes.string,
-//         total: PropTypes.number
-//     }).isRequired,
-//     toolbox: Stage.PropTypes.Toolbox.isRequired,
-//     widget: Stage.PropTypes.Widget.isRequired
-// };
-
-
 function FormField({
     input,
     value,
@@ -112,6 +82,8 @@ function FormSearchField({
 
     //const [data, setData] = React.useState({});
     const [data, setData] = React.useState(JSON.parse(JSON.stringify(gsnData)));
+    const [searchText, setsearchText] = React.useState('');
+
     const help = (
         <Help
             description={description}
@@ -123,33 +95,17 @@ function FormSearchField({
     );
     const required = _.isUndefined(defaultValue);
     const booleanType = type === 'boolean';
-    let searchText='';
-    
-    //let data = {results: PropTypes.arrayOf(GSNBusinessServiceProps)};
-    //let data = gsnData;
-        
-    // const fetchGSN = async () => {
-    //     console.log("calling fetchGSN");
-    //     const key="GSN_Business_services_cash";
-    //     const response = await toolbox.getManager().doGet(`/secrets/${key}`);
-    //     const _data = await response;
-    //     console.log("GSN_Business_services_cash:");
-    //     //data =  JSON.parse(_data.value);
-    //     setData(JSON.parse(_data.value))
-    //     console.log(data);
-    //     //return data;
-    // }
-    
-    //fetchGSN();
 
-        const onSearch = (_filterText: string) => {
+    const onSearch = (_filterText: string) => {
         //let searchResult = {};
-        console.log(gsnData);
+
+        console.log("searching..."+_filterText);
+        setsearchText(_filterText);
         //console.log(data);
         data.results = [];
         //console.log(gsnData);
         //console.log(data);
-        console.log(_filterText);
+        //console.log(_filterText);
         gsnData.results.forEach((element: { key: string | string[]; }) => {
             console.log(element);
             if (element.key.includes(_filterText)) {
@@ -157,7 +113,7 @@ function FormSearchField({
             }
         });     
         setData(data);
-        console.log(data);
+        //console.log(data);
         //return data;
     }
 
