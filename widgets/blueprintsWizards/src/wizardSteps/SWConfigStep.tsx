@@ -32,6 +32,7 @@ export default function SWConfigStep(this: any, { toolbox, blueprint, index,titl
                         onDeploymentInputChange={onDeploymentInputChange}
                         deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
                         errors={errors}
+                        gsnData = {{}}
                     />
         </div>
     );

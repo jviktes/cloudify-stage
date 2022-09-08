@@ -4,7 +4,7 @@ import InputField from './InputFieldWizard';
 import type { DataType, Input, OnChange } from '../../common/src/inputs/types'; //'./types';
 import { DataTable } from 'cloudify-ui-components';
 import React from 'react';
-//import GSNBusinessServiceProps from './GSNBusinessService';
+import { Icon } from 'semantic-ui-react';
 
 function normalizeValue(input: Input, inputsState: Record<string, any>, dataType: DataType) {
     if ((input.type === 'integer' || input.type === 'float') && Number.isNaN(inputsState[input.name])) {
@@ -96,6 +96,7 @@ function FormSearchField({
     error,
     toolbox,
     dataType,
+    gsnData,
 }: {
     input: Input;
     value: any;
@@ -103,11 +104,13 @@ function FormSearchField({
     error: boolean;
     toolbox: Stage.Types.WidgetlessToolbox;
     dataType: DataType;
+    gsnData:any;
+
 }) {
     const { name, display_label: displayLabel, default: defaultValue, description, type, constraints } = input;
     const { Form } = Stage.Basic;
 
-    const [data, setData] = React.useState({});
+    //const [data, setData] = React.useState({});
 
     const help = (
         <Help
@@ -122,21 +125,21 @@ function FormSearchField({
     const booleanType = type === 'boolean';
 
     //let data = {results: PropTypes.arrayOf(GSNBusinessServiceProps)};
-    //let data = {};
-
-    const fetchGSN = async () => {
-        console.log("calling fetchGSN");
-        const key="GSN_Business_services_cash";
-        const response = await toolbox.getManager().doGet(`/secrets/${key}`);
-        const _data = await response;
-        console.log("GSN_Business_services_cash:");
-        //data =  JSON.parse(_data.value);
-        setData(JSON.parse(_data.value))
-        console.log(data);
-        //return data;
-    }
+    let data = gsnData;
+        
+    // const fetchGSN = async () => {
+    //     console.log("calling fetchGSN");
+    //     const key="GSN_Business_services_cash";
+    //     const response = await toolbox.getManager().doGet(`/secrets/${key}`);
+    //     const _data = await response;
+    //     console.log("GSN_Business_services_cash:");
+    //     //data =  JSON.parse(_data.value);
+    //     setData(JSON.parse(_data.value))
+    //     console.log(data);
+    //     //return data;
+    // }
     
-    fetchGSN();
+    //fetchGSN();
 
     return (
         <Form.Field
@@ -156,21 +159,35 @@ function FormSearchField({
                     sortColumn={"Key"}
                     sortAscending={true}
                     searchable
+                    
                 >
                     <DataTable.Column label="Key" name="Key"/>
                     <DataTable.Column label="Description" name="Description"/>
+                    <DataTable.Column width="10%" name="Action" />
 
-                    {_.map(data, item => ( 
+                    {_.map(data.results, item => ( 
                             <DataTable.Row
-                            key={JSON.stringify(item)}
+                            key={item.key}
                             onClick={() => ConfirmSelectedBusinessService(item)}
                         >
                             <DataTable.Data>
-                                {JSON.stringify(item)}
+                                {item.key}
                             </DataTable.Data>
 
                             <DataTable.Data>
-                                {JSON.stringify(item)}
+                                {item.description}
+                            </DataTable.Data>
+
+                            <DataTable.Data className="center aligned rowActions">
+                                        <Icon
+                                            name="wizard"
+                                            link
+                                            bordered
+                                            title="Select business service"
+                                            onClick={(event: Event) => {
+                                                event.stopPropagation();
+                                            }}
+                                        />
                             </DataTable.Data>
 
                         </DataTable.Row>
@@ -187,10 +204,10 @@ function ConfirmSelectedBusinessService(_item: any) {
     console.log(_item);  
 }
 
-function SearchResults() {
-    // funkce bude vyhledavat a generovat vysledky podle vstupu z pole Input a podle moznych 
-    alert("ahoj") ;
-}
+// function SearchResults() {
+//     // funkce bude vyhledavat a generovat vysledky podle vstupu z pole Input a podle moznych 
+//     alert("ahoj") ;
+// }
 
 export default function InputFields({
     inputs,
@@ -198,7 +215,8 @@ export default function InputFields({
     inputsState,
     errorsState,
     toolbox,
-    dataTypes
+    dataTypes,
+    gsnData,
 }: {
     inputs: Record<string, any>;
     onChange: OnChange;
@@ -206,6 +224,7 @@ export default function InputFields({
     errorsState: Record<string, any>;
     toolbox: Stage.Types.WidgetlessToolbox;
     dataTypes?: Record<string, any>;
+    gsnData:any;
 }) {
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
@@ -239,10 +258,11 @@ export default function InputFields({
                                     <FormSearchField
                                         input={input}
                                         value={value}
-                                        onChange={SearchResults}
+                                        onChange={onChange}
                                         error={errorsState[input.name]}
                                         toolbox={toolbox}
                                         dataType={dataType}
+                                        gsnData={gsnData}
                                     />
                                 </div>
                             )

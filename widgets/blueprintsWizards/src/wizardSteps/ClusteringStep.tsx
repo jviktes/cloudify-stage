@@ -34,6 +34,7 @@ export default function ClusteringStep(this: any, { toolbox, blueprint, index,ti
                 onDeploymentInputChange={onDeploymentInputChange}
                 deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
                 errors={errors}
+                gsnData = {{}}
             />
         </div>
     );
