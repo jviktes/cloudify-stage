@@ -111,7 +111,7 @@ function FormSearchField({
     const { Form } = Stage.Basic;
 
     //const [data, setData] = React.useState({});
-
+    const [data, setData] = React.useState(JSON.parse(JSON.stringify(gsnData)));
     const help = (
         <Help
             description={description}
@@ -123,9 +123,10 @@ function FormSearchField({
     );
     const required = _.isUndefined(defaultValue);
     const booleanType = type === 'boolean';
-
+    let searchText='';
+    
     //let data = {results: PropTypes.arrayOf(GSNBusinessServiceProps)};
-    let data = gsnData;
+    //let data = gsnData;
         
     // const fetchGSN = async () => {
     //     console.log("calling fetchGSN");
@@ -141,6 +142,25 @@ function FormSearchField({
     
     //fetchGSN();
 
+        const onSearch = (_filterText: string) => {
+        //let searchResult = {};
+        console.log(gsnData);
+        //console.log(data);
+        data.results = [];
+        //console.log(gsnData);
+        //console.log(data);
+        console.log(_filterText);
+        gsnData.results.forEach((element: { key: string | string[]; }) => {
+            console.log(element);
+            if (element.key.includes(_filterText)) {
+                data.results.push(element);
+            }
+        });     
+        setData(data);
+        console.log(data);
+        //return data;
+    }
+
     return (
         <Form.Field
             key={name}
@@ -152,13 +172,22 @@ function FormSearchField({
             <InputField input={input} value={value} onChange={onChange} error={error} toolbox={toolbox} />
 
             <div id="id_search_results">
-                                        
+
+                <Form.Field>
+                        <Form.Input
+                            icon="search"
+                            placeholder="Search..."
+                            value={searchText}
+                            onChange={e => onSearch(e.target.value)}
+                            loading={false}
+                        />
+                    </Form.Field>            
                  <DataTable
                     className="agentsTable table-scroll"
                     
                     sortColumn={"Key"}
                     sortAscending={true}
-                    searchable
+                    
                     
                 >
                     <DataTable.Column label="Key" name="Key"/>

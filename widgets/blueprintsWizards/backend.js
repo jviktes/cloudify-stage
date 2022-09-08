@@ -26,3 +26,18 @@ module.exports = function(r) {
     });
 });
 }
+module.exports = function(r) {
+    r.register('gsn', 'GET', (req, res, next, helper) => {
+    console.log("gsn backend");
+    const key="GSN_Business_services_cash";
+    helper.Manager.doGet(`/secrets/${key}`)
+    .then(data => {
+        console.log(data);
+        const gsnData =  JSON.parse(data.value); 
+        res.send(gsnData);
+    })
+    .catch(err => {
+        dispatch(errorClusterStatus(err));
+    });
+});
+}
