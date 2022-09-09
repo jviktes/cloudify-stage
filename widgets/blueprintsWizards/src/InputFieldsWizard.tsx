@@ -72,7 +72,7 @@ function FormSearchField({
     value: any;
     onChange: OnChange;
     error: boolean;
-    toolbox: Stage.Types.WidgetlessToolbox;
+    toolbox: Stage.Types.Toolbox;
     dataType: DataType;
     gsnData:any;
 
@@ -83,6 +83,7 @@ function FormSearchField({
     //const [data, setData] = React.useState({});
     const [data, setData] = React.useState(JSON.parse(JSON.stringify(gsnData)));
     const [searchText, setsearchText] = React.useState('');
+    //const [valueBusinessService, setValue] = React.useState(defaultValue);
 
     const help = (
         <Help
@@ -95,6 +96,47 @@ function FormSearchField({
     );
     const required = _.isUndefined(defaultValue);
     const booleanType = type === 'boolean';
+
+    // funkce vyplni vybranou business services do pole Input:
+    const ConfirmSelectedBusinessService = (_item: any)=> {
+        console.log(_item.key);  
+        console.log(value);  
+        //business_service
+        //value=_item.key;
+        
+        //toolbox.getContext().setValue("business_service",_item.key);
+        //TODO: zde nastavit input:
+
+        
+
+        //setValue(_item.key);
+
+        //const input = document.querySelector("[name='business_service']") as HTMLInputElement | null;
+        //input?.dispatchEvent(new Event());
+
+        toolbox.getEventBus().trigger('blueprint:refresh',"nazdar");
+
+        //console.log(input?.name);
+        //value = "ffff";
+        //toolbox.refresh();
+        //input?. = _item.key;
+        //onChange;
+        
+        //var element = document.getElementById('element_id');
+        //element?.value = 'random_value';
+
+        //var ev = new Event('input', { bubbles: true});
+        //ev.simulated = true;
+        //input.value = 'Something new';
+        //element.dispatchEvent(ev);
+
+        // handleDeploymentInputChange(_: SyntheticEvent | null, field: Field) {
+        //     const { deploymentInputs } = this.state;
+        //     const fieldNameValue = Stage.Basic.Form.fieldNameValue(field);
+        //     this.setState({ deploymentInputs: { ...deploymentInputs, ...fieldNameValue } });
+        // }
+        //const fieldNameValue = Stage.Basic.Form.fieldNameValue('business_service');
+    }
 
     const onSearch = (_filterText: string) => {
         //let searchResult = {};
@@ -115,6 +157,7 @@ function FormSearchField({
         setData(data);
         //console.log(data);
         //return data;
+        
     }
 
     return (
@@ -125,7 +168,7 @@ function FormSearchField({
             required={required}
             label={booleanType ? null : displayLabel ?? name}
         >
-            <InputField input={input} value={value} onChange={onChange} error={error} toolbox={toolbox} />
+        <InputField input={input} value={value}  onChange={onChange} error={error} toolbox={toolbox} />
 
             <div id="id_search_results">
 
@@ -140,11 +183,8 @@ function FormSearchField({
                     </Form.Field>            
                  <DataTable
                     className="agentsTable table-scroll"
-                    
                     sortColumn={"Key"}
                     sortAscending={true}
-                    
-                    
                 >
                     <DataTable.Column label="Key" name="Key"/>
                     <DataTable.Column label="Description" name="Description"/>
@@ -165,12 +205,13 @@ function FormSearchField({
 
                             <DataTable.Data className="center aligned rowActions">
                                         <Icon
-                                            name="wizard"
+                                            name="add"
                                             link
                                             bordered
                                             title="Select business service"
                                             onClick={(event: Event) => {
                                                 event.stopPropagation();
+                                                ConfirmSelectedBusinessService(item)
                                             }}
                                         />
                             </DataTable.Data>
@@ -184,10 +225,7 @@ function FormSearchField({
     );
 }
 
-// funkce vyplni vybranou business services do pole Input:
-function ConfirmSelectedBusinessService(_item: any) {
-    console.log(_item);  
-}
+
 
 // function SearchResults() {
 //     // funkce bude vyhledavat a generovat vysledky podle vstupu z pole Input a podle moznych 
@@ -207,7 +245,7 @@ export default function InputFields({
     onChange: OnChange;
     inputsState: Record<string, any>;
     errorsState: Record<string, any>;
-    toolbox: Stage.Types.WidgetlessToolbox;
+    toolbox: Stage.Types.Toolbox;
     dataTypes?: Record<string, any>;
     gsnData:any;
 }) {

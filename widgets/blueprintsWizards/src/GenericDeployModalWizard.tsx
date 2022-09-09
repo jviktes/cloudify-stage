@@ -293,7 +293,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     }
 
     componentDidMount() {
-        
+        console.log("componentDidMount");
         const { installWorkflow } = this.state;
         this.setState({
             baseInstallWorkflowParams: installWorkflow.parameters,
@@ -301,9 +301,22 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 getInputFieldInitialValue(parameterData.default, parameterData.type)
             )
         });
-
-        
+        const { toolbox } = this.props;
+        toolbox.getEventBus().on('blueprint:refresh', this.theVikMethod, this);
     }
+    theVikMethod() {
+        console.log("theVikMethod");
+        const { deploymentInputs } = this.state;
+        const fieldNameValue = "business_service";
+        deploymentInputs[fieldNameValue] = "píča";
+        this.setState({deploymentInputs});
+
+    }
+    // componentWillUnmount() {
+    //     console.log("componentWillUnmount");
+    //     const { toolbox } = this.props;
+    //     toolbox.getEventBus().off('blueprint:refresh', this.theVikMethod);  
+    // },
 
     componentDidUpdate(prevProps: GenericDeployModalProps) {
         const { blueprintId, open } = this.props;
@@ -318,6 +331,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     handleDeploymentInputChange(_: SyntheticEvent | null, field: Field) {
         const { deploymentInputs } = this.state;
         const fieldNameValue = Stage.Basic.Form.fieldNameValue(field);
+        console.log("handleDeploymentInputChange:"+fieldNameValue);
         this.setState({ deploymentInputs: { ...deploymentInputs, ...fieldNameValue } });
     }
 
