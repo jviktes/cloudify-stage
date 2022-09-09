@@ -293,7 +293,6 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     }
 
     componentDidMount() {
-        console.log("componentDidMount");
         const { installWorkflow } = this.state;
         this.setState({
             baseInstallWorkflowParams: installWorkflow.parameters,
@@ -302,22 +301,19 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             )
         });
         const { toolbox } = this.props;
-        toolbox.getEventBus().on('blueprint:refresh', this.theVikMethod, this);
+        toolbox.getEventBus().on('blueprint:setDeploymentIputs', this.setDeploymentIputs, this);
     }
-    theVikMethod() {
-        console.log("theVikMethod");
+    setDeploymentIputs(fieldName: string,fieldNameValue: string) {
+        console.log("setDeploymentIputs:"+fieldName + ";"+fieldNameValue);
         const { deploymentInputs } = this.state;
-        const fieldNameValue = "business_service";
-        deploymentInputs[fieldNameValue] = "píča";
+        deploymentInputs[fieldName] = fieldNameValue;
         this.setState({deploymentInputs});
 
     }
-    // componentWillUnmount() {
-    //     console.log("componentWillUnmount");
-    //     const { toolbox } = this.props;
-    //     toolbox.getEventBus().off('blueprint:refresh', this.theVikMethod);  
-    // },
-
+    componentWillUnmount() {
+        const { toolbox } = this.props;
+        toolbox.getEventBus().off('blueprint:setDeploymentIputs', this.setDeploymentIputs);  
+    }
     componentDidUpdate(prevProps: GenericDeployModalProps) {
         const { blueprintId, open } = this.props;
         if (!prevProps.open && open && typeof blueprintId === 'string') {

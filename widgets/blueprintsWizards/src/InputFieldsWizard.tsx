@@ -79,11 +79,8 @@ function FormSearchField({
 }) {
     const { name, display_label: displayLabel, default: defaultValue, description, type, constraints } = input;
     const { Form } = Stage.Basic;
-
-    //const [data, setData] = React.useState({});
     const [data, setData] = React.useState(JSON.parse(JSON.stringify(gsnData)));
     const [searchText, setsearchText] = React.useState('');
-    //const [valueBusinessService, setValue] = React.useState(defaultValue);
 
     const help = (
         <Help
@@ -99,65 +96,21 @@ function FormSearchField({
 
     // funkce vyplni vybranou business services do pole Input:
     const ConfirmSelectedBusinessService = (_item: any)=> {
-        console.log(_item.key);  
-        console.log(value);  
-        //business_service
-        //value=_item.key;
-        
-        //toolbox.getContext().setValue("business_service",_item.key);
-        //TODO: zde nastavit input:
-
-        
-
-        //setValue(_item.key);
-
-        //const input = document.querySelector("[name='business_service']") as HTMLInputElement | null;
-        //input?.dispatchEvent(new Event());
-
-        toolbox.getEventBus().trigger('blueprint:refresh',"nazdar");
-
-        //console.log(input?.name);
-        //value = "ffff";
-        //toolbox.refresh();
-        //input?. = _item.key;
-        //onChange;
-        
-        //var element = document.getElementById('element_id');
-        //element?.value = 'random_value';
-
-        //var ev = new Event('input', { bubbles: true});
-        //ev.simulated = true;
-        //input.value = 'Something new';
-        //element.dispatchEvent(ev);
-
-        // handleDeploymentInputChange(_: SyntheticEvent | null, field: Field) {
-        //     const { deploymentInputs } = this.state;
-        //     const fieldNameValue = Stage.Basic.Form.fieldNameValue(field);
-        //     this.setState({ deploymentInputs: { ...deploymentInputs, ...fieldNameValue } });
-        // }
-        //const fieldNameValue = Stage.Basic.Form.fieldNameValue('business_service');
+        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','business_service',_item.key);
     }
 
     const onSearch = (_filterText: string) => {
-        //let searchResult = {};
-
         console.log("searching..."+_filterText);
         setsearchText(_filterText);
-        //console.log(data);
         data.results = [];
-        //console.log(gsnData);
-        //console.log(data);
-        //console.log(_filterText);
-        gsnData.results.forEach((element: { key: string | string[]; }) => {
+
+        gsnData.results.forEach((element: {description: string; key: string; }) => {
             console.log(element);
-            if (element.key.includes(_filterText)) {
+            if (element.key.toLowerCase().includes(_filterText.toLowerCase())||element.description.toLowerCase().includes(_filterText.toLowerCase())) {
                 data.results.push(element);
             }
         });     
         setData(data);
-        //console.log(data);
-        //return data;
-        
     }
 
     return (
@@ -180,9 +133,10 @@ function FormSearchField({
                             onChange={e => onSearch(e.target.value)}
                             loading={false}
                         />
-                    </Form.Field>            
+                    </Form.Field> 
+                <div className="agentsBlueprintsGsn">           
                  <DataTable
-                    className="agentsTable table-scroll"
+                    className="agentsBlueprintsGsn table-scroll-gsn"
                     sortColumn={"Key"}
                     sortAscending={true}
                 >
@@ -219,18 +173,12 @@ function FormSearchField({
                         </DataTable.Row>
                     ))}
                 </DataTable>
+                </div>
             </div>
 
         </Form.Field>
     );
 }
-
-
-
-// function SearchResults() {
-//     // funkce bude vyhledavat a generovat vysledky podle vstupu z pole Input a podle moznych 
-//     alert("ahoj") ;
-// }
 
 export default function InputFields({
     inputs,
