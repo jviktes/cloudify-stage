@@ -62,10 +62,10 @@ function FormField({
 function FormSearchField({
     input,
     value,
-    onChange,
-    error,
+    //onChange,
+    //error,
     toolbox,
-    dataType,
+    //dataType,
     gsnData,
 }: {
     input: Input;
@@ -77,22 +77,21 @@ function FormSearchField({
     gsnData:any;
 
 }) {
-    const { name, display_label: displayLabel, default: defaultValue, description, type, constraints } = input;
     const { Form } = Stage.Basic;
     const [data, setData] = React.useState(JSON.parse(JSON.stringify(gsnData)));
     const [searchText, setsearchText] = React.useState('');
 
-    const help = (
-        <Help
-            description={description}
-            type={type}
-            constraints={constraints}
-            defaultValue={defaultValue}
-            dataType={dataType}
-        />
-    );
-    const required = _.isUndefined(defaultValue);
-    const booleanType = type === 'boolean';
+    // const help = (
+    //     <Help
+    //         description={description}
+    //         type={type}
+    //         constraints={constraints}
+    //         defaultValue={defaultValue}
+    //         dataType={dataType}
+    //     />
+    // );
+    // const required = _.isUndefined(defaultValue);
+    // const booleanType = type === 'boolean';
 
     // funkce vyplni vybranou business services do pole Input:
     const ConfirmSelectedBusinessService = (_item: any)=> {
@@ -114,69 +113,62 @@ function FormSearchField({
     }
 
     return (
-        <Form.Field
-            key={name}
-            error={booleanType ? null : error}
-            help={help}
-            required={required}
-            label={booleanType ? null : displayLabel ?? name}
-        >
-        <InputField input={input} value={value}  onChange={onChange} error={error} toolbox={toolbox} />
 
-            <div id="id_search_results">
+            <><div className="field">
+            <label style={{ display: "inline-block" }}>{input.display_label}</label>
+            <div className="field"><div className="ui fluid icon input"><input style={{backgroundColor:"rgba(0,0,0,.05)"}} value={value} readOnly /></div></div>
+            </div><div id="id_search_results">
 
                 <Form.Field>
-                        <Form.Input
-                            icon="search"
-                            placeholder="Search..."
-                            value={searchText}
-                            onChange={e => onSearch(e.target.value)}
-                            loading={false}
-                        />
-                    </Form.Field> 
-                <div className="agentsBlueprintsGsn">           
-                 <DataTable
-                    className="agentsBlueprintsGsn table-scroll-gsn"
-                    sortColumn={"Key"}
-                    sortAscending={true}
-                >
-                    <DataTable.Column label="Key" name="Key"/>
-                    <DataTable.Column label="Description" name="Description"/>
-                    <DataTable.Column width="10%" name="Action" />
+                    <Form.Input
+                        icon="search"
+                        placeholder="Search Business service ... "
+                        value={searchText}
+                        onChange={e => onSearch(e.target.value)}
+                        loading={false} />
+                </Form.Field>
+                <div className="agentsBlueprintsGsn">
+                    <DataTable
+                        className="agentsBlueprintsGsn table-scroll-gsn"
+                        sortColumn={"Key"}
+                        sortAscending={true}
+                    >
+                        <DataTable.Column label="Key" name="Key" />
+                        <DataTable.Column label="Description" name="Description" />
+                        <DataTable.Column width="10%" name="Action" />
 
-                    {_.map(data.results, item => ( 
+                        {_.map(data.results, item => (
                             <DataTable.Row
-                            key={item.key}
-                            onClick={() => ConfirmSelectedBusinessService(item)}
-                        >
-                            <DataTable.Data>
-                                {item.key}
-                            </DataTable.Data>
+                                key={item.key}
+                                onClick={() => ConfirmSelectedBusinessService(item)}
+                            >
+                                <DataTable.Data>
+                                    {item.key}
+                                </DataTable.Data>
 
-                            <DataTable.Data>
-                                {item.description}
-                            </DataTable.Data>
+                                <DataTable.Data>
+                                    {item.description}
+                                </DataTable.Data>
 
-                            <DataTable.Data className="center aligned rowActions">
-                                        <Icon
-                                            name="add"
-                                            link
-                                            bordered
-                                            title="Select business service"
-                                            onClick={(event: Event) => {
-                                                event.stopPropagation();
-                                                ConfirmSelectedBusinessService(item)
-                                            }}
-                                        />
-                            </DataTable.Data>
+                                <DataTable.Data className="center aligned rowActions">
+                                    <Icon
+                                        name="add"
+                                        link
+                                        bordered
+                                        title="Select business service"
+                                        onClick={(event: Event) => {
+                                            event.stopPropagation();
+                                            ConfirmSelectedBusinessService(item);
+                                        } } />
+                                </DataTable.Data>
 
-                        </DataTable.Row>
-                    ))}
-                </DataTable>
+                            </DataTable.Row>
+                        ))}
+                    </DataTable>
                 </div>
-            </div>
+            </div></>
 
-        </Form.Field>
+       
     );
 }
 
