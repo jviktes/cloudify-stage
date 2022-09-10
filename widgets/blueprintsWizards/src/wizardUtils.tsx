@@ -87,14 +87,40 @@ export default function getDeploymentInputsByCategories( _deploymentInputs: Reco
 
 }   
 
+
+const generalOrder = ["product_name", "quantity","environment","location", "network_segment"];
+const clusteringOrder = ["ha_concept","availability_zone","availability_set"];
+const vmconfigOrder = ["size","os_disk_type","disk_size","data_disks"];
+const swconfigOrder = ["sw_apps"];
+const gsnOrder = ["business_unit","impact","impacted_region","impacted_country","business_service"];
+
+export function getInputsOrderByCategories (_inputs: Record<string, any>) {
+
+    const orderedInputsWithoutValues: Record<string, unknown> = {};
+
+    const allInputsOrder = generalOrder.concat(clusteringOrder,vmconfigOrder,swconfigOrder,gsnOrder);
+    //console.log("allInputsOrder");
+    //console.log(allInputsOrder);
+
+    for (let index = 0; index < allInputsOrder.length; index++) {
+        const element = allInputsOrder[index];
+        if (_inputs[element]!=null) {
+            orderedInputsWithoutValues[element]=_inputs[element];
+        }
+    }
+    console.log("getInputsOrderByCategories:");
+    console.log(orderedInputsWithoutValues);
+    return orderedInputsWithoutValues;
+}
+
+
 export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<string, unknown>, category:string) {
 
     //TODO sort by order
     const orderedInputsWithoutValues: Record<string, unknown> = {};
 
+    // TODO - change to general function
     if (category=="general") {
-        const generalOrder = ["product_name","quantity", "environment","location", "network_segment"];
-
         for (let index = 0; index < generalOrder.length; index++) {
             const element = generalOrder[index];
             if (_deploymentInputs[element]!=null) {
@@ -104,7 +130,7 @@ export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<
     }
     
     if (category=="clustering") {
-        const clusteringOrder = ["ha_concept","availability_zone","availability_set"];
+        
         for (let index = 0; index < clusteringOrder.length; index++) {
             const element = clusteringOrder[index];
             if (_deploymentInputs[element]!=null) {
@@ -114,7 +140,7 @@ export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<
     }
 
     if (category=="vmconfig") {
-        const vmconfigOrder = ["size","os_disk_type","disk_size","data_disks"];
+
         for (let index = 0; index < vmconfigOrder.length; index++) {
             const element = vmconfigOrder[index];
             if (_deploymentInputs[element]!=null) {
@@ -124,7 +150,7 @@ export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<
     }
 
     if (category=="swconfig") {
-        const swconfigOrder = ["sw_apps"];
+        
         for (let index = 0; index < swconfigOrder.length; index++) {
             const element = swconfigOrder[index];
             if (_deploymentInputs[element]!=null) {
@@ -134,7 +160,7 @@ export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<
     }
 
     if (category=="gsn") {
-        const gsnOrder = ["business_unit","impact","impacted_region","impacted_country","business_service"];
+
         for (let index = 0; index < gsnOrder.length; index++) {
             const element = gsnOrder[index];
             if (_deploymentInputs[element]!=null) {
@@ -143,7 +169,7 @@ export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<
         }
     }
 
-    //console.log("orderedInputsWithoutValues:");
-    //console.log(orderedInputsWithoutValues);
+    // console.log("orderedInputsWithoutValues:");
+    // console.log(orderedInputsWithoutValues);
     return orderedInputsWithoutValues;
 }

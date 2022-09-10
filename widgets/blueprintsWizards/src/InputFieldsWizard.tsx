@@ -5,6 +5,7 @@ import type { DataType, Input, OnChange } from '../../common/src/inputs/types'; 
 import { DataTable } from 'cloudify-ui-components';
 import React from 'react';
 import { Icon } from 'semantic-ui-react';
+import { getInputsOrderByCategories } from './wizardUtils';
 
 function normalizeValue(input: Input, inputsState: Record<string, any>, dataType: DataType) {
     if ((input.type === 'integer' || input.type === 'float') && Number.isNaN(inputsState[input.name])) {
@@ -189,6 +190,10 @@ export default function InputFields({
     dataTypes?: Record<string, any>;
     gsnData:any;
 }) {
+    //inputs je nutne srovnat podle poradi, nyni je poradi podle nacteni z blueprint souboru:
+
+    inputs = getInputsOrderByCategories(inputs);
+
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
         .reject('hidden')
@@ -199,6 +204,7 @@ export default function InputFields({
             const dataType = !_.isEmpty(dataTypes) && !!input.type ? dataTypes![input.type] : undefined;
             const value = normalizeValue(input, inputsState, dataType);
 
+            //pokud pole inputState neobsahuje input, pak se preskakuje, tim se vylouci pole podle wizard kroku:
             if (_.isUndefined(inputsState[input.name])) {
                 return ;
             }
