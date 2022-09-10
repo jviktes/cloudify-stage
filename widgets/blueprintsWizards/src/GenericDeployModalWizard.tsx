@@ -1,7 +1,7 @@
 import { AccordionTitleProps, CheckboxProps } from 'semantic-ui-react';
-import React, { ChangeEvent, SyntheticEvent } from 'react';
+import React, { SyntheticEvent } from 'react';
 import FileActions from '../../common/src/actions/FileActions';//'../actions/FileActions';
-import BlueprintActions from '../../common/src/blueprints/BlueprintActions';
+import BlueprintActions, { FullBlueprintData } from '../../common/src/blueprints/BlueprintActions';
 //import DynamicDropdown from '../../common/src/components/DynamicDropdown';
 import Consts from '../../common/src/Consts';
 //import LabelsInput from '../../common/src/labels/LabelsInput';
@@ -588,11 +588,42 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         return gsnData;
     }
 
+    getDeploymentNameByTime  = (blueprint: FullBlueprintData) =>{
+        const { Json } = Stage.Utils;
+        const stringInputValue = Json.getStringValue(blueprint.plan.inputs["product_name"]).replace(/ /g,'');
+        const _deploymentName = String(JSON.parse(stringInputValue).default);
+
+            var now     = new Date(); 
+            var year    = now.getFullYear();
+            var month   = String(now.getMonth()+1); 
+            var day     = String(now.getDate());
+            var hour    = String(now.getHours());
+            var minute  = String(now.getMinutes());
+            var second  = String(now.getSeconds()); 
+            if(month.toString().length == 1) {
+                 month = '0'+month;
+            }
+            if(day.toString().length == 1) {
+                 day = '0'+day;
+            }   
+            if(hour.toString().length == 1) {
+                 hour = '0'+hour;
+            }
+            if(minute.toString().length == 1) {
+                 minute = '0'+minute;
+            }
+            if(second.toString().length == 1) {
+                 second = '0'+second;
+            }   
+            var dateTime = year+'_'+month+'_'+day+' '+hour+'_'+minute+'_'+second;   
+            return _deploymentName+"_"+dateTime;
+        
+    }
     async selectBlueprint(id: DropdownValue) {
         if (!_.isEmpty(id) && typeof id === 'string') {
             this.setState({ loading: true, loadingMessage: t('inputs.deploymentInputs.loading') });
             const { toolbox } = this.props;
-
+            
             const actions = new BlueprintActions(toolbox);
             actions
                 .doGetFullBlueprintData(id)
@@ -604,6 +635,9 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                         name: 'install'
                     } as Workflow;
 
+                    const _deploymentName = this.getDeploymentNameByTime(blueprint);
+                    this.setState({deploymentName: _deploymentName});
+                     
                     this.setState({
                         deploymentInputs,
                         blueprint,
@@ -775,11 +809,11 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             i18nHeaderKey,
             //showInstallOptions,
             //showDeploymentIdInput,
-            showDeploymentNameInput,
+            //showDeploymentNameInput,
             showDeployButton,
             //showSitesInput,
-            deploymentNameLabel,
-            deploymentNameHelp,
+            //deploymentNameLabel,
+            //deploymentNameHelp,
             //blueprintFilterRules
         } = this.props;
         const {
@@ -787,7 +821,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             blueprint,
             deploymentInputs,
             //deploymentId,
-            deploymentName,
+            //deploymentName,
             errors,
             areSecretsMissing,
             fileLoading,
@@ -900,7 +934,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                     >
                         {loading && <LoadingOverlay message={loadingMessage} />}
 
-                        {showDeploymentNameInput && (
+                        {/* {showDeploymentNameInput && (
                             <Form.Field
                                 error={errors.deploymentName}
                                 label={deploymentNameLabel}
@@ -915,7 +949,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                                     }
                                 />
                             </Form.Field>
-                        )}
+                        )} */}
 
                     <div className="box">
                         <div className="steps">
