@@ -41,6 +41,9 @@ export default function getDeploymentInputsByCategories( _deploymentInputs: Reco
         }
 
         if (category=="gsn") {
+            if (inputName=="business_unit") {
+                inputsWithoutValues[inputName] = _deploymentInputs["business_unit"];
+            }
             if (inputName=="impact") {
                 inputsWithoutValues[inputName] = _deploymentInputs["impact"];
             }
@@ -131,7 +134,7 @@ export function getDeploymentInputsOrderByCategories( _deploymentInputs: Record<
     }
 
     if (category=="gsn") {
-        const gsnOrder = ["impact","impacted_region","impacted_country","business_service"];
+        const gsnOrder = ["business_unit","impact","impacted_region","impacted_country","business_service"];
         for (let index = 0; index < gsnOrder.length; index++) {
             const element = gsnOrder[index];
             if (_deploymentInputs[element]!=null) {
