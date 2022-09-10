@@ -108,8 +108,8 @@ export function getInputsOrderByCategories (_inputs: Record<string, any>) {
             orderedInputsWithoutValues[element]=_inputs[element];
         }
     }
-    console.log("getInputsOrderByCategories:");
-    console.log(orderedInputsWithoutValues);
+    //console.log("getInputsOrderByCategories:");
+    //console.log(orderedInputsWithoutValues);
     return orderedInputsWithoutValues;
 }
 

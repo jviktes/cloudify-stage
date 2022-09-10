@@ -574,14 +574,70 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         return _.isEmpty(blueprintId);
     }
 
+    fetchInternalData = async () => {
+        const { toolbox } = this.props;
+        const response = await toolbox.getWidgetBackend().doGet('files');
+        const data = await response;
+        return data;
+      };
+
+    fetchDataFromAzure = async () => {
+        const response = await fetch("https://jsonplaceholder.typicode.com/users");
+        const data = await response.json();
+        return data;
+      };
+
+    createSecret = async(key:string) => {
+        const { toolbox } = this.props;
+        const actions = new Stage.Common.Secrets.Actions(toolbox);
+        actions
+            .doCreate(key,'global', 'global', false)
+            .then(async () => {
+                toolbox.refresh();
+            })
+    }
+    
+    updateSecret = async(key:string, _data:any) => {
+        const { toolbox } = this.props;
+        const actions = new Stage.Common.Secrets.Actions(toolbox);
+        actions
+            .doUpdate(key, _data)
+            .then(() => {
+                toolbox.refresh();
+            })
+    }
+
     fetchGSN = async () => {
         console.log("calling fetchGSN");
         const key="GSN_Business_services_cash";
         const { toolbox } = this.props;
-        const response = await toolbox.getManager().doGet(`/secrets/${key}`);
-        const _results = await response;
+        let _results = null;
+        let _status = 0;
+        try {
+            _results = await toolbox.getManager().doGet(`/secrets/${key}`)
+        } catch (error) {
+            console.log(error);
+            //TODO:error.status
+            _status= 404;
+        }
+        
+        if (_status==404) {
+            await this.createSecret(key);
+        }
+
         console.log("GSN_Business_services_cash:");
         console.log(_results);
+
+        // kontrola, jestli jsou nějaká data:
+        if (_results==null || _results.value ==null || _results.value =="null") {
+            console.log("NULL:");
+            //nutno se poprve zeptat azure nebo updatovat hodnoty
+            _results = await this.fetchDataFromAzure(); //nactu data, 
+            await this.updateSecret(key,JSON.stringify(_results)); // ulozim
+            _results = await toolbox.getManager().doGet(`/secrets/${key}`); //nactu z cloudify db 
+            console.log(_results);
+        }
+        //toto je pro nacteni dat do widgetu:
         const gsnData =  JSON.parse(_results.value); 
         this.setState({gsnData}); //tady je pole hodnot ve value
         //console.log(data);
