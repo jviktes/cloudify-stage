@@ -21,49 +21,23 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
     console.log(blueprint); 
 
     
-    const [data, setData] = React.useState({});
+    //const [data, setData] = React.useState({});
     console.log("GeneralStep"+index+","+title+","+activeSection);
 
-    // const pokusny = {
-    //     "default": 5,
-    //     "description": "Poksuný vstup",
-    //     "type": "integer",
-    //     "constraints": [
-    //         {
-    //             "valid_values": [
-    //                 1,
-    //                 2,
-    //                 3,
-    //                 4,
-    //                 5,
-    //             ]
-    //         }
-    //     ]
-    // }
+      // const fetchOnline = async () => {
+      //   const response = await fetch("https://jsonplaceholder.typicode.com/users");
+      //   const data = await response.json();
+      //   setData(data);
+      // };
 
-    // blueprint.plan.inputs["quantity"] = pokusny;
-
-    // const fetchQuantity = async () => {
-    //     const response = await toolbox.getWidgetBackend().doGet('quantity');
-    //     const data = await response;
-    //     console.log(data);
-    //     blueprint.plan.inputs["quantity"] = data;
-    //   };
-      
-      const fetchOnline = async () => {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users");
-        const data = await response.json();
-        setData(data);
-      };
-
-      const fetchInternalData = async () => {
-        const response = await toolbox.getWidgetBackend().doGet('files');
-        const data = await response;
-        setData(data);
-      };
+      // const fetchInternalData = async () => {
+      //   const response = await toolbox.getWidgetBackend().doGet('files');
+      //   const data = await response;
+      //   setData(data);
+      // };
 
     // fetchQuantity();
-    console.log("data:"+data); 
+    //console.log("data:"+data); 
 
     const category = "general";
 
@@ -81,10 +55,10 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
                 gsnData = {{}}
             />
 
-            <button onClick={fetchOnline}>Load example data from external source</button>
+            {/* <button onClick={fetchOnline}>Load example data from external source</button>
             <button onClick={fetchInternalData}>Load example data from internal source</button>
 
-            <pre>{JSON.stringify(data, null, "  ")}</pre>
+            <pre>{JSON.stringify(data, null, "  ")}</pre> */}
             </div>
 
     );
