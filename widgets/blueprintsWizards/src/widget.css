@@ -1,11 +1,20 @@
-/* .agentsBlueprintsGsn {
-  height: 170px;
+.table-scroll-gsn table{
+  height:170px; 
+  max-height: 200px;
 }
 
 .table-scroll-gsn tbody{
   overflow-y: scroll;
-  max-height: 200px;
-} */
+  max-height: 120px;
+  height:120px; 
+  position: absolute;
+}
+
+.table-scroll-gsn tr {
+  width: 100%;
+  display: inline-table;
+  table-layout: fixed;
+  }
 
 .blueprintsTable th:nth-child(6) {
     min-width: 81px;

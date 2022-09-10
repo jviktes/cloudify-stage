@@ -127,14 +127,14 @@ function FormSearchField({
                         onChange={e => onSearch(e.target.value)}
                         loading={false} />
                 </Form.Field>
-                <div className="agentsBlueprintsGsn">
+                <div>
                     <DataTable
                         className="agentsBlueprintsGsn table-scroll-gsn"
                         sortColumn={"Key"}
                         sortAscending={true}
                     >
-                        <DataTable.Column label="Key" name="Key" />
-                        <DataTable.Column label="Description" name="Description" />
+                        <DataTable.Column label="Key" name="Key" width="20%" />
+                        <DataTable.Column label="Description" name="Description" width="70%" />
                         <DataTable.Column width="10%" name="Action" />
 
                         {_.map(data.results, item => (
@@ -142,15 +142,15 @@ function FormSearchField({
                                 key={item.key}
                                 onClick={() => ConfirmSelectedBusinessService(item)}
                             >
-                                <DataTable.Data>
+                                <DataTable.Data style={{ width: '20%' }}>
                                     {item.key}
                                 </DataTable.Data>
 
-                                <DataTable.Data>
+                                <DataTable.Data style={{ width: '70%' }}>
                                     {item.description}
                                 </DataTable.Data>
 
-                                <DataTable.Data className="center aligned rowActions">
+                                <DataTable.Data className="center aligned rowActions" style={{ width: '10%' }}>
                                     <Icon
                                         name="add"
                                         link
