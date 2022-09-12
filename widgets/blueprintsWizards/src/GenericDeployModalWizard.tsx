@@ -209,6 +209,7 @@ type GenericDeployModalState = {
     selectedApproveButton: ApproveButtons;
     steps: WizardState[],
     activeStep: WizardState,
+    showDeployModalActions:boolean,
 };
 
 type WizardState = {
@@ -268,6 +269,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         selectedApproveButton: ApproveButtons.install,
         steps:stepsDefinition,
         activeStep: { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
+        showDeployModalActions:false,
     };
 
     constructor(props: GenericDeployModalProps) {
@@ -926,60 +928,41 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             selectedApproveButton,
             steps,
             activeStep,
+            showDeployModalActions
         } = this.state;
         
         const { DEPLOYMENT_SECTIONS } = GenericDeployModal;
 
         const handleNext = () => {
             if (steps[steps.length - 1].key === activeStep.key) {
-              alert('You have completed all steps.');
+              console.log('You have completed all steps.');
+              this.setState({showDeployModalActions:true});
               return;
             }
 
             const index = steps.findIndex(x => x.key === activeStep.key);
-
-            // setSteps(prevStep => prevStep.map(x => {
-            //   if (x.key === activeStep.key) x.isDone = true;
-            //   return x;
-            // }))
-            
+  
             steps.forEach(x => {
                 if (x.key === activeStep.key) {
                     x.isDone = true;
                     this.setState({steps:steps});
                 }
             });
-
-            // steps.forEach(x => {
-            //     console.log(x.key +":"+x.isDone +" , ");
-            // });
-
+            this.setState({showDeployModalActions:false});
             this.setState({ activeStep: steps[index + 1] });
-
-            //setActiveStep(steps[index + 1]);
           }
         const handleBack = () => {
             const index = steps.findIndex(x => x.key === activeStep.key);
             if (index === 0) return;
-        
-            // setSteps(prevStep => prevStep.map(x => {
-            // if (x.key === activeStep.key) x.isDone = false;
-            // return x;
-            // }))
-
             steps.forEach(x => {
                 if (x.key === activeStep.key) {
                     x.isDone = false;
                     this.setState({steps:steps});
                 }
             });
-
-            // steps.forEach(x => {
-            //     console.log(x.key +":"+x.isDone +" , ");
-            // });
-
+            this.setState({showDeployModalActions:false});
             this.setState({ activeStep: steps[index - 1] });
-            // setActiveStep(steps[index - 1]);
+
         }
 
         const showCurrentSettings = () => {
@@ -1052,21 +1035,26 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                         <div className="btn-component">
                             <input type="button" className='ui button basic cancel' style={{float:"left", "width":"200px"}} value="Show current settings" onClick={showCurrentSettings}/>
                             <input type="button" className='ui button basic cancel' value="Back" onClick={handleBack} disabled={steps[0].key === activeStep.key} />
-                            <input type="button" className='ui positive button ok' value={steps[steps.length - 1].key !== activeStep.key ? 'Next' : 'Submit'} onClick={handleNext} />
-                            
-                     <DeployModalActions
-                            loading={loading}
-                            showDeployButton={showDeployButton}
-                            onCancel={this.onCancel}
-                            onInstall={this.onDeployAndInstall}
-                            onDeploy={this.onDeploy}
-                            
-                            selectedApproveButton={selectedApproveButton}
-                            onApproveButtonChange={(value, field) =>
-                                this.setState({ selectedApproveButton: field ? field.value ?? field.checked : value })
+
+                            {!showDeployModalActions &&
+                                <input type="button" className='ui positive button ok' value='Next' onClick={handleNext} />
                             }
-                        />
+                            {showDeployModalActions &&
+                            <DeployModalActions
+                                loading={loading}
+                                showDeployButton={showDeployButton}
+                                onCancel={this.onCancel}
+                                onInstall={this.onDeployAndInstall}
+                                onDeploy={this.onDeploy}
+                                
+                                selectedApproveButton={selectedApproveButton}
+                                onApproveButtonChange={(value, field) =>
+                                    this.setState({ selectedApproveButton: field ? field.value ?? field.checked : value })
+                                }
+                            />}
                         </div>
+
+
                     </div>
 
                     </Form>
