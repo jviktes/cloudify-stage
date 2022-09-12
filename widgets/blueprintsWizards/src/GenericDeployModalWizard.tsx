@@ -41,6 +41,9 @@ import GSNBusinessServiceProps from './GSNBusinessService';
 const { i18n } = Stage;
 const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
 
+const GSN_BUSINESS_SERVICES_CASH = "GSN_BUSINESS_SERVICES_CASH";
+const REFRESHING_CASH_PERIOD_MINUTES = 5;
+
 type Blueprint = {
     description?: string;
     imports?: string[];
@@ -629,7 +632,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         var _difsMinutes = duration.asMinutes();
         console.log(_difsMinutes);
        
-        if (_difsMinutes>5) {
+        if (_difsMinutes>REFRESHING_CASH_PERIOD_MINUTES) {
             return true;
         }
         else {
@@ -639,12 +642,12 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     }
     fetchGSN = async () => {
         console.log("calling fetchGSN");
-        const key="GSN_BUSINESS_SERVICES_CASH";
+        
         const { toolbox } = this.props;
         let _secretDataFull = null;
-
+        let _refreshedSecretData = null;
         try {
-            _secretDataFull = await toolbox.getManager().doGet(`/secrets/${key}`);
+            _secretDataFull = await toolbox.getManager().doGet(`/secrets/${GSN_BUSINESS_SERVICES_CASH}`);
         } catch (error:any) {
             console.log(error);
             // {
@@ -654,7 +657,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             // }
             if (error.code == 'not_found_error') {
                 console.log("createSecret:");
-                await this.createSecret(key);
+                await this.createSecret(GSN_BUSINESS_SERVICES_CASH);
             }
             else {
                 throw error;
@@ -669,16 +672,23 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             
             //nutno se poprve zeptat azure nebo updatovat hodnoty
             const _dataFromExternalSource = await this.fetchInternalData(); //nactu data,
-
-            console.log("_dataFromExternalSource:"+_dataFromExternalSource);
-
-            await this.updateSecret(key,JSON.stringify(_dataFromExternalSource)); // ulozim
-            _secretDataFull = await toolbox.getManager().doGet(`/secrets/${key}`); //nactu z cloudify db 
-            console.log("GSN_Business_services_cash refreshing:");
-            console.log(_secretDataFull);
+            // console.log("_dataFromExternalSource fresh::"+JSON.stringify(_dataFromExternalSource));
+            await this.updateSecret(GSN_BUSINESS_SERVICES_CASH,JSON.stringify(_dataFromExternalSource)).then(
+                async promises => {
+                    console.log(promises);
+                    toolbox.refresh();
+                    _refreshedSecretData = await toolbox.getManager().doGet(`/secrets/${GSN_BUSINESS_SERVICES_CASH}`); // nactu z cloudify db a ulozim
+                    console.log("GSN_Business_services_cash refreshing:");
+                    console.log(_refreshedSecretData);
+                }
+            ); 
         }
+
         //toto je pro nacteni dat do widgetu:
         console.log("GSN_Business_services_cash:");
+        if (_refreshedSecretData!=null) {
+            _secretDataFull = _refreshedSecretData;
+        }
         console.log(_secretDataFull);
         const gsnData =  JSON.parse(_secretDataFull.value); 
         this.setState({gsnData}); //tady je pole hodnot ve value
@@ -689,30 +699,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         const { Json } = Stage.Utils;
         const stringInputValue = Json.getStringValue(blueprint.plan.inputs["product_name"]).replace(/ /g,'');
         const _deploymentName = String(JSON.parse(stringInputValue).default);
-
-            var now     = new Date(); 
-            var year    = now.getFullYear();
-            var month   = String(now.getMonth()+1); 
-            var day     = String(now.getDate());
-            var hour    = String(now.getHours());
-            var minute  = String(now.getMinutes());
-            var second  = String(now.getSeconds()); 
-            if(month.toString().length == 1) {
-                 month = '0'+month;
-            }
-            if(day.toString().length == 1) {
-                 day = '0'+day;
-            }   
-            if(hour.toString().length == 1) {
-                 hour = '0'+hour;
-            }
-            if(minute.toString().length == 1) {
-                 minute = '0'+minute;
-            }
-            if(second.toString().length == 1) {
-                 second = '0'+second;
-            }   
-            var dateTime = year+'_'+month+'_'+day+' '+hour+'_'+minute+'_'+second;   
+            var dateTime = moment(new Date()).format('YYYY_MM_DD_HH_mm_ss');//year+'_'+month+'_'+day+' '+hour+'_'+minute+'_'+second;   
+            console.log(_deploymentName+"_"+dateTime);
             return _deploymentName+"_"+dateTime;
         
     }

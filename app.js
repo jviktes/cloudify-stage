@@ -69,7 +69,7 @@ app.get('/gsn', function(req, res) {
   res.json(
     {
       "results": [{
-        "key": "6a09886d-a4c4-496b-956b-22bde6f3b381",
+        "key": "Utery_886d-a4c4-496b-956b-22bde6f3b381",
         "description": "Investment Managers"
       }, {
         "key": "c36eaac7-b249-4805-b917-3c1153c4841f",
