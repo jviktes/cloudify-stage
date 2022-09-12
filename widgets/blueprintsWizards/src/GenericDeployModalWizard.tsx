@@ -576,7 +576,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
     fetchInternalData = async () => {
         const { toolbox } = this.props;
-        const response = await toolbox.getWidgetBackend().doGet('files');
+        const response = await toolbox.getWidgetBackend().doGet('gsn');
         const data = await response;
         return data;
       };
@@ -591,7 +591,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         const { toolbox } = this.props;
         const actions = new Stage.Common.Secrets.Actions(toolbox);
         actions
-            .doCreate(key,'global', 'global', false)
+            .doCreate(key,'null', 'global', false)
             .then(async () => {
                 toolbox.refresh();
             })
@@ -606,41 +606,82 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 toolbox.refresh();
             })
     }
+    isRequiredUpdateGSNData(_secretDataFull:any) {
+        if (_secretDataFull==null) {
+            return true;
+        }
+        if (_secretDataFull.updated_at ==null) {
+            return true;
+        }
+        if (_secretDataFull.created_at ==null) {
+            return true;
+        }
 
-    fetchGSN = async () => {
-        console.log("calling fetchGSN");
-        const key="GSN_Business_services_cash";
-        const { toolbox } = this.props;
-        let _results = null;
-        let _status = 0;
-        try {
-            _results = await toolbox.getManager().doGet(`/secrets/${key}`)
-        } catch (error) {
-            console.log(error);
-            //TODO:error.status
-            _status= 404;
+        var createdTime =  moment(_secretDataFull.created_at);
+        console.log(createdTime);
+        
+
+        // comparing date values:
+        console.log("_secretDataFull.updated_at:"+_secretDataFull.updated_at); //updated_at: "2022-09-12T11:12:52.050Z"
+        var startTime = moment(Date.now());
+        var endTime =  moment(_secretDataFull.updated_at);
+        var duration = moment.duration(startTime.diff(endTime));
+        var _difsMinutes = duration.asMinutes();
+        console.log(_difsMinutes);
+       
+        if (_difsMinutes>5) {
+            return true;
+        }
+        else {
+            return false;
         }
         
-        if (_status==404) {
-            await this.createSecret(key);
+    }
+    fetchGSN = async () => {
+        console.log("calling fetchGSN");
+        const key="GSN_BUSINESS_SERVICES_CASH";
+        const { toolbox } = this.props;
+        let _secretDataFull = null;
+
+        try {
+            _secretDataFull = await toolbox.getManager().doGet(`/secrets/${key}`);
+        } catch (error:any) {
+            console.log(error);
+            // {
+            //     "message": "Requested `Secret` with ID `GSN_BUSINESS_SERVICES_CASH` was not found",
+            //     "status": 404,
+            //     "code": "not_found_error"
+            // }
+            if (error.code == 'not_found_error') {
+                console.log("createSecret:");
+                await this.createSecret(key);
+            }
+            else {
+                throw error;
+            }
         }
 
-        console.log("GSN_Business_services_cash:");
-        console.log(_results);
+        //console.log("GSN_Business_services_cash:");
+        //console.log(_secretDataFull);
 
         // kontrola, jestli jsou nějaká data:
-        if (_results==null || _results.value ==null || _results.value =="null") {
-            console.log("NULL:");
+        if (_secretDataFull==null || _secretDataFull.value ==null || _secretDataFull.value =="null" || this.isRequiredUpdateGSNData(_secretDataFull) ) {
+            
             //nutno se poprve zeptat azure nebo updatovat hodnoty
-            _results = await this.fetchDataFromAzure(); //nactu data, 
-            await this.updateSecret(key,JSON.stringify(_results)); // ulozim
-            _results = await toolbox.getManager().doGet(`/secrets/${key}`); //nactu z cloudify db 
-            console.log(_results);
+            const _dataFromExternalSource = await this.fetchInternalData(); //nactu data,
+
+            console.log("_dataFromExternalSource:"+_dataFromExternalSource);
+
+            await this.updateSecret(key,JSON.stringify(_dataFromExternalSource)); // ulozim
+            _secretDataFull = await toolbox.getManager().doGet(`/secrets/${key}`); //nactu z cloudify db 
+            console.log("GSN_Business_services_cash refreshing:");
+            console.log(_secretDataFull);
         }
         //toto je pro nacteni dat do widgetu:
-        const gsnData =  JSON.parse(_results.value); 
+        console.log("GSN_Business_services_cash:");
+        console.log(_secretDataFull);
+        const gsnData =  JSON.parse(_secretDataFull.value); 
         this.setState({gsnData}); //tady je pole hodnot ve value
-        //console.log(data);
         return gsnData;
     }
 
