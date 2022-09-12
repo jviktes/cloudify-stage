@@ -979,7 +979,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                         className="rightFloated"
                         onVisibilityChange={v => this.setState({ visibility: v })}
                     />
-                   
+                    <span style={{float:'right'}}><Icon name="settings" link onClick={showCurrentSettings} /></span>
                 </Modal.Header>
 
                 <Modal.Content>
@@ -1033,11 +1033,15 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                             {renderWizardStepContent()}
                         </div>
                         <div className="btn-component">
-                            <input type="button" className='ui button basic cancel' style={{float:"left", "width":"200px"}} value="Show current settings" onClick={showCurrentSettings}/>
-                            <input type="button" className='ui button basic cancel' value="Back" onClick={handleBack} disabled={steps[0].key === activeStep.key} />
+                            
+                            <input type="button" key={"key_back"}  className='ui button basic cancel' value="Back" onClick={handleBack} disabled={steps[0].key === activeStep.key} />
 
-                            {!showDeployModalActions &&
-                                <input type="button" className='ui positive button ok' value='Next' onClick={handleNext} />
+                            {!showDeployModalActions && (
+                                <div style={{float:"left"}}>
+                                <button onClick={this.onCancel} className="ui button basic cancel"><i aria-hidden="true" className="remove icon"></i>Cancel</button>
+                                <input type="button" key={"key_next"} className='ui positive button ok' value='Next' onClick={handleNext} />
+                                </div>
+                             )
                             }
                             {showDeployModalActions &&
                             <DeployModalActions
