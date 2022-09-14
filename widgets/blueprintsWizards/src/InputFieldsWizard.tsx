@@ -4,7 +4,7 @@ import InputField from './InputFieldWizard';
 import type { DataType, Input, OnChange } from '../../common/src/inputs/types'; //'./types';
 import { DataTable } from 'cloudify-ui-components';
 import React from 'react';
-import { Icon } from 'semantic-ui-react';
+import {Icon } from 'semantic-ui-react';
 import { getInputsOrderByCategories } from './wizardUtils';
 
 function normalizeValue(input: Input, inputsState: Record<string, any>, dataType: DataType) {
@@ -81,21 +81,6 @@ function FormSearchField({
     const [data, setData] = React.useState(JSON.parse(JSON.stringify(gsnData)));
    
     const [searchText, setsearchText] = React.useState('');
-
-    //console.log("GSN data:");
-    //console.log(gsnData);
-
-    // const help = (
-    //     <Help
-    //         description={description}
-    //         type={type}
-    //         constraints={constraints}
-    //         defaultValue={defaultValue}
-    //         dataType={dataType}
-    //     />
-    // );
-    // const required = _.isUndefined(defaultValue);
-    // const booleanType = type === 'boolean';
 
     // funkce vyplni vybranou business services do pole Input:
     const ConfirmSelectedBusinessService = (_item: any)=> {
@@ -177,6 +162,52 @@ function FormSearchField({
     );
 }
 
+function CountrySelectField({
+    //input,
+    gsnItemData,
+    //onChange,
+    //error,
+    toolbox,
+    //dataType,
+    //gsnData
+}: {
+    //input: Input;
+    gsnItemData: any;
+    //onChange: OnChange;
+    //error: boolean;
+    toolbox: Stage.Types.Toolbox;
+    //dataType: DataType;
+    //gsnData:any;
+}) {
+
+    //console.log("GSN data:");
+    //console.log(gsnData);
+    const { Form } = Stage.Basic;
+    //const type=FormFieldType.Checkbox,
+    //const booleanType = type === 'boolean';
+    // funkce vyplni vybranou business services do pole Input:
+
+    const pokus = (e: any, _item:any)=> {
+        console.log("ConfirmSelectedBusinessService:" + _item.countryName);
+        //get selected countries:
+        console.log(e);
+        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','business_service',_item.u_number);
+    }
+
+    return (
+        
+        <Form.Field>
+        {/* {gsnItemData.countryData.region_code} */}
+        <Form.Input
+            onChange={e => pokus(e.target.value, gsnItemData)}
+            loading={false} 
+            type="Checkbox"
+            label={gsnItemData.countryName}
+            />
+        </Form.Field> 
+    );
+}
+
 export default function InputFields({
     inputs,
     onChange,
@@ -242,17 +273,11 @@ export default function InputFields({
             }
 
             if (input.name=="impacted_region") {
+
+
+            }
+            if (input.name=="impacted_country") {
                 console.log("form type impacted_region");
-                //console.log("gsnCountries:"+JSON.stringify(gsnCountries));
-
-                //console.log(gsnCountries["United Arab Emirates"]);
-
-
-                //const keys = gsnCountries.keys();
-
-                // !!!toto pada a nevim proc:
-                //let ttt = gsnCountries["United Arab Emirates"].region_code;
-                //console.log(ttt);
 
                 // gsnCountries:{
                 // "United Arab Emirates":{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"},
@@ -262,17 +287,18 @@ export default function InputFields({
                 // });
 
                 return <div className="field">
-                    <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
-                        {_.map(gsnCountries, item => (
-                            <DataTable.Row key={JSON.stringify(item)}>
-                                <DataTable.Data style={{ width: '20%' }}>
-                                    
-                                {item.countryName} : {item.countryData}
-                                  
-                                </DataTable.Data>
-                            </DataTable.Row>
-                        ))}
-                    </DataTable>
+                        <label style={{ display: "inline-block" }}>{input.display_label}</label>
+                        <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
+                                    <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
+                                        {_.map(gsnCountries, item => (
+                                            <DataTable.Row key={JSON.stringify(item)} >
+                                                <DataTable.Data style={{ width: '20%' }}>
+                                                    <CountrySelectField gsnItemData={item} toolbox={toolbox}></CountrySelectField>
+                                                </DataTable.Data>
+                                            </DataTable.Row>
+                                        ))}
+                                    </DataTable>
+                            </div>
                        </div>
             }
 
