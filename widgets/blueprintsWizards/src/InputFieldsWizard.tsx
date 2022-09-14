@@ -81,6 +81,8 @@ function FormSearchField({
     const { Form } = Stage.Basic;
     const [data, setData] = React.useState(JSON.parse(JSON.stringify(gsnData)));
     const [searchText, setsearchText] = React.useState('');
+    console.log("GSN data:");
+    console.log(gsnData);
 
     // const help = (
     //     <Help
@@ -96,18 +98,19 @@ function FormSearchField({
 
     // funkce vyplni vybranou business services do pole Input:
     const ConfirmSelectedBusinessService = (_item: any)=> {
-        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','business_service',_item.key);
+        console.log("ConfirmSelectedBusinessService:" + _item.u_number);
+        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','business_service',_item.u_number);
     }
 
     const onSearch = (_filterText: string) => {
         console.log("searching..."+_filterText);
         setsearchText(_filterText);
-        data.results = [];
+        data.result = [];
 
-        gsnData.results.forEach((element: {description: string; key: string; }) => {
+        gsnData.result.forEach((element: {name: string; u_number: string; }) => {
             console.log(element);
-            if (element.key.toLowerCase().includes(_filterText.toLowerCase())||element.description.toLowerCase().includes(_filterText.toLowerCase())) {
-                data.results.push(element);
+            if (element.u_number.toLowerCase().includes(_filterText.toLowerCase())||element.name.toLowerCase().includes(_filterText.toLowerCase())) {
+                data.result.push(element);
             }
         });     
         setData(data);
@@ -138,17 +141,17 @@ function FormSearchField({
                         <DataTable.Column label="Description" name="Description" width="70%" />
                         <DataTable.Column width="10%" name="Action" />
 
-                        {_.map(data.results, item => (
+                        {_.map(data.result, item => (
                             <DataTable.Row
-                                key={item.key}
+                                key={item.u_number}
                                 onClick={() => ConfirmSelectedBusinessService(item)}
                             >
                                 <DataTable.Data style={{ width: '20%' }}>
-                                    {item.key}
+                                    {item.u_number}
                                 </DataTable.Data>
 
                                 <DataTable.Data style={{ width: '70%' }}>
-                                    {item.description}
+                                    {item.name}
                                 </DataTable.Data>
 
                                 <DataTable.Data className="center aligned rowActions" style={{ width: '10%' }}>

@@ -1,4 +1,4 @@
 export default PropTypes.shape({
     key: PropTypes.string,
-    description: PropTypes.string,
+    u_number: PropTypes.string,
 });

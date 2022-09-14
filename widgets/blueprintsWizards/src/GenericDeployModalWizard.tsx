@@ -243,7 +243,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
     static initialState = {
         blueprint: GenericDeployModal.EMPTY_BLUEPRINT,
-        gsnData:{results: PropTypes.arrayOf(GSNBusinessServiceProps)},
+        gsnData:{result: PropTypes.arrayOf(GSNBusinessServiceProps)},
         deploymentInputs: {},
         deploymentName: '',
         errors: {},

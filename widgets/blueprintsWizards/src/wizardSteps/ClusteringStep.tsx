@@ -21,7 +21,7 @@ export default function ClusteringStep(this: any, { toolbox, blueprint, index,ti
     console.log("ClusteringStep:"+index+","+title+","+activeSection);
     //console.log(deploymentInputs);
     //console.log(title);
-    console.log(blueprint);
+    //console.log(blueprint);
     const category = "clustering";
     return (
         

@@ -17,13 +17,13 @@ interface DeploymentsInfoProps {
 }
 
 export default  function GeneralStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange}: DeploymentsInfoProps) {
-
-    console.log(blueprint); 
+    
 
     
     //const [data, setData] = React.useState({});
     console.log("GeneralStep"+index+","+title+","+activeSection);
-
+    //console.log(blueprint); 
+    
       // const fetchOnline = async () => {
       //   const response = await fetch("https://jsonplaceholder.typicode.com/users");
       //   const data = await response.json();
