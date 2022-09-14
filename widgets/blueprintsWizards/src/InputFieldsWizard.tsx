@@ -221,6 +221,21 @@ export default function InputFields({
                     </div>
             }
 
+            // logika ha_concept:
+            if (input.name=="availability_zone") {
+                //console.log("form type availability_zone");
+                //console.log("availability_zone:"+JSON.stringify(input));
+                //console.log("inputsState_ha_concept");
+                //console.log(inputsState["ha_concept"]);
+
+                if (inputsState["ha_concept"]=="None") {
+                    //toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','availability_zone',"1");
+                    //nebude se renderovat za danych podminek:
+                    return;
+                }
+                
+            }
+
             // TODO komponenta jako vyhledavaci: 
             if (input.name=="business_service") {
                 //console.log("form type business_service");

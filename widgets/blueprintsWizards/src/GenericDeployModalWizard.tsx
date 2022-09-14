@@ -332,8 +332,16 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     handleDeploymentInputChange(_: SyntheticEvent | null, field: Field) {
         const { deploymentInputs } = this.state;
         const fieldNameValue = Stage.Basic.Form.fieldNameValue(field);
-        console.log("handleDeploymentInputChange:"+fieldNameValue);
+        console.log("handleDeploymentInputChange:"+JSON.stringify(fieldNameValue));
+
+        //zde logika nastaveni?
+        if (field.name == "ha_concept" && field.value=="None") {
+            console.log("set availability_zone to Equal split");
+            deploymentInputs["availability_zone"] = "Equal split";
+            this.setState({deploymentInputs});
+        }
         this.setState({ deploymentInputs: { ...deploymentInputs, ...fieldNameValue } });
+
     }
 
     handleYamlFileChange(file: File) {
