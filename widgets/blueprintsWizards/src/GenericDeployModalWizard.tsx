@@ -584,7 +584,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         const response = await toolbox.getWidgetBackend().doGet('GSNAPI');
         const data = await response;
         console.log("fetchInternalData:");
-        console.log(data.result);
+        //console.log(data.result);
         return data;
       };
 
@@ -650,7 +650,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         // GSNAPI
 
 
-        console.log("calling fetchGSNFromFile");
+        //console.log("calling fetchGSNFromFile");
         
         //const { toolbox } = this.props;
         //let _secretDataFull = null;
@@ -663,15 +663,15 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             const _dataFromExternalSource = await this.fetchInternalData(); //nactu data,
 
             console.log("GSN_Business_services_cash refreshing:");
-            console.log(_dataFromExternalSource);
+            //console.log(_dataFromExternalSource);
         //}
 
         //toto je pro nacteni dat do widgetu:
-        console.log("GSN_Business_services_cash:");
+        //console.log("GSN_Business_services_cash:");
         // if (_refreshedSecretData!=null) {
         //     _secretDataFull = _refreshedSecretData;
         // }
-        console.log(_dataFromExternalSource);
+        //console.log(_dataFromExternalSource);
         const gsnData =  _dataFromExternalSource;//JSON.parse(_dataFromExternalSource); 
         this.setState({gsnData}); //tady je pole hodnot ve value
         return gsnData;
