@@ -768,6 +768,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         //console.log(_secretDataFull);
 
         const _gsnCountries =  JSON.parse(_secretDataFull.value); 
+        
         let gsnCountries = [];
 
         // _.map(gsnCountries, item => (
@@ -776,9 +777,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
         for (let _countrName in _gsnCountries) {
             //console.log(_countrName + ": "+ _gsnCountries[_countrName]);
-            let _ddd = _gsnCountries[_countrName];
-            
-            gsnCountries.push({"countryName":_countrName, "countryData":_ddd.region_name});
+            gsnCountries.push({"countryName":_countrName, "countryData":_gsnCountries[_countrName]});
             //gsnCountries.push({_countrName});
         }
 
