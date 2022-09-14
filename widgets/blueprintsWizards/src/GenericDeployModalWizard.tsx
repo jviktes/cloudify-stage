@@ -190,6 +190,7 @@ type GenericDeployModalState = {
     blueprint: any;
     gsnData:any;
     gsnCountries:any;
+    gsnRegions:any;
     deploymentId: string;
     deploymentInputs: Record<string, unknown>;
     deploymentName: string;
@@ -254,6 +255,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         blueprint: GenericDeployModal.EMPTY_BLUEPRINT,
         gsnData:{result: PropTypes.arrayOf(GSNBusinessServiceProps)},
         gsnCountries:{},
+        gsnRegions:{},
         deploymentInputs: {},
         deploymentName: '',
         errors: {},
@@ -768,7 +770,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         //console.log(_secretDataFull);
 
         const _gsnCountries =  JSON.parse(_secretDataFull.value); 
-        
+        let _gsnRegions = [];
         let gsnCountries = [];
 
         // _.map(gsnCountries, item => (
@@ -778,12 +780,14 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         for (let _countrName in _gsnCountries) {
             //console.log(_countrName + ": "+ _gsnCountries[_countrName]);
             gsnCountries.push({"countryName":_countrName, "countryData":_gsnCountries[_countrName]});
-            //gsnCountries.push({_countrName});
+            _gsnRegions.push(_gsnCountries[_countrName].region_name);
         }
+        let gsnRegions = [...new Set(_gsnRegions)];
 
         //{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"}
         gsnCountries=(JSON.parse(JSON.stringify(gsnCountries)));
         this.setState({gsnCountries}); //tady je pole hodnot ve value
+        this.setState({gsnRegions});
         return gsnCountries;
     }
 
@@ -949,6 +953,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 deploymentInputs={deploymentInputs}
                 gsnData = {this.state.gsnData}
                 gsnCountries = {this.state.gsnCountries}
+                gsnRegions={this.state.gsnRegions}
                 errors={errors}
             ></GSNStep>
         }

@@ -16,9 +16,10 @@ interface DeploymentsInfoProps {
     onDeploymentInputChange:any,
     gsnData:any,
     gsnCountries:any,
+    gsnRegions:any,
 }
 
-export default function GeneralGSNStepStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange,gsnData,gsnCountries}: DeploymentsInfoProps) {
+export default function GeneralGSNStepStep(this: any, { toolbox, blueprint, index,title,deploymentInputs,errors,fileLoading,activeSection,onYamlFileChange,onDeploymentInputChange,gsnData,gsnCountries,gsnRegions}: DeploymentsInfoProps) {
 
     console.log("GSNStep"+index+","+title+","+activeSection);
     //console.log(deploymentInputs);
@@ -37,6 +38,7 @@ export default function GeneralGSNStepStep(this: any, { toolbox, blueprint, inde
                             errors={errors}
                             gsnData = {gsnData}
                             gsnCountries = {gsnCountries}
+                            gsnRegions= {gsnRegions}
                         />
             </div>
         

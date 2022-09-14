@@ -18,6 +18,7 @@ interface Props {
     toolbox: Stage.Types.Toolbox;
     gsnData:{};
     gsnCountries:{};
+    gsnRegions:{};
 }
 
 const DeploymentInputs: FunctionComponent<Props> = ({
@@ -30,6 +31,7 @@ const DeploymentInputs: FunctionComponent<Props> = ({
     toolbox,
     gsnData,
     gsnCountries,
+    gsnRegions,
 }) => {
     //const { Message } = Stage.Basic;
     //const deploymentHasInputs = !_.isEmpty(blueprint.plan.inputs);
@@ -65,6 +67,7 @@ const DeploymentInputs: FunctionComponent<Props> = ({
                 dataTypes={blueprint.plan.data_types}
                 gsnData = {gsnData}
                 gsnCountries = {gsnCountries}
+                gsnRegions={gsnRegions}
             />
         </>
     );

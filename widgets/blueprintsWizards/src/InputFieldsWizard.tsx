@@ -208,6 +208,52 @@ function CountrySelectField({
     );
 }
 
+function RegionSelectField({
+    //input,
+    gsnItemData,
+    //onChange,
+    //error,
+    toolbox,
+    //dataType,
+    //gsnData
+}: {
+    //input: Input;
+    gsnItemData: any;
+    //onChange: OnChange;
+    //error: boolean;
+    toolbox: Stage.Types.Toolbox;
+    //dataType: DataType;
+    //gsnData:any;
+}) {
+
+    //console.log("GSN data:");
+    //console.log(gsnData);
+    const { Form } = Stage.Basic;
+    //const type=FormFieldType.Checkbox,
+    //const booleanType = type === 'boolean';
+    // funkce vyplni vybranou business services do pole Input:
+
+    const pokus = (e: any, _item:any)=> {
+        console.log("ConfirmSelectedBusinessService:" + _item);
+        //get selected countries:
+        console.log(e);
+        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','business_service',_item);
+    }
+
+    return (
+        
+        <Form.Field>
+        {/* {gsnItemData.countryData.region_code} */}
+        <Form.Input
+            onChange={e => pokus(e.target.value, gsnItemData)}
+            loading={false} 
+            type="Checkbox"
+            label={gsnItemData}
+            />
+        </Form.Field> 
+    );
+}
+
 export default function InputFields({
     inputs,
     onChange,
@@ -217,6 +263,7 @@ export default function InputFields({
     dataTypes,
     gsnData,
     gsnCountries,
+    gsnRegions,
     
 }: {
     inputs: Record<string, any>;
@@ -227,6 +274,7 @@ export default function InputFields({
     dataTypes?: Record<string, any>;
     gsnData:any;
     gsnCountries:any;
+    gsnRegions:any;
 }) {
     //inputs je nutne srovnat podle poradi, nyni je poradi podle nacteni z blueprint souboru:
 
@@ -273,8 +321,21 @@ export default function InputFields({
             }
 
             if (input.name=="impacted_region") {
-
-
+                
+                return <div className="field">
+                        <label style={{ display: "inline-block" }}>{input.display_label}</label>
+                        <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
+                                    <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
+                                        {_.map(gsnRegions, item => (
+                                            <DataTable.Row key={JSON.stringify(item)} >
+                                                <DataTable.Data style={{ width: '20%' }}>
+                                                    <RegionSelectField gsnItemData={item} toolbox={toolbox}></RegionSelectField>
+                                                </DataTable.Data>
+                                            </DataTable.Row>
+                                        ))}
+                                    </DataTable>
+                            </div>
+                       </div>
             }
             if (input.name=="impacted_country") {
                 console.log("form type impacted_region");

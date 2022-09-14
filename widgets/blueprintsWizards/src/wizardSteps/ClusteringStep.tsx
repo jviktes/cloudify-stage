@@ -36,6 +36,7 @@ export default function ClusteringStep(this: any, { toolbox, blueprint, index,ti
                 errors={errors}
                 gsnData = {{}}
                 gsnCountries = {{}}
+                gsnRegions= {{}}
             />
         </div>
     );

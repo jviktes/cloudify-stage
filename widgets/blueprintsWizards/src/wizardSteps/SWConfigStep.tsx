@@ -34,6 +34,7 @@ export default function SWConfigStep(this: any, { toolbox, blueprint, index,titl
                         errors={errors}
                         gsnData = {{}}
                         gsnCountries = {{}}
+                        gsnRegions= {{}}
                     />
         </div>
     );

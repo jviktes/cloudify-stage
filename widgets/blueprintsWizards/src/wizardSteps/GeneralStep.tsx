@@ -54,6 +54,7 @@ export default  function GeneralStep(this: any, { toolbox, blueprint, index,titl
                 errors={errors}
                 gsnData = {{}}
                 gsnCountries = {{}}
+                gsnRegions= {{}}
             />
 
             {/* <button onClick={fetchOnline}>Load example data from external source</button>

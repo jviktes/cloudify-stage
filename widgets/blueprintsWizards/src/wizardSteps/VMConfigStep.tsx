@@ -34,6 +34,7 @@ export default function VMConfigStep(this: any, { toolbox, blueprint, index,titl
                 errors={errors}
                 gsnData = {{}}
                 gsnCountries = {{}}
+                gsnRegions= {{}}
             />
         </div>        
     );
