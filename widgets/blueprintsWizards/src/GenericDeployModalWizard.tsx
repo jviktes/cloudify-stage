@@ -581,8 +581,10 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
     fetchInternalData = async () => {
         const { toolbox } = this.props;
-        const response = await toolbox.getWidgetBackend().doGet('gsn');
+        const response = await toolbox.getWidgetBackend().doGet('GSNAPI');
         const data = await response;
+        console.log("fetchInternalData:");
+        console.log(data.result);
         return data;
       };
 
@@ -642,6 +644,40 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         }
         
     }
+
+    fetchGSNFromFile = async () =>{
+
+        // GSNAPI
+
+
+        console.log("calling fetchGSNFromFile");
+        
+        //const { toolbox } = this.props;
+        //let _secretDataFull = null;
+        //let _refreshedSecretData = null;
+
+        // kontrola, jestli jsou nějaká data:
+        //if (_secretDataFull==null || _secretDataFull.value ==null || _secretDataFull.value =="null" || this.isRequiredUpdateGSNData(_secretDataFull) ) {
+            
+            //nutno se poprve zeptat azure nebo updatovat hodnoty
+            const _dataFromExternalSource = await this.fetchInternalData(); //nactu data,
+
+            console.log("GSN_Business_services_cash refreshing:");
+            console.log(_dataFromExternalSource);
+        //}
+
+        //toto je pro nacteni dat do widgetu:
+        console.log("GSN_Business_services_cash:");
+        // if (_refreshedSecretData!=null) {
+        //     _secretDataFull = _refreshedSecretData;
+        // }
+        console.log(_dataFromExternalSource);
+        const gsnData =  _dataFromExternalSource;//JSON.parse(_dataFromExternalSource); 
+        this.setState({gsnData}); //tady je pole hodnot ve value
+        return gsnData;
+
+    }
+
     fetchGSN = async () => {
         console.log("calling fetchGSN");
         
@@ -737,7 +773,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                         loading: false
                     });
                 }).then (
-                    await this.fetchGSN()  
+                    await this.fetchGSNFromFile()  
                 )
                 .catch(err => {
                     this.setState({

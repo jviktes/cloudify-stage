@@ -81,8 +81,8 @@ function FormSearchField({
     const { Form } = Stage.Basic;
     const [data, setData] = React.useState(JSON.parse(JSON.stringify(gsnData)));
     const [searchText, setsearchText] = React.useState('');
-    console.log("GSN data:");
-    console.log(gsnData);
+    //console.log("GSN data:");
+    //console.log(gsnData);
 
     // const help = (
     //     <Help
@@ -103,12 +103,12 @@ function FormSearchField({
     }
 
     const onSearch = (_filterText: string) => {
-        console.log("searching..."+_filterText);
+        //console.log("searching..."+_filterText);
         setsearchText(_filterText);
         data.result = [];
 
         gsnData.result.forEach((element: {name: string; u_number: string; }) => {
-            console.log(element);
+            //console.log(element);
             if (element.u_number.toLowerCase().includes(_filterText.toLowerCase())||element.name.toLowerCase().includes(_filterText.toLowerCase())) {
                 data.result.push(element);
             }
