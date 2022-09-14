@@ -33,6 +33,7 @@ export default function VMConfigStep(this: any, { toolbox, blueprint, index,titl
                 deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
                 errors={errors}
                 gsnData = {{}}
+                gsnCountries = {{}}
             />
         </div>        
     );

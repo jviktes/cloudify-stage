@@ -37,11 +37,13 @@ import VMConfigStep from './wizardSteps/VMConfigStep';
 //import getDeploymentInputsByCategories from './wizardUtils';
 
 import GSNBusinessServiceProps from './GSNBusinessService';
+import GSNCountries from './GSNCountries';
 
 const { i18n } = Stage;
 const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
 
 const GSN_BUSINESS_SERVICES_CASH = "GSN_BUSINESS_SERVICES_CASH";
+const GSN_COUNTRIES_CASH = "countries";
 const REFRESHING_CASH_PERIOD_MINUTES = 5;
 
 type Blueprint = {
@@ -174,11 +176,12 @@ const EmptyComponent = () => {
   }
 
 const stepsDefinition = [
+    { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
     { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
     { key: 'ClusteringStep', label: 'Clustering', isDone: false, component: EmptyComponent },
     { key: 'VMConfigStep', label: 'VM configuration', isDone: false, component: EmptyComponent },
     { key: 'SWConfigStep', label: 'SW configuration', isDone: false, component: EmptyComponent },
-    { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
+    
     ]
 
 type GenericDeployModalState = {
@@ -186,6 +189,7 @@ type GenericDeployModalState = {
     areSecretsMissing: boolean;
     blueprint: any;
     gsnData:any;
+    gsnCountries:any;
     deploymentId: string;
     deploymentInputs: Record<string, unknown>;
     deploymentName: string;
@@ -244,6 +248,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     static initialState = {
         blueprint: GenericDeployModal.EMPTY_BLUEPRINT,
         gsnData:{result: PropTypes.arrayOf(GSNBusinessServiceProps)},
+        gsnCountries:{countries: PropTypes.arrayOf(GSNCountries)},
         deploymentInputs: {},
         deploymentName: '',
         errors: {},
@@ -268,7 +273,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         scheduledTime: '',
         selectedApproveButton: ApproveButtons.install,
         steps:stepsDefinition,
-        activeStep: { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
+        //activeStep: { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
+        activeStep: { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
         showDeployModalActions:false,
     };
 
@@ -621,6 +627,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 toolbox.refresh();
             })
     }
+
     isRequiredUpdateGSNData(_secretDataFull:any) {
         if (_secretDataFull==null) {
             return true;
@@ -741,6 +748,25 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         return gsnData;
     }
 
+    fetchImpactedCountriesGSNData = async () => {
+        console.log("calling fetchImpactedGSNData");
+        
+        const { toolbox } = this.props;
+        let _secretDataFull = null;
+        try {
+            _secretDataFull = await toolbox.getManager().doGet(`/secrets/${GSN_COUNTRIES_CASH}`);
+        } catch (error:any) {
+            console.log(error);
+                throw error;
+        }
+
+        console.log(_secretDataFull);
+
+        const gsnCountries =  JSON.parse(_secretDataFull.value); 
+        this.setState({gsnCountries}); //tady je pole hodnot ve value
+        return gsnCountries;
+    }
+
     getDeploymentNameByTime  = (blueprint: FullBlueprintData) =>{
         const { Json } = Stage.Utils;
         const stringInputValue = Json.getStringValue(blueprint.plan.inputs["product_name"]).replace(/ /g,'');
@@ -782,6 +808,9 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                     });
                 }).then (
                     await this.fetchGSNFromFile()  
+                )
+                .then (
+                    await this.fetchImpactedCountriesGSNData() 
                 )
                 .catch(err => {
                     this.setState({
@@ -899,6 +928,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 onDeploymentInputChange={this.handleDeploymentInputChange}
                 deploymentInputs={deploymentInputs}
                 gsnData = {this.state.gsnData}
+                gsnCountries = {this.state.gsnCountries}
                 errors={errors}
             ></GSNStep>
         }

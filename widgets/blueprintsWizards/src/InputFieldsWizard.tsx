@@ -67,7 +67,7 @@ function FormSearchField({
     //error,
     toolbox,
     //dataType,
-    gsnData,
+    gsnData
 }: {
     input: Input;
     value: any;
@@ -76,11 +76,12 @@ function FormSearchField({
     toolbox: Stage.Types.Toolbox;
     dataType: DataType;
     gsnData:any;
-
 }) {
     const { Form } = Stage.Basic;
     const [data, setData] = React.useState(JSON.parse(JSON.stringify(gsnData)));
+   
     const [searchText, setsearchText] = React.useState('');
+
     //console.log("GSN data:");
     //console.log(gsnData);
 
@@ -184,6 +185,8 @@ export default function InputFields({
     toolbox,
     dataTypes,
     gsnData,
+    gsnCountries,
+    
 }: {
     inputs: Record<string, any>;
     onChange: OnChange;
@@ -192,10 +195,12 @@ export default function InputFields({
     toolbox: Stage.Types.Toolbox;
     dataTypes?: Record<string, any>;
     gsnData:any;
+    gsnCountries:any;
 }) {
     //inputs je nutne srovnat podle poradi, nyni je poradi podle nacteni z blueprint souboru:
 
     inputs = getInputsOrderByCategories(inputs);
+    const [dataGsnCountries, setGSNContriesData] = React.useState(JSON.parse(JSON.stringify(gsnCountries)));
 
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
@@ -234,6 +239,30 @@ export default function InputFields({
                     return;
                 }
                 
+            }
+
+            if (input.name=="impacted_region") {
+                console.log("form type impacted_region");
+                console.log("gsnCountries:"+JSON.stringify(gsnCountries));
+
+
+                // gsnCountries:{
+                // "United Arab Emirates":{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"},
+                // "Syrian Arab Republic":{"country_code":"SY","region_code":"ASIA","region_name":"ASIA"},
+
+
+                return <div className="field">
+                    <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
+                        {_.map(gsnCountries, item => (
+                            <DataTable.Row key={JSON.stringify(item)}>
+                                <DataTable.Data style={{ width: '20%' }}>
+                                    {JSON.stringify(item)}
+                                    {JSON.stringify(item.key)}
+                                </DataTable.Data>
+                            </DataTable.Row>
+                        ))}
+                    </DataTable>
+                       </div>
             }
 
             // TODO komponenta jako vyhledavaci: 

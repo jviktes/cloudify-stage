@@ -17,6 +17,7 @@ interface Props {
     errors: Record<string, string>;
     toolbox: Stage.Types.Toolbox;
     gsnData:{};
+    gsnCountries: {};
 }
 
 const DeploymentInputs: FunctionComponent<Props> = ({
@@ -28,6 +29,7 @@ const DeploymentInputs: FunctionComponent<Props> = ({
     errors,
     toolbox,
     gsnData,
+    gsnCountries,
 }) => {
     //const { Message } = Stage.Basic;
     //const deploymentHasInputs = !_.isEmpty(blueprint.plan.inputs);
@@ -62,6 +64,7 @@ const DeploymentInputs: FunctionComponent<Props> = ({
                 toolbox={toolbox}
                 dataTypes={blueprint.plan.data_types}
                 gsnData = {gsnData}
+                gsnCountries = {gsnCountries}
             />
         </>
     );
