@@ -1,4 +1,4 @@
-.table-scroll-gsn table{
+/* .table-scroll-gsn table{
   height:170px; 
   max-height: 200px;
 }
@@ -14,7 +14,7 @@
   width: 100%;
   display: inline-table;
   table-layout: fixed;
-  }
+  } */
 
 .blueprintsTable th:nth-child(6) {
     min-width: 81px;

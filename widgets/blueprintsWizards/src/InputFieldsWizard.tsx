@@ -131,15 +131,15 @@ function FormSearchField({
                         onChange={e => onSearch(e.target.value)}
                         loading={false} />
                 </Form.Field>
-                <div>
+                <div style={{ maxHeight: "150px", overflowY:"scroll"}}>
                     <DataTable
                         className="agentsBlueprintsGsn table-scroll-gsn"
                         sortColumn={"Key"}
                         sortAscending={true}
                     >
-                        <DataTable.Column label="Key" name="Key" width="20%" />
+                        {/* <DataTable.Column label="Key" name="Key" width="20%" />
                         <DataTable.Column label="Description" name="Description" width="70%" />
-                        <DataTable.Column width="10%" name="Action" />
+                        <DataTable.Column width="10%" name="Action" /> */}
 
                         {_.map(data.result, item => (
                             <DataTable.Row
