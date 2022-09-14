@@ -337,6 +337,7 @@ export default function InputFields({
                             </div>
                        </div>
             }
+
             if (input.name=="impacted_country") {
                 console.log("form type impacted_region");
 
@@ -362,6 +363,47 @@ export default function InputFields({
                             </div>
                        </div>
             }
+
+            if (input.name=="data_disks") {
+                console.log("data_disks");
+                return <div className="field">
+                    <label style={{ display: "inline-block" }}>{input.display_label}</label>
+                    <table>
+                        <tr>
+                            <td>
+                                <select name="disk_type" id="disk_type">
+                                    <option value="Standard_LRS">Standard_LRS</option>
+                                    <option value="StandardSSD_LRS">StandardSSD_LRS</option>
+                                    <option value="Premium_LRS">Premium_LRS</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="disk_size" id="disk_size">
+                                    <option value="4">4</option>
+                                    <option value="8">8</option>
+                                    <option value="16">16</option>
+                                    <option value="64">64</option>
+                                    <option value="128">128</option>
+                                    <option value="256">256</option>
+                                    <option value="512">512</option>
+                                </select>
+                            </td>
+                            <td>Host cacching</td>
+                            <td><input type="Text" placeholder='Mount point'></input></td>
+                            <td><input type="Text" placeholder='Disk label'></input></td>
+                        </tr>
+                    </table>
+                    <Icon
+                                        name="add"
+                                        link
+                                        bordered
+                                        title="Add another data disk"
+                                        onClick={(event: Event) => {
+                                            event.stopPropagation();
+                                        } } />
+                </div>
+            }
+            
 
             // TODO komponenta jako vyhledavaci: 
             if (input.name=="business_service") {
