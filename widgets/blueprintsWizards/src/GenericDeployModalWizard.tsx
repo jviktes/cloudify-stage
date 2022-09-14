@@ -776,7 +776,9 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
         for (let _countrName in _gsnCountries) {
             //console.log(_countrName + ": "+ _gsnCountries[_countrName]);
-            gsnCountries.push({"countryName":_countrName, "countryData":_gsnCountries[_countrName]});
+            let _ddd = _gsnCountries[_countrName];
+            
+            gsnCountries.push({"countryName":_countrName, "countryData":_ddd.region_name});
             //gsnCountries.push({_countrName});
         }
 

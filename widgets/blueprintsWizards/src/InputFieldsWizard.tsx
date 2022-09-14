@@ -267,7 +267,7 @@ export default function InputFields({
                             <DataTable.Row key={JSON.stringify(item)}>
                                 <DataTable.Data style={{ width: '20%' }}>
                                     
-                                {item.countryName}
+                                {item.countryName} : {item.countryData}
                                   
                                 </DataTable.Data>
                             </DataTable.Row>
