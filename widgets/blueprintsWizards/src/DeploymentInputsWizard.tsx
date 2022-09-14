@@ -17,7 +17,7 @@ interface Props {
     errors: Record<string, string>;
     toolbox: Stage.Types.Toolbox;
     gsnData:{};
-    gsnCountries: {};
+    gsnCountries:{};
 }
 
 const DeploymentInputs: FunctionComponent<Props> = ({

@@ -200,7 +200,7 @@ export default function InputFields({
     //inputs je nutne srovnat podle poradi, nyni je poradi podle nacteni z blueprint souboru:
 
     inputs = getInputsOrderByCategories(inputs);
-    const [dataGsnCountries, setGSNContriesData] = React.useState(JSON.parse(JSON.stringify(gsnCountries)));
+    //const [dataGsnCountries] = React.useState(JSON.parse(JSON.stringify(gsnCountries)));
 
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
@@ -243,21 +243,32 @@ export default function InputFields({
 
             if (input.name=="impacted_region") {
                 console.log("form type impacted_region");
-                console.log("gsnCountries:"+JSON.stringify(gsnCountries));
+                //console.log("gsnCountries:"+JSON.stringify(gsnCountries));
 
+                //console.log(gsnCountries["United Arab Emirates"]);
+
+
+                //const keys = gsnCountries.keys();
+
+                // !!!toto pada a nevim proc:
+                //let ttt = gsnCountries["United Arab Emirates"].region_code;
+                //console.log(ttt);
 
                 // gsnCountries:{
                 // "United Arab Emirates":{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"},
                 // "Syrian Arab Republic":{"country_code":"SY","region_code":"ASIA","region_name":"ASIA"},
-
+                // dataGsnCountries.array.forEach((element: any) => {
+                //     console.log(element.region_code);
+                // });
 
                 return <div className="field">
                     <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
                         {_.map(gsnCountries, item => (
                             <DataTable.Row key={JSON.stringify(item)}>
                                 <DataTable.Data style={{ width: '20%' }}>
-                                    {JSON.stringify(item)}
-                                    {JSON.stringify(item.key)}
+                                    
+                                {item.countryName}
+                                  
                                 </DataTable.Data>
                             </DataTable.Row>
                         ))}

@@ -37,7 +37,7 @@ import VMConfigStep from './wizardSteps/VMConfigStep';
 //import getDeploymentInputsByCategories from './wizardUtils';
 
 import GSNBusinessServiceProps from './GSNBusinessService';
-import GSNCountries from './GSNCountries';
+//import GSNCountries from './GSNCountries';
 
 const { i18n } = Stage;
 const t = Stage.Utils.getT('widgets.common.deployments.deployModal');
@@ -216,6 +216,11 @@ type GenericDeployModalState = {
     showDeployModalActions:boolean,
 };
 
+// type ContryData = {
+//     countryName:string,
+//     //countryData: string
+// }
+
 type WizardState = {
     key: string, 
     label: string, 
@@ -248,7 +253,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     static initialState = {
         blueprint: GenericDeployModal.EMPTY_BLUEPRINT,
         gsnData:{result: PropTypes.arrayOf(GSNBusinessServiceProps)},
-        gsnCountries:{countries: PropTypes.arrayOf(GSNCountries)},
+        gsnCountries:{},
         deploymentInputs: {},
         deploymentName: '',
         errors: {},
@@ -749,7 +754,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     }
 
     fetchImpactedCountriesGSNData = async () => {
-        console.log("calling fetchImpactedGSNData");
+        console.log("calling fetchImpactedCountriesGSNData");
         
         const { toolbox } = this.props;
         let _secretDataFull = null;
@@ -760,9 +765,23 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 throw error;
         }
 
-        console.log(_secretDataFull);
+        //console.log(_secretDataFull);
 
-        const gsnCountries =  JSON.parse(_secretDataFull.value); 
+        const _gsnCountries =  JSON.parse(_secretDataFull.value); 
+        let gsnCountries = [];
+
+        // _.map(gsnCountries, item => (
+        //     console.log(item.key)
+        // ));
+
+        for (let _countrName in _gsnCountries) {
+            //console.log(_countrName + ": "+ _gsnCountries[_countrName]);
+            gsnCountries.push({"countryName":_countrName, "countryData":_gsnCountries[_countrName]});
+            //gsnCountries.push({_countrName});
+        }
+
+        //{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"}
+        gsnCountries=(JSON.parse(JSON.stringify(gsnCountries)));
         this.setState({gsnCountries}); //tady je pole hodnot ve value
         return gsnCountries;
     }
