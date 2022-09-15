@@ -216,12 +216,14 @@ function RegionSelectField({
     toolbox,
     //dataType,
     //gsnData
+    inputStates,
 }: {
     //input: Input;
     gsnItemData: any;
     //onChange: OnChange;
     //error: boolean;
     toolbox: Stage.Types.Toolbox;
+    inputStates:any;
     //dataType: DataType;
     //gsnData:any;
 }) {
@@ -229,26 +231,76 @@ function RegionSelectField({
     //console.log("GSN data:");
     //console.log(gsnData);
     const { Form } = Stage.Basic;
-    //const type=FormFieldType.Checkbox,
-    //const booleanType = type === 'boolean';
+    console.log("RegionSelectField inputStates:");
+    console.log(inputStates);
+
     // funkce vyplni vybranou business services do pole Input:
 
-    const pokus = (e: any, _item:any)=> {
+    const onRegionChange = (e: any, _item:any)=> {
         console.log("ConfirmSelectedBusinessService:" + _item);
+        console.log("ConfirmSelectedBusinessService e.target:" + e);
         //get selected countries:
+        //zde do pole impacted_region musi vyplnit vsechny zakrnute regiony
+        //zde musim nejak ziskat vsechny vybrane regiony:
+        
+        // let selectedRegions: any[] = [];
+        // inputStates.forEach((element: any) => {
+        //     selectedRegions.push(String(element));
+        // });
+        let selectedRegions = JSON.parse(inputStates);;//["OCEANIA", "AMERICAS"];//JSON.parse(JSON.stringify(inputStates));
+
+        // try {
+        //     let ppp = JSON.parse(inputStates);
+        //     ppp.push(_item);
+        //     console.log(ppp);
+        // } catch (error) {
+            
+        // }
+        // //inputStates: "[\"EUROPE\"]"
+        // try {
+        //     let ppp = inputStates.replaceAll('\\', '\''); //.replace(/blue/g, "red");
+        //     ppp.push[_item];
+        //     console.log(ppp);
+        // } catch (error) {
+            
+        // }
+        
+
+
+        //let selectedRegions = inputStates; //[ASIA, EUROPE, AFRICA, OCEANIA, AMERICAS]
+
+        //pokud je e.checked = checked: false
+        if (e.checked==true) {
+            //pridat do pole:
+            if (inputStates.includes(_item)==false) {
+                selectedRegions.push(_item);
+            }
+        }
+        else {
+            if (inputStates.includes(_item)==true) {
+                selectedRegions.pop(_item);
+            }
+        }
+
         console.log(e);
-        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','business_service',_item);
+        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','impacted_region',JSON.stringify(selectedRegions)); //["OCEANIA", "AMERICAS"]
     }
+    //pokud je v seznamu inputStates dany region, pak se zaskrtne:
+    const isSelected = (_gsnItemData: any)=> {
+        const _isSelected = inputStates.includes(_gsnItemData);
+        return _isSelected;
+    };
 
     return (
         
         <Form.Field>
         {/* {gsnItemData.countryData.region_code} */}
         <Form.Input
-            onChange={e => pokus(e.target.value, gsnItemData)}
+            onChange={e => onRegionChange(e.target, gsnItemData)}
             loading={false} 
             type="Checkbox"
             label={gsnItemData}
+            checked={isSelected(gsnItemData)}
             />
         </Form.Field> 
     );
@@ -281,6 +333,8 @@ export default function InputFields({
     inputs = getInputsOrderByCategories(inputs);
     //const [dataGsnCountries] = React.useState(JSON.parse(JSON.stringify(gsnCountries)));
 
+
+
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
         .reject('hidden')
@@ -296,6 +350,7 @@ export default function InputFields({
                 return ;
             }
 
+            //product_name_
             if (input.name=="product_name") {
                 //console.log("form type product_name");
                 //console.log("product_name:"+JSON.stringify(input));
@@ -305,7 +360,7 @@ export default function InputFields({
                     </div>
             }
 
-            // logika ha_concept:
+            //ha_concept:
             if (input.name=="availability_zone") {
                 //console.log("form type availability_zone");
                 //console.log("availability_zone:"+JSON.stringify(input));
@@ -320,6 +375,7 @@ export default function InputFields({
                 
             }
 
+            //impacted_region
             if (input.name=="impacted_region") {
                 
                 return <div className="field">
@@ -329,7 +385,7 @@ export default function InputFields({
                                         {_.map(gsnRegions, item => (
                                             <DataTable.Row key={JSON.stringify(item)} >
                                                 <DataTable.Data style={{ width: '20%' }}>
-                                                    <RegionSelectField gsnItemData={item} toolbox={toolbox}></RegionSelectField>
+                                                    <RegionSelectField gsnItemData={item} toolbox={toolbox} inputStates={inputsState[input.name]}></RegionSelectField>
                                                 </DataTable.Data>
                                             </DataTable.Row>
                                         ))}
@@ -338,6 +394,7 @@ export default function InputFields({
                        </div>
             }
 
+            //impacted_country
             if (input.name=="impacted_country") {
                 console.log("form type impacted_region");
 
@@ -404,8 +461,7 @@ export default function InputFields({
                 </div>
             }
             
-
-            // TODO komponenta jako vyhledavaci: 
+            //business_service: 
             if (input.name=="business_service") {
                 //console.log("form type business_service");
                 //console.log("business_service:"+JSON.stringify(input));
@@ -423,17 +479,17 @@ export default function InputFields({
                                 </div>
                             )
             }
-            
-                return (
-                    <FormField
-                        input={input}
-                        value={value}
-                        onChange={onChange}
-                        error={errorsState[input.name]}
-                        toolbox={toolbox}
-                        dataType={dataType}
-                    />
-                );
+            //all normal input fieds:
+            return (
+                <FormField
+                    input={input}
+                    value={value}
+                    onChange={onChange}
+                    error={errorsState[input.name]}
+                    toolbox={toolbox}
+                    dataType={dataType}
+                />
+            );
 
         })
         .value();
