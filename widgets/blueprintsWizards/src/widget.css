@@ -16,6 +16,11 @@
   table-layout: fixed;
   } */
 
+  .agentsGsnCountries tr{
+    height: 15px;
+    line-height: 15px;
+  }
+
 .blueprintsTable th:nth-child(6) {
     min-width: 81px;
 }

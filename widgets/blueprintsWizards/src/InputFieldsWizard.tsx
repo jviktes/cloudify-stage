@@ -170,6 +170,7 @@ function CountrySelectField({
     toolbox,
     //dataType,
     //gsnData
+    inputStates,
 }: {
     //input: Input;
     gsnItemData: any;
@@ -177,32 +178,51 @@ function CountrySelectField({
     //error: boolean;
     toolbox: Stage.Types.Toolbox;
     //dataType: DataType;
-    //gsnData:any;
+    inputStates:any;
 }) {
 
-    //console.log("GSN data:");
-    //console.log(gsnData);
     const { Form } = Stage.Basic;
-    //const type=FormFieldType.Checkbox,
-    //const booleanType = type === 'boolean';
-    // funkce vyplni vybranou business services do pole Input:
 
-    const pokus = (e: any, _item:any)=> {
-        console.log("ConfirmSelectedBusinessService:" + _item.countryName);
+    const onRegionChange = (e: any, _item:any)=> {
+        console.log("CountrySelectField:" + _item.countryName);
+        console.log("CountrySelectField e.target:" + e);
         //get selected countries:
-        console.log(e);
-        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','business_service',_item.u_number);
-    }
+        //zde do pole impacted_region musi vyplnit vsechny zakrnute regiony
+        //zde musim nejak ziskat vsechny vybrane regiony:
+        
+        let selectedCountries = JSON.parse(inputStates);
+        
+        //pokud je e.checked = checked: false
+        if (e.checked==true) {
+            //pridat do pole:
+            if (inputStates.includes(_item.countryName)==false) {
+                selectedCountries.push(_item.countryName);
+            }
+        }
+        else {
+            if (inputStates.includes(_item.countryName)==true) {
+                selectedCountries.pop(_item.countryName);
+            }
+        }
 
+        console.log(e);
+        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','impacted_country',JSON.stringify(selectedCountries));
+    }
+    //pokud je v seznamu inputStates dany region, pak se zaskrtne:
+    const isSelected = (_gsnItemData: any)=> {
+        const _isSelected = inputStates.includes(_gsnItemData);
+        return _isSelected;
+    };
     return (
         
         <Form.Field>
         {/* {gsnItemData.countryData.region_code} */}
         <Form.Input
-            onChange={e => pokus(e.target.value, gsnItemData)}
+            onChange={e => onRegionChange(e.target, gsnItemData)}
             loading={false} 
             type="Checkbox"
             label={gsnItemData.countryName}
+            checked={isSelected(gsnItemData.countryName)}
             />
         </Form.Field> 
     );
@@ -243,31 +263,7 @@ function RegionSelectField({
         //zde do pole impacted_region musi vyplnit vsechny zakrnute regiony
         //zde musim nejak ziskat vsechny vybrane regiony:
         
-        // let selectedRegions: any[] = [];
-        // inputStates.forEach((element: any) => {
-        //     selectedRegions.push(String(element));
-        // });
         let selectedRegions = JSON.parse(inputStates);;//["OCEANIA", "AMERICAS"];//JSON.parse(JSON.stringify(inputStates));
-
-        // try {
-        //     let ppp = JSON.parse(inputStates);
-        //     ppp.push(_item);
-        //     console.log(ppp);
-        // } catch (error) {
-            
-        // }
-        // //inputStates: "[\"EUROPE\"]"
-        // try {
-        //     let ppp = inputStates.replaceAll('\\', '\''); //.replace(/blue/g, "red");
-        //     ppp.push[_item];
-        //     console.log(ppp);
-        // } catch (error) {
-            
-        // }
-        
-
-
-        //let selectedRegions = inputStates; //[ASIA, EUROPE, AFRICA, OCEANIA, AMERICAS]
 
         //pokud je e.checked = checked: false
         if (e.checked==true) {
@@ -396,23 +392,20 @@ export default function InputFields({
 
             //impacted_country
             if (input.name=="impacted_country") {
-                console.log("form type impacted_region");
+                console.log("form type impacted_country");
 
                 // gsnCountries:{
                 // "United Arab Emirates":{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"},
                 // "Syrian Arab Republic":{"country_code":"SY","region_code":"ASIA","region_name":"ASIA"},
-                // dataGsnCountries.array.forEach((element: any) => {
-                //     console.log(element.region_code);
-                // });
 
-                return <div className="field">
-                        <label style={{ display: "inline-block" }}>{input.display_label}</label>
+                return <div className="field" style={{ display: "inline-block" }}>
+                        <label>{input.display_label}</label>
                         <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
-                                    <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
+                                    <DataTable className="agentsGsnCountries table-scroll-gsn">
                                         {_.map(gsnCountries, item => (
                                             <DataTable.Row key={JSON.stringify(item)} >
                                                 <DataTable.Data style={{ width: '20%' }}>
-                                                    <CountrySelectField gsnItemData={item} toolbox={toolbox}></CountrySelectField>
+                                                    <CountrySelectField gsnItemData={item} toolbox={toolbox} inputStates={inputsState[input.name]}></CountrySelectField>
                                                 </DataTable.Data>
                                             </DataTable.Row>
                                         ))}
