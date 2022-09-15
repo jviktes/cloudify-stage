@@ -302,8 +302,8 @@ function RegionSelectField({
     );
 }
 
-function CountryDataDiskField({
-    diskData,
+function DataDiskTable({
+    //diskData,
     toolbox,
     inputStates,
 }: {
@@ -311,25 +311,29 @@ function CountryDataDiskField({
     toolbox: Stage.Types.Toolbox;
     inputStates:any;
 }) {
-    console.log(diskData);
+    //console.log(diskData); //zbytecne
 
     const { Form } = Stage.Basic;
 
     const onItemChange = (e: any, _item:any)=> {
-        console.log("CountrySelectField:" + _item.countryName);
-        console.log("CountrySelectField e.target:" + e);
+        console.log("onItemChange DataDisk:" + _item);
+        console.log("DataDisk e.target:" + e);
 
         let dataDisks = JSON.parse(inputStates);
+
+        if (e.name=="DataDiskOptions") {
+            var result = dataDisks.filter((obj: { key: any; }) => {
+                return obj.key === _item.key
+            })
+            result.disk_type = e.value;
+        }
+
+
         toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
     }
 
-    //pokud je v seznamu inputStates dany region, pak se zaskrtne:
-    // const isSelected = (_gsnItemData: any)=> {
-    //     const _isSelected = inputStates.includes(_gsnItemData);
-    //     return _isSelected;
-    // };
-    let dataDiskFake = [{"disk_type":"Standard_LRS","disk_size":"16","host_caching":"ReadOnly", "mount_point":"mount point A","disk_label":"Data disk for database"},
-    {"disk_type":"Premium_LRS","disk_size":"512","host_caching":"ReadOnly", "mount_point":"mount point B","disk_label":"Data disk for aplication"}];
+    // let dataDiskFake = [{"key":"AAA","disk_type":"Standard_LRS","disk_size":"16","host_caching":"ReadOnly", "mount_point":"mount point A","disk_label":"Data disk for database"},
+    // {"key":"BBB","disk_type":"Premium_LRS","disk_size":"512","host_caching":"ReadOnly", "mount_point":"mount point B","disk_label":"Data disk for aplication"}];
 
     const DataDiskOptions = [
         { text: 'Standard_LRS', name: 'Standard_LRS', value: 'Standard_LRS' },
@@ -352,59 +356,72 @@ function CountryDataDiskField({
     return (
             <div>
                 <DataTable className="agentsGsnCountries table-scroll-gsn">
-                    {_.map(dataDiskFake, item => (
-                        <DataTable.Row key={JSON.stringify(item)} >
-                            <DataTable.Data style={{ width: '20%' }}>
-
-                            <Form.Dropdown
-                                    name="DataDiskOptions"
-                                    selection
-                                    options={DataDiskOptions}
-                                    value={item.disk_type}
-                                    onChange={e => onItemChange(e.target, dataDiskFake)}
-                            />
-
-                            <Form.Dropdown
-                                    name="DiskSizeOptions"
-                                    selection
-                                    options={DiskSizeOptions}
-                                    value={item.disk_size}
-                                    onChange={e => onItemChange(e.target, dataDiskFake)}
-                            />
-
-                            <Form.Dropdown
-                                    name="DataDiskHostingCashOptions"
-                                    selection
-                                    options={DataDiskHostingCashOptions}
-                                    value={item.host_caching}
-                                    onChange={e => onItemChange(e.target, dataDiskFake)}
-                            />
+                            <DataTable.Column label="disk_type" name="disk_type" width='15%'  />
+                            <DataTable.Column label="disk_size" name="disk_size" width='15%' />
+                            <DataTable.Column label="host_caching" name="host_caching" width='15%' />
+                            <DataTable.Column label="mount_point" name="mount_point" width='25%'/>
+                            <DataTable.Column label="disk_label" name="disk_label"  width='25%'/>
+                            <DataTable.Column label="" name=""  width='5%'/>
+                    {_.map(inputStates, item => (
+                        <DataTable.Row key={JSON.stringify(item.key)} >
+                            <DataTable.Data>
+                                <Form.Dropdown
+                                        name="disk_type"
+                                        selection
+                                        options={DataDiskOptions}
+                                        value={item.disk_type}
+                                        onChange={e => onItemChange(e, item)}
+                                />
+                            </DataTable.Data>
+                            <DataTable.Data>
+                                <Form.Dropdown
+                                        name="disk_size"
+                                        selection
+                                        options={DiskSizeOptions}
+                                        value={item.disk_size}
+                                        onChange={e => onItemChange(e.target, item)}
+                                />
+                            </DataTable.Data>
+                            <DataTable.Data>
+                                <Form.Dropdown
+                                        name="host_caching"
+                                        selection
+                                        options={DataDiskHostingCashOptions}
+                                        value={item.host_caching}
+                                        onChange={e => onItemChange(e.target, item)}
+                                />
+                             </DataTable.Data>
+                             <DataTable.Data>
                             <Form.TextArea
-                                    name="DataDiskMountPoint"
+                                    name="mount_point"
                                     placeholder={'Mount point'}
                                     value={item.mount_point}
-                                    onChange={e => onItemChange(e.target, dataDiskFake)}
+                                    onChange={e => onItemChange(e.target, item)}
                             />
+                             </DataTable.Data>
+                             <DataTable.Data>
                             <Form.TextArea
-                                    name="DataDiskLabel"
+                                    name="disk_label"
                                     placeholder={'Disk label'}
                                     value={item.disk_label}
-                                    onChange={e => onItemChange(e.target, dataDiskFake)}
+                                    onChange={e => onItemChange(e.target, item)}
                             />
+                             </DataTable.Data>
+                             <DataTable.Data>
                             <Icon
                                 name="remove"
                                 link
                                 bordered
                                 title="Delete data disk"
                                 onClick={(event: Event) => {
-                                    event.stopPropagation();
+                                    event.stopPropagation(); //item
                                 }} />
                             </DataTable.Data>
                         </DataTable.Row>
                     ))}
                 </DataTable>
             </div>
-    );
+        );
 }
 
 export default function InputFields({
@@ -434,7 +451,13 @@ export default function InputFields({
     inputs = getInputsOrderByCategories(inputs);
     //const [dataGsnCountries] = React.useState(JSON.parse(JSON.stringify(gsnCountries)));
 
+    const AddDisk = () => {
+        console.log("add disk");
+        let dataDisks = JSON.parse(inputsState["data_disks"]);
+        dataDisks.push({"key":"CCC","disk_type":"","disk_size":"","host_caching":"", "mount_point":"","disk_label":"lebale"});
+        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
 
+    }
 
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
@@ -524,7 +547,7 @@ export default function InputFields({
                 return <div className="field">
                     <label style={{ display: "inline-block" }}>{input.display_label}</label>
 
-                        <CountryDataDiskField diskData={input} toolbox={toolbox} inputStates={inputsState[input.name]}></CountryDataDiskField>
+                        <DataDiskTable diskData={input} toolbox={toolbox} inputStates={JSON.parse(inputsState[input.name])}></DataDiskTable>
                         <Icon
                         name="add"
                         link
@@ -532,6 +555,7 @@ export default function InputFields({
                         title="Add another data disk"
                         onClick={(event: Event) => {
                             event.stopPropagation();
+                            AddDisk();
                         } } />
                 </div>
             }
