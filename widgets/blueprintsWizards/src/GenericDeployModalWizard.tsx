@@ -176,12 +176,11 @@ const EmptyComponent = () => {
   }
 
 const stepsDefinition = [
+    { key: 'VMConfigStep', label: 'VM configuration', isDone: false, component: EmptyComponent },
     { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
     { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
     { key: 'ClusteringStep', label: 'Clustering', isDone: false, component: EmptyComponent },
-    { key: 'VMConfigStep', label: 'VM configuration', isDone: false, component: EmptyComponent },
     { key: 'SWConfigStep', label: 'SW configuration', isDone: false, component: EmptyComponent },
-    
     ]
 
 type GenericDeployModalState = {
@@ -281,7 +280,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         selectedApproveButton: ApproveButtons.install,
         steps:stepsDefinition,
         //activeStep: { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
-        activeStep: { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
+        //activeStep: { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
+        activeStep: { key: 'VMConfigStep', label: 'VM configuration', isDone: false, component: EmptyComponent },
         showDeployModalActions:false,
     };
 

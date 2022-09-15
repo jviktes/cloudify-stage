@@ -184,8 +184,8 @@ function CountrySelectField({
     const { Form } = Stage.Basic;
 
     const onRegionChange = (e: any, _item:any)=> {
-        console.log("CountrySelectField:" + _item.countryName);
-        console.log("CountrySelectField e.target:" + e);
+        //console.log("CountrySelectField:" + _item.countryName);
+        //console.log("CountrySelectField e.target:" + e);
         //get selected countries:
         //zde do pole impacted_region musi vyplnit vsechny zakrnute regiony
         //zde musim nejak ziskat vsechny vybrane regiony:
@@ -251,8 +251,8 @@ function RegionSelectField({
     //console.log("GSN data:");
     //console.log(gsnData);
     const { Form } = Stage.Basic;
-    console.log("RegionSelectField inputStates:");
-    console.log(inputStates);
+    //console.log("RegionSelectField inputStates:");
+    //console.log(inputStates);
 
     // funkce vyplni vybranou business services do pole Input:
 
@@ -299,6 +299,111 @@ function RegionSelectField({
             checked={isSelected(gsnItemData)}
             />
         </Form.Field> 
+    );
+}
+
+function CountryDataDiskField({
+    diskData,
+    toolbox,
+    inputStates,
+}: {
+    diskData: any;
+    toolbox: Stage.Types.Toolbox;
+    inputStates:any;
+}) {
+    console.log(diskData);
+
+    const { Form } = Stage.Basic;
+
+    const onItemChange = (e: any, _item:any)=> {
+        console.log("CountrySelectField:" + _item.countryName);
+        console.log("CountrySelectField e.target:" + e);
+
+        let dataDisks = JSON.parse(inputStates);
+        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
+    }
+
+    //pokud je v seznamu inputStates dany region, pak se zaskrtne:
+    // const isSelected = (_gsnItemData: any)=> {
+    //     const _isSelected = inputStates.includes(_gsnItemData);
+    //     return _isSelected;
+    // };
+    let dataDiskFake = [{"disk_type":"Standard_LRS","disk_size":"16","host_caching":"ReadOnly", "mount_point":"mount point A","disk_label":"Data disk for database"},
+    {"disk_type":"Premium_LRS","disk_size":"512","host_caching":"ReadOnly", "mount_point":"mount point B","disk_label":"Data disk for aplication"}];
+
+    const DataDiskOptions = [
+        { text: 'Standard_LRS', name: 'Standard_LRS', value: 'Standard_LRS' },
+        { text: 'StandardSSD_LRS', name: 'StandardSSD_LRS', value: 'StandardSSD_LRS' },
+        { text: 'Premium_LRS', name: 'Premium_LRS', value: 'Premium_LRS' },]
+    const DiskSizeOptions = [
+        { text: '4GB', name: '4GB', value: '4' },
+        { text: '8GB', name: '8GB', value: '8' },
+        { text: '16GB', name: '16GB', value: '16' },
+        { text: '32GB', name: '32GB', value: '32' },
+        { text: '64GB', name: '64GB', value: '64' },
+        { text: '128GB', name: '128GB', value: '128' },
+        { text: '256GB', name: '256GB', value: '256' },
+        { text: '512GB', name: '512GB', value: '512' },]
+    const DataDiskHostingCashOptions = [
+        { text: 'None', name: 'None', value: 'None' },
+        { text: 'ReadOnly', name: 'ReadOnly', value: 'ReadOnly' },
+        { text: 'ReadWrite', name: 'ReadWrite', value: 'ReadWrite' },]
+
+    return (
+            <div>
+                <DataTable className="agentsGsnCountries table-scroll-gsn">
+                    {_.map(dataDiskFake, item => (
+                        <DataTable.Row key={JSON.stringify(item)} >
+                            <DataTable.Data style={{ width: '20%' }}>
+
+                            <Form.Dropdown
+                                    name="DataDiskOptions"
+                                    selection
+                                    options={DataDiskOptions}
+                                    value={item.disk_type}
+                                    onChange={e => onItemChange(e.target, dataDiskFake)}
+                            />
+
+                            <Form.Dropdown
+                                    name="DiskSizeOptions"
+                                    selection
+                                    options={DiskSizeOptions}
+                                    value={item.disk_size}
+                                    onChange={e => onItemChange(e.target, dataDiskFake)}
+                            />
+
+                            <Form.Dropdown
+                                    name="DataDiskHostingCashOptions"
+                                    selection
+                                    options={DataDiskHostingCashOptions}
+                                    value={item.host_caching}
+                                    onChange={e => onItemChange(e.target, dataDiskFake)}
+                            />
+                            <Form.TextArea
+                                    name="DataDiskMountPoint"
+                                    placeholder={'Mount point'}
+                                    value={item.mount_point}
+                                    onChange={e => onItemChange(e.target, dataDiskFake)}
+                            />
+                            <Form.TextArea
+                                    name="DataDiskLabel"
+                                    placeholder={'Disk label'}
+                                    value={item.disk_label}
+                                    onChange={e => onItemChange(e.target, dataDiskFake)}
+                            />
+                            <Icon
+                                name="remove"
+                                link
+                                bordered
+                                title="Delete data disk"
+                                onClick={(event: Event) => {
+                                    event.stopPropagation();
+                                }} />
+                            </DataTable.Data>
+                        </DataTable.Row>
+                    ))}
+                </DataTable>
+            </div>
     );
 }
 
@@ -418,39 +523,16 @@ export default function InputFields({
                 console.log("data_disks");
                 return <div className="field">
                     <label style={{ display: "inline-block" }}>{input.display_label}</label>
-                    <table>
-                        <tr>
-                            <td>
-                                <select name="disk_type" id="disk_type">
-                                    <option value="Standard_LRS">Standard_LRS</option>
-                                    <option value="StandardSSD_LRS">StandardSSD_LRS</option>
-                                    <option value="Premium_LRS">Premium_LRS</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select name="disk_size" id="disk_size">
-                                    <option value="4">4</option>
-                                    <option value="8">8</option>
-                                    <option value="16">16</option>
-                                    <option value="64">64</option>
-                                    <option value="128">128</option>
-                                    <option value="256">256</option>
-                                    <option value="512">512</option>
-                                </select>
-                            </td>
-                            <td>Host cacching</td>
-                            <td><input type="Text" placeholder='Mount point'></input></td>
-                            <td><input type="Text" placeholder='Disk label'></input></td>
-                        </tr>
-                    </table>
-                    <Icon
-                                        name="add"
-                                        link
-                                        bordered
-                                        title="Add another data disk"
-                                        onClick={(event: Event) => {
-                                            event.stopPropagation();
-                                        } } />
+
+                        <CountryDataDiskField diskData={input} toolbox={toolbox} inputStates={inputsState[input.name]}></CountryDataDiskField>
+                        <Icon
+                        name="add"
+                        link
+                        bordered
+                        title="Add another data disk"
+                        onClick={(event: Event) => {
+                            event.stopPropagation();
+                        } } />
                 </div>
             }
             
