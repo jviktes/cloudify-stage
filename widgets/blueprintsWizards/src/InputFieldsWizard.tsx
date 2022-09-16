@@ -315,21 +315,35 @@ function DataDiskTable({
 
     const { Form } = Stage.Basic;
 
-    const onItemChange = (e: any, _item:any)=> {
+    const onItemChange = (e: any, _item:any, _typeProperty:any, _value:any)=> {
         console.log("onItemChange DataDisk:" + _item);
         console.log("DataDisk e.target:" + e);
 
-        let dataDisks = JSON.parse(inputStates);
+        let dataDisks = inputStates;
 
-        if (e.name=="DataDiskOptions") {
-            var result = dataDisks.filter((obj: { key: any; }) => {
+        if (_typeProperty=="disk_type" || _typeProperty=="disk_size" || _typeProperty=="host_caching" 
+        || _typeProperty=="mount_point" || _typeProperty=="disk_label") {
+            var changedDataDisk = dataDisks.filter((obj: { key: any; }) => {
                 return obj.key === _item.key
             })
-            result.disk_type = e.value;
+            if (changedDataDisk[0]!=null) {
+                changedDataDisk[0][_typeProperty] = _value;
+                toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
+            }
+
+        } 
+    }
+
+    const RemoveDisk=(_item: any)=> {
+        console.log("RemoveDisk:" + _item.key);
+        let dataDisks = inputStates;
+        var changedDataDisk = dataDisks.filter((obj: { key: any; }) => {
+            return obj.key === _item.key
+        })
+        if (changedDataDisk!=null) {
+            dataDisks.pop(changedDataDisk);
+            toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
         }
-
-
-        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
     }
 
     // let dataDiskFake = [{"key":"AAA","disk_type":"Standard_LRS","disk_size":"16","host_caching":"ReadOnly", "mount_point":"mount point A","disk_label":"Data disk for database"},
@@ -356,66 +370,72 @@ function DataDiskTable({
     return (
             <div>
                 <DataTable className="agentsGsnCountries table-scroll-gsn">
-                            <DataTable.Column label="disk_type" name="disk_type" width='15%'  />
-                            <DataTable.Column label="disk_size" name="disk_size" width='15%' />
-                            <DataTable.Column label="host_caching" name="host_caching" width='15%' />
-                            <DataTable.Column label="mount_point" name="mount_point" width='25%'/>
-                            <DataTable.Column label="disk_label" name="disk_label"  width='25%'/>
+                            <DataTable.Column label="disk_type" name="disk_type" width='10%'  />
+                            <DataTable.Column label="disk_size" name="disk_size" width='10%' />
+                            <DataTable.Column label="host_caching" name="host_caching" width='10%' />
+                            <DataTable.Column label="mount_point" name="mount_point" width='30%'/>
+                            <DataTable.Column label="disk_label" name="disk_label"  width='35%'/>
                             <DataTable.Column label="" name=""  width='5%'/>
                     {_.map(inputStates, item => (
                         <DataTable.Row key={JSON.stringify(item.key)} >
-                            <DataTable.Data>
+                            <DataTable.Data style={{ width: '10%' }}>
                                 <Form.Dropdown
                                         name="disk_type"
                                         selection
                                         options={DataDiskOptions}
                                         value={item.disk_type}
-                                        onChange={e => onItemChange(e, item)}
+                                        //onChange={e => onItemChange(e.target, item,"disk_type")}
+                                        onChange={(e, { value }) => onItemChange(e.target,item,"disk_type",value)}
                                 />
                             </DataTable.Data>
-                            <DataTable.Data>
+                            <DataTable.Data style={{ width: '10%' }}>
                                 <Form.Dropdown
                                         name="disk_size"
                                         selection
                                         options={DiskSizeOptions}
                                         value={item.disk_size}
-                                        onChange={e => onItemChange(e.target, item)}
+                                        //onChange={e => onItemChange(e.target, item,"disk_size")}
+                                        onChange={(e, { value }) => onItemChange(e.target,item,"disk_size",value)}
                                 />
                             </DataTable.Data>
-                            <DataTable.Data>
+                            <DataTable.Data style={{ width: '10%' }}>
                                 <Form.Dropdown
                                         name="host_caching"
                                         selection
                                         options={DataDiskHostingCashOptions}
                                         value={item.host_caching}
-                                        onChange={e => onItemChange(e.target, item)}
+                                        //onChange={e => onItemChange(e.target, item,"host_caching")}
+                                        onChange={(e, { value }) => onItemChange(e.target,item,"host_caching",value)}
                                 />
                              </DataTable.Data>
-                             <DataTable.Data>
-                            <Form.TextArea
-                                    name="mount_point"
-                                    placeholder={'Mount point'}
-                                    value={item.mount_point}
-                                    onChange={e => onItemChange(e.target, item)}
-                            />
+                             <DataTable.Data style={{ width: '30%' }}>
+                                <Form.TextArea
+                                        name="mount_point"
+                                        placeholder={'Mount point'}
+                                        value={item.mount_point}
+                                        //onChange={e => onItemChange(e.target, item,"mount_point")}
+                                        onChange={(e, { value }) => onItemChange(e.target,item,"mount_point",value)}
+                                />
                              </DataTable.Data>
-                             <DataTable.Data>
-                            <Form.TextArea
-                                    name="disk_label"
-                                    placeholder={'Disk label'}
-                                    value={item.disk_label}
-                                    onChange={e => onItemChange(e.target, item)}
-                            />
+                             <DataTable.Data style={{ width: '30%' }}>
+                                <Form.TextArea
+                                        name="disk_label"
+                                        placeholder={'Disk label'}
+                                        value={item.disk_label}
+                                        //onChange={e => onItemChange(e.target, item,"disk_label")}
+                                        onChange={(e, { value }) => onItemChange(e.target,item,"disk_label",value)}
+                                />
                              </DataTable.Data>
-                             <DataTable.Data>
-                            <Icon
-                                name="remove"
-                                link
-                                bordered
-                                title="Delete data disk"
-                                onClick={(event: Event) => {
-                                    event.stopPropagation(); //item
-                                }} />
+                             <DataTable.Data style={{ width: '5%' }}>
+                                <Icon
+                                    name="remove"
+                                    link
+                                    bordered
+                                    title="Delete data disk"
+                                    onClick={(event: Event) => {
+                                        event.stopPropagation(); //item
+                                        RemoveDisk(item);
+                                    }} />
                             </DataTable.Data>
                         </DataTable.Row>
                     ))}
@@ -451,12 +471,15 @@ export default function InputFields({
     inputs = getInputsOrderByCategories(inputs);
     //const [dataGsnCountries] = React.useState(JSON.parse(JSON.stringify(gsnCountries)));
 
+    var uniqueID = function () {
+        return '_' + Math.random().toString(36).slice(2, 11);
+    };
+
     const AddDisk = () => {
         console.log("add disk");
         let dataDisks = JSON.parse(inputsState["data_disks"]);
-        dataDisks.push({"key":"CCC","disk_type":"","disk_size":"","host_caching":"", "mount_point":"","disk_label":"lebale"});
+        dataDisks.push({"key":uniqueID,"disk_type":"Standard_LRS","disk_size":"16","host_caching":"", "mount_point":"","disk_label":""});
         toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
-
     }
 
     const inputFields = _(inputs)
@@ -550,9 +573,10 @@ export default function InputFields({
                         <DataDiskTable diskData={input} toolbox={toolbox} inputStates={JSON.parse(inputsState[input.name])}></DataDiskTable>
                         <Icon
                         name="add"
+                        color='green'
                         link
                         bordered
-                        title="Add another data disk"
+                        title="Add data disk"
                         onClick={(event: Event) => {
                             event.stopPropagation();
                             AddDisk();
