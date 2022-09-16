@@ -16,6 +16,9 @@
   table-layout: fixed;
   } */
 
+  .deployBlueprintModal {
+    width: 1200px !important;
+  }
   .agentsGsnCountries tr{
     height: 15px;
     line-height: 15px;
