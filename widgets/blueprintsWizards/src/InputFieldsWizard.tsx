@@ -337,13 +337,24 @@ function DataDiskTable({
     const RemoveDisk=(_item: any)=> {
         console.log("RemoveDisk:" + _item.key);
         let dataDisks = inputStates;
-        var changedDataDisk = dataDisks.filter((obj: { key: any; }) => {
-            return obj.key === _item.key
-        })
-        if (changedDataDisk!=null) {
-            dataDisks.pop(changedDataDisk);
-            toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
-        }
+
+        const indexOfObject = dataDisks.findIndex((object: { key: any; }) => {
+        return object.key === _item.key;
+        });
+
+        console.log(indexOfObject); // 👉️ 1
+
+        dataDisks.splice(indexOfObject, 1);
+        //dataDisks.pop(changedDataDisk[0]);
+        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
+
+        // var changedDataDisk = dataDisks.filter((obj: { key: any; }) => {
+        //     return obj.key === _item.key
+        // })
+        // if (changedDataDisk[0]!=null) {
+        //     dataDisks.pop(changedDataDisk[0]);
+        //     toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
+        // }
     }
 
     // let dataDiskFake = [{"key":"AAA","disk_type":"Standard_LRS","disk_size":"16","host_caching":"ReadOnly", "mount_point":"mount point A","disk_label":"Data disk for database"},
@@ -412,7 +423,7 @@ function DataDiskTable({
                                 <Form.TextArea
                                         name="mount_point"
                                         placeholder={'Mount point'}
-                                        value={item.mount_point}
+                                        value={item.key}
                                         //onChange={e => onItemChange(e.target, item,"mount_point")}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"mount_point",value)}
                                 />
@@ -430,6 +441,7 @@ function DataDiskTable({
                                 <Icon
                                     name="remove"
                                     link
+                                    color='red'
                                     bordered
                                     title="Delete data disk"
                                     onClick={(event: Event) => {
@@ -478,7 +490,7 @@ export default function InputFields({
     const AddDisk = () => {
         console.log("add disk");
         let dataDisks = JSON.parse(inputsState["data_disks"]);
-        dataDisks.push({"key":uniqueID,"disk_type":"Standard_LRS","disk_size":"16","host_caching":"", "mount_point":"","disk_label":""});
+        dataDisks.push({"key":uniqueID(),"disk_type":"Standard_LRS","disk_size":"16","host_caching":"None", "mount_point":"","disk_label":""});
         toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
     }
 
