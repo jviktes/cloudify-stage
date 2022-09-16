@@ -420,16 +420,16 @@ function DataDiskTable({
                                 />
                              </DataTable.Data>
                              <DataTable.Data style={{ width: '30%' }}>
-                                <Form.TextArea
+                                <Form.Input
                                         name="mount_point"
                                         placeholder={'Mount point'}
-                                        value={item.key}
+                                        value={item.mount_point}
                                         //onChange={e => onItemChange(e.target, item,"mount_point")}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"mount_point",value)}
                                 />
                              </DataTable.Data>
                              <DataTable.Data style={{ width: '30%' }}>
-                                <Form.TextArea
+                                <Form.Input
                                         name="disk_label"
                                         placeholder={'Disk label'}
                                         value={item.disk_label}
