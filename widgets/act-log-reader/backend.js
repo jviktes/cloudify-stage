@@ -37,7 +37,8 @@ module.exports = async function(r) {
         for (const [key, value] of Object.entries(data)) {
 
             let _fileName = key; //key = file name = <VM-name>-<ACT-class>-<ACT-set>-<timestamp>.log 
-
+            console.log("processedDataToJson:"+_fileName);
+            //console.log("processedDataToJson:"+value);
             //funkce pro splitting:
             const _parametresFromFile = _fileName.split("-");
 
@@ -63,34 +64,51 @@ module.exports = async function(r) {
             let _testResultSummary = [];
 
             //filling test details into _testResultArray
-            value.results.forEach(_testData => {
-                _actual_value = _testData.actual_value;
-                _class = _testData.class;
-                _code = _testData.code;
-                _description= _testData.description;
-                _expected_value= _testData.expected_value;
-                _name= _testData.name;
-
-                _result = _testData.result;
-                if (_testData.result.toString().toLowerCase() && _testData.result.toString().toLowerCase().indexOf("passed")!== -1) {
-                    _passedTestsCount++;
-                }
-                if (_testData.result.toString().toLowerCase() && _testData.result.toString().toLowerCase().indexOf("failed")!== -1) {
-                    _failedTestsCount++;
-                }
-
-                _testResultArray.push(
+            try {
+	            if (value!=null || value!=undefined) {
+	                value.results.forEach(_testData => {
+	                    _actual_value = _testData.actual_value;
+	                    _class = _testData.class;
+	                    _code = _testData.code;
+	                    _description= _testData.description;
+	                    _expected_value= _testData.expected_value;
+	                    _name= _testData.name;
+	
+	                    _result = _testData.result;
+	                    if (_testData.result.toString().toLowerCase() && _testData.result.toString().toLowerCase().indexOf("passed")!== -1) {
+	                        _passedTestsCount++;
+	                    }
+	                    if (_testData.result.toString().toLowerCase() && _testData.result.toString().toLowerCase().indexOf("failed")!== -1) {
+	                        _failedTestsCount++;
+	                    }
+	
+	                    _testResultArray.push(
+	                        {
+	                            "actual_value": _actual_value,
+	                            "expected_value":  _expected_value,
+	                            "class": _class,
+	                            "code":  _code, 
+	                            "description":  _description,
+	                            "name":  _name,
+	                            "result": _result,
+	                        }
+	                    );
+	                });
+	            }
+            } catch (error) {
+                //console.log(error); Bohužel, zde to padá
+/*                 _testResultArray.push(
                     {
-                        "actual_value": _actual_value,
-                        "expected_value":  _expected_value,
-                        "class": _class,
-                        "code":  _code, 
-                        "description":  _description,
-                        "name":  _name,
-                        "result": _result,
+                        "actual_value": "Not valid file",
+                        "expected_value":"",
+                        "class": "",
+                        "code":  "", 
+                        "description":  "",
+                        "name":  "",
+                        "result": "",
                     }
-                );
-            });
+                ) */
+            }
 
             if (_failedTestsCount===0 && _passedTestsCount>0) {
                 _testResultSummary = "Succeeded";    
@@ -115,6 +133,7 @@ module.exports = async function(r) {
                 "testResultArray":_testResultArray,
             });
         }
+        
         return outputData;
 
     }
@@ -132,7 +151,7 @@ module.exports = async function(r) {
             files.forEach(file => {
                 {
                     result[file]="";
-                    
+                    //console.log(file);
                     let _promise = new Promise(function(resolve, reject) {
                          resolve(fs.readFile(folder+"/"+file));
                     });
@@ -141,8 +160,14 @@ module.exports = async function(r) {
                     _promise.then(
                 
                         (_result) => { 
-                            
-                            result[file] = JSON.parse(_result.toString());
+                            //try {
+                                //console.log(_result.toString()); // toto OK
+                                result[file] = JSON.parse(_result.toString());
+                                //console.log("result[file]");
+                                //console.log(result[file]);
+                            //} catch (error) {
+                                //console.log("problem");
+                            //}
                         }
                     );
                 }
