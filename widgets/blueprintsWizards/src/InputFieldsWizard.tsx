@@ -520,7 +520,7 @@ export default function InputFields({
             //impacted_region
             if (input.name=="impacted_region") {
                 
-                return <div className="field" style={{width: "20%", float:"left"}}>
+                return <div className="field" style={{marginTop:"80px"}}>
                         <label style={{ display: "inline-block" }}>{input.display_label}</label>
                         <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
                                     <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
@@ -544,7 +544,7 @@ export default function InputFields({
                 // "United Arab Emirates":{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"},
                 // "Syrian Arab Republic":{"country_code":"SY","region_code":"ASIA","region_name":"ASIA"},
 
-                return <div className="field" style={{width: "20%", float:"left"}}>
+                return <div className="field" style={{marginTop:"20px"}}>
                         <label>{input.display_label}</label>
                         <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
                                     <DataTable className="agentsGsnCountries table-scroll-gsn">
