@@ -311,10 +311,8 @@ function DataDiskTable({
     toolbox: Stage.Types.Toolbox;
     inputStates:any;
 }) {
-    //console.log(diskData); //zbytecne
 
     const { Form } = Stage.Basic;
-
     const onItemChange = (e: any, _item:any, _typeProperty:any, _value:any)=> {
         console.log("onItemChange DataDisk:" + _item);
         console.log("DataDisk e.target:" + e);
@@ -341,20 +339,9 @@ function DataDiskTable({
         const indexOfObject = dataDisks.findIndex((object: { key: any; }) => {
         return object.key === _item.key;
         });
-
-        console.log(indexOfObject); // 👉️ 1
-
         dataDisks.splice(indexOfObject, 1);
-        //dataDisks.pop(changedDataDisk[0]);
         toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
 
-        // var changedDataDisk = dataDisks.filter((obj: { key: any; }) => {
-        //     return obj.key === _item.key
-        // })
-        // if (changedDataDisk[0]!=null) {
-        //     dataDisks.pop(changedDataDisk[0]);
-        //     toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
-        // }
     }
 
     // let dataDiskFake = [{"key":"AAA","disk_type":"Standard_LRS","disk_size":"16","host_caching":"ReadOnly", "mount_point":"mount point A","disk_label":"Data disk for database"},
@@ -395,7 +382,6 @@ function DataDiskTable({
                                         selection
                                         options={DataDiskOptions}
                                         value={item.disk_type}
-                                        //onChange={e => onItemChange(e.target, item,"disk_type")}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"disk_type",value)}
                                 />
                             </DataTable.Data>
@@ -405,7 +391,6 @@ function DataDiskTable({
                                         selection
                                         options={DiskSizeOptions}
                                         value={item.disk_size}
-                                        //onChange={e => onItemChange(e.target, item,"disk_size")}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"disk_size",value)}
                                 />
                             </DataTable.Data>
@@ -415,7 +400,6 @@ function DataDiskTable({
                                         selection
                                         options={DataDiskHostingCashOptions}
                                         value={item.host_caching}
-                                        //onChange={e => onItemChange(e.target, item,"host_caching")}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"host_caching",value)}
                                 />
                              </DataTable.Data>
@@ -424,7 +408,6 @@ function DataDiskTable({
                                         name="mount_point"
                                         placeholder={'Mount point'}
                                         value={item.mount_point}
-                                        //onChange={e => onItemChange(e.target, item,"mount_point")}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"mount_point",value)}
                                 />
                              </DataTable.Data>
@@ -433,7 +416,6 @@ function DataDiskTable({
                                         name="disk_label"
                                         placeholder={'Disk label'}
                                         value={item.disk_label}
-                                        //onChange={e => onItemChange(e.target, item,"disk_label")}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"disk_label",value)}
                                 />
                              </DataTable.Data>
@@ -445,7 +427,7 @@ function DataDiskTable({
                                     bordered
                                     title="Delete data disk"
                                     onClick={(event: Event) => {
-                                        event.stopPropagation(); //item
+                                        event.stopPropagation();
                                         RemoveDisk(item);
                                     }} />
                             </DataTable.Data>
@@ -561,7 +543,7 @@ export default function InputFields({
                 // "United Arab Emirates":{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"},
                 // "Syrian Arab Republic":{"country_code":"SY","region_code":"ASIA","region_name":"ASIA"},
 
-                return <div className="field" style={{ display: "inline-block" }}>
+                return <div className="field test" style={{ display: "inline-block" }}>
                         <label>{input.display_label}</label>
                         <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
                                     <DataTable className="agentsGsnCountries table-scroll-gsn">
@@ -583,16 +565,18 @@ export default function InputFields({
                     <label style={{ display: "inline-block" }}>{input.display_label}</label>
 
                         <DataDiskTable diskData={input} toolbox={toolbox} inputStates={JSON.parse(inputsState[input.name])}></DataDiskTable>
-                        <Icon
-                        name="add"
-                        color='green'
-                        link
-                        bordered
-                        title="Add data disk"
-                        onClick={(event: Event) => {
-                            event.stopPropagation();
-                            AddDisk();
-                        } } />
+                        <div style={{float:"right",margin:"3px"}}>
+                            <Icon
+                            name="add"
+                            color='green'
+                            link
+                            bordered
+                            title="Add data disk"
+                            onClick={(event: Event) => {
+                                event.stopPropagation();
+                                AddDisk();
+                            } } />
+                        </div>
                 </div>
             }
             
