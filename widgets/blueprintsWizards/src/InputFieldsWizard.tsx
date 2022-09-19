@@ -297,6 +297,7 @@ function RegionSelectField({
             type="Checkbox"
             //label={gsnItemData}
             checked={isSelected(gsnItemData)}
+            title={"Select all countries from region"}
             />
          {gsnItemData}
         </Form.Field> 
