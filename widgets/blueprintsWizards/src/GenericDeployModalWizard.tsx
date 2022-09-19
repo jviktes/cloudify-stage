@@ -29,6 +29,9 @@ import { addErrors } from '../../common/src/inputs/utils/errors';
 import getInputsWithoutValues from '../../common/src/inputs/utils/getInputsWithoutValues';
 import type { FilterRule } from '../../common/src/filters/types';
 
+//import { capitalize, chain, filter, lowerCase, map, sortBy, size } from 'lodash';
+import {sortBy} from 'lodash';
+
 import GeneralStep from './wizardSteps/GeneralStep';
 import ClusteringStep from './wizardSteps/ClusteringStep';
 import GSNStep from './wizardSteps/GSNStep';
@@ -324,7 +327,26 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     setDeploymentIputs(fieldName: string,fieldNameValue: string) {
         console.log("setDeploymentIputs:"+fieldName + ";"+fieldNameValue);
         const { deploymentInputs } = this.state;
+
+        //pokud je vybrana Afrika, vyberu vsechny africke staty
+        // if (fieldName=="impacted_region") {
+        //     let _selectedCountries = JSON.parse(deploymentInputs["impacted_country"]);
+            
+        //     for (const key in _selectedCountries) {
+        //         if (Object.prototype.hasOwnProperty.call(object, key)) {
+        //             const element = object[key];
+                    
+        //         }
+        //     }
+        //     deploymentInputs["impacted_country"] = "";
+        // }
+        // const { gsnCountries } = this.state;
+        // const { gsnRegions } = this.state;
+
         deploymentInputs[fieldName] = fieldNameValue;
+
+        
+
         this.setState({deploymentInputs});
 
     }
@@ -759,36 +781,33 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         console.log("calling fetchImpactedCountriesGSNData");
         
         const { toolbox } = this.props;
-        let _secretDataFull = null;
+        //let _secretDataFull = null;
         try {
-            _secretDataFull = await toolbox.getManager().doGet(`/secrets/${GSN_COUNTRIES_CASH}`);
+            const _secretDataFull = await toolbox.getManager().doGet(`/secrets/${GSN_COUNTRIES_CASH}`);
+            //console.log(_secretDataFull);
+            const _gsnCountries =  JSON.parse(_secretDataFull.value); 
+            let _gsnRegions = [];
+            let gsnCountries = [];
+
+            for (let _countrName in _gsnCountries) {
+                //console.log(_countrName + ": "+ _gsnCountries[_countrName]);
+                gsnCountries.push({"countryName":_countrName, "countryData":_gsnCountries[_countrName]});
+                _gsnRegions.push(_gsnCountries[_countrName].region_name);
+            }
+            let gsnRegions = [...new Set(_gsnRegions)];
+            gsnRegions = sortBy(gsnRegions);
+
+            //{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"}
+            gsnCountries=(JSON.parse(JSON.stringify(gsnCountries)));
+            gsnCountries= sortBy(gsnCountries,"countryName");
+
+            this.setState({gsnCountries}); //tady je pole hodnot ve value
+            this.setState({gsnRegions});
+        //return gsnCountries;
         } catch (error:any) {
             console.log(error);
                 throw error;
         }
-
-        //console.log(_secretDataFull);
-
-        const _gsnCountries =  JSON.parse(_secretDataFull.value); 
-        let _gsnRegions = [];
-        let gsnCountries = [];
-
-        // _.map(gsnCountries, item => (
-        //     console.log(item.key)
-        // ));
-
-        for (let _countrName in _gsnCountries) {
-            //console.log(_countrName + ": "+ _gsnCountries[_countrName]);
-            gsnCountries.push({"countryName":_countrName, "countryData":_gsnCountries[_countrName]});
-            _gsnRegions.push(_gsnCountries[_countrName].region_name);
-        }
-        let gsnRegions = [...new Set(_gsnRegions)];
-
-        //{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"}
-        gsnCountries=(JSON.parse(JSON.stringify(gsnCountries)));
-        this.setState({gsnCountries}); //tady je pole hodnot ve value
-        this.setState({gsnRegions});
-        return gsnCountries;
     }
 
     getDeploymentNameByTime  = (blueprint: FullBlueprintData) =>{
@@ -815,7 +834,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                         ...(blueprint.plan.workflows.install as Record<string, unknown>),
                         name: 'install'
                     } as Workflow;
-
+                    
                     const _deploymentName = this.getDeploymentNameByTime(blueprint);
                     this.setState({deploymentName: _deploymentName});
                      
@@ -831,10 +850,10 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                         loading: false
                     });
                 }).then (
-                    await this.fetchGSNFromFile()  
+                    await this.fetchGSNFromFile()
                 )
                 .then (
-                    await this.fetchImpactedCountriesGSNData() 
+                    await this.fetchImpactedCountriesGSNData()
                 )
                 .catch(err => {
                     this.setState({

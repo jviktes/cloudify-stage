@@ -290,14 +290,15 @@ function RegionSelectField({
     return (
         
         <Form.Field>
-        {/* {gsnItemData.countryData.region_code} */}
+        
         <Form.Input
             onChange={e => onRegionChange(e.target, gsnItemData)}
             loading={false} 
             type="Checkbox"
-            label={gsnItemData}
+            //label={gsnItemData}
             checked={isSelected(gsnItemData)}
             />
+         {gsnItemData}
         </Form.Field> 
     );
 }
@@ -519,7 +520,7 @@ export default function InputFields({
             //impacted_region
             if (input.name=="impacted_region") {
                 
-                return <div className="field">
+                return <div className="field" style={{width: "20%", float:"left"}}>
                         <label style={{ display: "inline-block" }}>{input.display_label}</label>
                         <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
                                     <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
@@ -543,7 +544,7 @@ export default function InputFields({
                 // "United Arab Emirates":{"country_code":"AE","region_code":"ASIA","region_name":"ASIA"},
                 // "Syrian Arab Republic":{"country_code":"SY","region_code":"ASIA","region_name":"ASIA"},
 
-                return <div className="field test" style={{ display: "inline-block" }}>
+                return <div className="field" style={{width: "20%", float:"left"}}>
                         <label>{input.display_label}</label>
                         <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
                                     <DataTable className="agentsGsnCountries table-scroll-gsn">
@@ -598,6 +599,38 @@ export default function InputFields({
                                 </div>
                             )
             }
+            //impact: 
+            if (input.name=="impact") {
+                return (<div style={{width: "20%", marginTop:"5px", marginLeft:"10px", float:"left"}}>
+                    <FormField
+                    input={input}
+                    value={value}
+                    onChange={onChange}
+                    error={errorsState[input.name]}
+                    toolbox={toolbox}
+                    dataType={dataType}
+                    />
+                </div>
+
+                )
+            }
+
+            //business_unit: 
+            if (input.name=="business_unit") {
+                return (<div style={{width: "20%", marginTop:"5px", float:"left"}}>
+                    <FormField
+                    input={input}
+                    value={value}
+                    onChange={onChange}
+                    error={errorsState[input.name]}
+                    toolbox={toolbox}
+                    dataType={dataType}
+                    />
+                </div>
+
+                )
+            }
+
             //all normal input fieds:
             return (
                 <FormField

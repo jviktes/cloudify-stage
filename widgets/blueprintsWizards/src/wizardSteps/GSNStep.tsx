@@ -27,7 +27,7 @@ export default function GeneralGSNStepStep(this: any, { toolbox, blueprint, inde
     const category = "gsn";
     return (
         
-            <div style={{overflow: "visible",padding:"10px"}}>
+            <div style={{overflow: "visible",padding:"10px", display:"contents"}}>
                         <DeploymentInputs
                             toolbox={toolbox}
                             blueprint={blueprint}
