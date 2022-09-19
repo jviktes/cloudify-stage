@@ -327,25 +327,52 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     setDeploymentIputs(fieldName: string,fieldNameValue: string) {
         console.log("setDeploymentIputs:"+fieldName + ";"+fieldNameValue);
         const { deploymentInputs } = this.state;
-
-        //pokud je vybrana Afrika, vyberu vsechny africke staty
-        // if (fieldName=="impacted_region") {
-        //     let _selectedCountries = JSON.parse(deploymentInputs["impacted_country"]);
-            
-        //     for (const key in _selectedCountries) {
-        //         if (Object.prototype.hasOwnProperty.call(object, key)) {
-        //             const element = object[key];
-                    
-        //         }
-        //     }
-        //     deploymentInputs["impacted_country"] = "";
-        // }
-        // const { gsnCountries } = this.state;
-        // const { gsnRegions } = this.state;
-
         deploymentInputs[fieldName] = fieldNameValue;
 
-        
+        //pokud je vybrana Afrika, vyberu vsechny africke staty
+        if (fieldName=="impacted_region") {
+            let _selectedCountries = deploymentInputs["impacted_country"];
+            let _selectedRegions = JSON.parse(String(deploymentInputs["impacted_region"]));
+            let _updatedCountries = [];
+            const { gsnCountries } = this.state;
+            //const { gsnRegions } = this.state;
+            console.log(_selectedCountries);
+            console.log(deploymentInputs["impacted_region"])
+
+            for (const key in gsnCountries) {
+                
+                    const _country = gsnCountries[key];
+                    if (_selectedRegions.includes(_country.countryData.region_code)==true) {
+                        _updatedCountries.push(_country);
+                    }
+
+                
+            }
+
+            deploymentInputs["impacted_country"] = JSON.stringify(_updatedCountries);
+
+        }
+
+        // if (fieldName=="impacted_country") {
+        //     let _selectedCountries = deploymentInputs["impacted_country"];
+        //     //let _selectedRegions = JSON.parse(String(deploymentInputs["impacted_region"]));
+        //     let _updatedRegions = [];
+        //     //const { gsnCountries } = this.state;
+        //     const { gsnRegions } = this.state;
+        //     console.log(_selectedCountries);
+        //     console.log(deploymentInputs["impacted_region"])
+
+        //     for (const key in gsnRegions) {
+                
+        //             const _region = gsnRegions[key];
+        //             if (_selectedCountries.countryData.region_code.includes(_region)==true) {
+        //                 _updatedRegions.push(_region);
+        //             }
+        //     }
+
+        //     deploymentInputs["impacted_region"] = JSON.stringify(_updatedRegions);
+
+        // }
 
         this.setState({deploymentInputs});
 
