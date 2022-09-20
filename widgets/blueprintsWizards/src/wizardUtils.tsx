@@ -65,8 +65,8 @@ export default function getDeploymentInputsByCategories( _deploymentInputs: Reco
         }
 
         if (category=="vmconfig") {
-            if (inputName=="size") {
-                inputsWithoutValues[inputName] = _deploymentInputs["size"];
+            if (inputName=="vm_size") {
+                inputsWithoutValues[inputName] = _deploymentInputs["vm_size"];
             }
             if (inputName=="disk_size") {
                 inputsWithoutValues[inputName] = _deploymentInputs["disk_size"];
@@ -90,7 +90,7 @@ export default function getDeploymentInputsByCategories( _deploymentInputs: Reco
 
 const generalOrder = ["product_name", "quantity","environment","location", "network_segment"];
 const clusteringOrder = ["ha_concept","availability_zone","availability_set"];
-const vmconfigOrder = ["size","os_disk_type","disk_size","data_disks"];
+const vmconfigOrder = ["vm_size","os_disk_type","disk_size","data_disks"];
 const swconfigOrder = ["sw_apps"];
 const gsnOrder = ["business_unit","impact","impacted_region","impacted_country","business_service"];
 
