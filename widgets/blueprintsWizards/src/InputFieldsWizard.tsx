@@ -522,28 +522,50 @@ export default function InputFields({
             if (input.name=="impacted_region") {
                 
                 return <div className="field" style={{marginTop:"80px"}}>
-                        <label style={{ display: "inline-block" }}>{input.display_label}</label>
-                        <div className="field" style={{ maxHeight: "150px", width: "20%"}}>
-                                    <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
+                            <div style={{float:'left'}}>
+                                <label className='fieldCustomLabel' style={{ display: "inline-block" }}>{input.display_label}</label>
+                                <div className="field" style={{ maxHeight: "150px", width: "20%"}}>
+                                        <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
+                                            <DataTable.Column label="check" name="" style={{display:"none"}}/>
+                                            <DataTable.Column label="region" name="" style={{display:"none"}}/>
+                                            {_.map(gsnRegions, item => (
+                                                <DataTable.Row key={JSON.stringify(item)} >
+                                                    <DataTable.Data style={{ width: '20%' }}>
+                                                        <RegionSelectField gsnItemData={item} toolbox={toolbox} inputStates={inputsState[input.name]}></RegionSelectField>
+                                                    </DataTable.Data>
+                                                    <DataTable.Data style={{ width: '20%' }}>
+                                                        {item}
+                                                    </DataTable.Data>
+                                                </DataTable.Row>
+                                            ))}
+                                        </DataTable>
+                                </div>
+                            </div>
+                            <div style={{float:'left', marginLeft:"20px"}}>
+                                <label className='fieldCustomLabel'>Impacted countries</label>
+                                <div className="field" style={{ maxHeight: "160px", overflowY:"scroll"}}>
+                                    <DataTable className="agentsGsnCountries table-scroll-gsn">
                                         <DataTable.Column label="check" name="" style={{display:"none"}}/>
-                                        <DataTable.Column label="region" name="" style={{display:"none"}}/>
-                                        {_.map(gsnRegions, item => (
+                                        <DataTable.Column label="country" name="" style={{display:"none"}}/>
+                                        {_.map(gsnCountries, item => (
                                             <DataTable.Row key={JSON.stringify(item)} >
                                                 <DataTable.Data style={{ width: '20%' }}>
-                                                    <RegionSelectField gsnItemData={item} toolbox={toolbox} inputStates={inputsState[input.name]}></RegionSelectField>
+                                                    <CountrySelectField gsnItemData={item} toolbox={toolbox} inputStates={inputsState["impacted_country"]}></CountrySelectField>
                                                 </DataTable.Data>
                                                 <DataTable.Data style={{ width: '20%' }}>
-                                                    {item}
+                                                    {item.countryName}
                                                 </DataTable.Data>
                                             </DataTable.Row>
                                         ))}
                                     </DataTable>
+                                </div>
                             </div>
                        </div>
             }
 
             //impacted_country
             if (input.name=="impacted_country") {
+                return; //renderd in region
                 console.log("form type impacted_country");
 
                 // gsnCountries:{
@@ -551,8 +573,8 @@ export default function InputFields({
                 // "Syrian Arab Republic":{"country_code":"SY","region_code":"ASIA","region_name":"ASIA"},
 
                 return <div className="field" style={{marginTop:"20px"}}>
-                        <label>{input.display_label}</label>
-                        <div className="field" style={{ maxHeight: "150px", overflowY:"scroll", width: "20%"}}>
+                            <label>{input.display_label}</label>
+                            <div className="field" style={{ maxHeight: "150px", overflowY:"scroll", width: "20%"}}>
                                     <DataTable className="agentsGsnCountries table-scroll-gsn">
                                         <DataTable.Column label="check" name="" style={{display:"none"}}/>
                                         <DataTable.Column label="country" name="" style={{display:"none"}}/>
@@ -597,7 +619,7 @@ export default function InputFields({
                 //console.log("form type business_service");
                 //console.log("business_service:"+JSON.stringify(input));
                             return ( 
-                                <div>
+                                <div style={{marginTop: "280px"}}>
                                     <FormSearchField
                                         input={input}
                                         value={value}

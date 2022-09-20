@@ -16,13 +16,21 @@
   table-layout: fixed;
   } */
 
+  .fieldCustomLabel {
+    display: block;
+    margin: 0 0 .28571429rem 0;
+    color: rgba(0,0,0,.87);
+    font-size: .92857143em;
+    font-weight: 700;
+    text-transform: none;
+}
   .deployBlueprintModal {
     width: 1200px !important;
   }
-  .agentsGsnCountries tr{
+  /* .agentsGsnCountries tr{
     height: 15px;
     line-height: 15px;
-  }
+  } */
 
 .blueprintsTable th:nth-child(6) {
     min-width: 81px;
