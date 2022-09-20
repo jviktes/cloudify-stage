@@ -221,7 +221,7 @@ function CountrySelectField({
             onChange={e => onRegionChange(e.target, gsnItemData)}
             loading={false} 
             type="Checkbox"
-            label={gsnItemData.countryName}
+            //label={gsnItemData.countryName}
             checked={isSelected(gsnItemData.countryName)}
             />
         </Form.Field> 
@@ -299,7 +299,7 @@ function RegionSelectField({
             checked={isSelected(gsnItemData)}
             title={"Select all countries from region"}
             />
-         {gsnItemData}
+         {/* {gsnItemData} */}
         </Form.Field> 
     );
 }
@@ -370,11 +370,11 @@ function DataDiskTable({
     return (
             <div>
                 <DataTable className="agentsGsnCountries table-scroll-gsn">
-                            <DataTable.Column label="disk_type" name="disk_type" width='10%'  />
-                            <DataTable.Column label="disk_size" name="disk_size" width='10%' />
-                            <DataTable.Column label="host_caching" name="host_caching" width='10%' />
-                            <DataTable.Column label="mount_point" name="mount_point" width='30%'/>
-                            <DataTable.Column label="disk_label" name="disk_label"  width='35%'/>
+                            <DataTable.Column label="Disk type" name="disk_type" width='10%'  />
+                            <DataTable.Column label="Disk size" name="disk_size" width='10%' />
+                            <DataTable.Column label="Host caching" name="host_caching" width='10%' />
+                            <DataTable.Column label="Mount point" name="mount_point" width='30%'/>
+                            <DataTable.Column label="Disk label" name="disk_label"  width='35%'/>
                             <DataTable.Column label="" name=""  width='5%'/>
                     {_.map(inputStates, item => (
                         <DataTable.Row key={JSON.stringify(item.key)} >
@@ -523,12 +523,17 @@ export default function InputFields({
                 
                 return <div className="field" style={{marginTop:"80px"}}>
                         <label style={{ display: "inline-block" }}>{input.display_label}</label>
-                        <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
+                        <div className="field" style={{ maxHeight: "150px", width: "20%"}}>
                                     <DataTable className="agentsBlueprintsGsn table-scroll-gsn">
+                                        <DataTable.Column label="check" name="" style={{display:"none"}}/>
+                                        <DataTable.Column label="region" name="" style={{display:"none"}}/>
                                         {_.map(gsnRegions, item => (
                                             <DataTable.Row key={JSON.stringify(item)} >
                                                 <DataTable.Data style={{ width: '20%' }}>
                                                     <RegionSelectField gsnItemData={item} toolbox={toolbox} inputStates={inputsState[input.name]}></RegionSelectField>
+                                                </DataTable.Data>
+                                                <DataTable.Data style={{ width: '20%' }}>
+                                                    {item}
                                                 </DataTable.Data>
                                             </DataTable.Row>
                                         ))}
@@ -547,12 +552,17 @@ export default function InputFields({
 
                 return <div className="field" style={{marginTop:"20px"}}>
                         <label>{input.display_label}</label>
-                        <div className="field" style={{ maxHeight: "150px", overflowY:"scroll"}}>
+                        <div className="field" style={{ maxHeight: "150px", overflowY:"scroll", width: "20%"}}>
                                     <DataTable className="agentsGsnCountries table-scroll-gsn">
+                                        <DataTable.Column label="check" name="" style={{display:"none"}}/>
+                                        <DataTable.Column label="country" name="" style={{display:"none"}}/>
                                         {_.map(gsnCountries, item => (
                                             <DataTable.Row key={JSON.stringify(item)} >
                                                 <DataTable.Data style={{ width: '20%' }}>
                                                     <CountrySelectField gsnItemData={item} toolbox={toolbox} inputStates={inputsState[input.name]}></CountrySelectField>
+                                                </DataTable.Data>
+                                                <DataTable.Data style={{ width: '20%' }}>
+                                                    {item.countryName}
                                                 </DataTable.Data>
                                             </DataTable.Row>
                                         ))}
