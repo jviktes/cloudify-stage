@@ -179,11 +179,11 @@ const EmptyComponent = () => {
   }
 
 const stepsDefinition = [
-    { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
-    { key: 'VMConfigStep', label: 'VM configuration', isDone: false, component: EmptyComponent },
-    { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
-    { key: 'ClusteringStep', label: 'Clustering', isDone: false, component: EmptyComponent },
-    { key: 'SWConfigStep', label: 'SW configuration', isDone: false, component: EmptyComponent },
+    { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },//1
+    { key: 'ClusteringStep', label: 'Clustering', isDone: false, component: EmptyComponent },//2
+    { key: 'VMConfigStep', label: 'VM configuration', isDone: false, component: EmptyComponent }, //3
+    { key: 'SWConfigStep', label: 'SW configuration', isDone: false, component: EmptyComponent },//4
+    { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },//5
     ]
 
 type GenericDeployModalState = {
@@ -282,8 +282,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         scheduledTime: '',
         selectedApproveButton: ApproveButtons.install,
         steps:stepsDefinition,
-        //activeStep: { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
-        activeStep: { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
+        activeStep: { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
+        //activeStep: { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
         //activeStep: { key: 'VMConfigStep', label: 'VM configuration', isDone: false, component: EmptyComponent },
         showDeployModalActions:false,
     };
@@ -830,7 +830,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
             this.setState({gsnCountries}); //tady je pole hodnot ve value
             this.setState({gsnRegions});
-        //return gsnCountries;
+            return _secretDataFull;
         } catch (error:any) {
             console.log(error);
                 throw error;
