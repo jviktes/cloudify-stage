@@ -21,21 +21,32 @@ export default function SWConfigStep(this: any, { toolbox, blueprint, index,titl
     console.log("SWConfigStep:"+index+","+title+","+activeSection);;
     //console.log(deploymentInputs);
     //console.log(title);
+
+
     const category = "swconfig";
-    return (
-        <div style={{overflow: "visible",padding:"10px"}}>
-                    <DeploymentInputs
-                        toolbox={toolbox}
-                        blueprint={blueprint}
-                        onYamlFileChange={onYamlFileChange}
-                        fileLoading={fileLoading}
-                        onDeploymentInputChange={onDeploymentInputChange}
-                        deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
-                        errors={errors}
-                        gsnData = {{}}
-                        gsnCountries = {{}}
-                        gsnRegions= {{}}
-                    />
-        </div>
-    );
+
+    const orderedInputsWithoutValues=getDeploymentInputsByCategories(deploymentInputs,category);
+    //console.log(orderedInputsWithoutValues);
+    //only for demo!
+    if (!orderedInputsWithoutValues) {
+        return (<div style={{overflow: "visible",padding:"10px"}}>
+        <DeploymentInputs
+            toolbox={toolbox}
+            blueprint={blueprint}
+            onYamlFileChange={onYamlFileChange}
+            fileLoading={fileLoading}
+            onDeploymentInputChange={onDeploymentInputChange}
+            deploymentInputs={orderedInputsWithoutValues}
+            errors={errors}
+            gsnData = {{}}
+            gsnCountries = {{}}
+            gsnRegions= {{}}
+        />
+        </div>  )
+    }
+    else {
+        return (
+            <div style={{overflow: "visible",padding:"10px"}}>This product has no additional software configurations</div>
+        )
+    }
 }
