@@ -114,24 +114,36 @@
     left: 100%;
     z-index: 2;
   }
+
+ /* DHL colors
+ RGB
+ zluta RGB(255,204,0)
+ red RGB(212,5,17)
+ 
+ secondary
+ orange: RGB(235,122,22) */
+
   .box .steps ul li.done div {
-    border-color: #20a8d8 !important;
+    border-color: RGB(255,204,0) !important;
     color: #fff !important;
-    background: #20a8d8 !important;
+    background: RGB(255,204,0) !important;
   }
   .box .steps ul li.done div::after {
-    border-left: 30px solid #20a8d8;
+    border-left: 30px solid RGB(255,204,0);
   }
   .box .steps ul li.active div {
-    border-color: #167495 !important;
+    border-color: RGB(235,122,22) !important;
     color: #fff !important;
-    background: #167495 !important;
+    background: RGB(235,122,22) !important;
     list-style: none;
   }
   .box .steps ul li.active div::after {
-    border-left: 30px solid #167495;
+    border-left: 30px solid RGB(235,122,22);
   }
    
+
+
+
   .box .step-component {
     /* padding: 20px; */
     /* height: 200px; */
