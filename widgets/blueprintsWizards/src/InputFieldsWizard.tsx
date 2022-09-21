@@ -326,7 +326,7 @@ function DataDiskTable({
         let dataDisks = inputStates;
 
         if (_typeProperty=="disk_type" || _typeProperty=="disk_size" || _typeProperty=="host_caching" 
-        || _typeProperty=="mount_point" || _typeProperty=="disk_label") {
+        || _typeProperty=="mountpoint" || _typeProperty=="label") {
             var changedDataDisk = dataDisks.filter((obj: { key: any; }) => {
                 return obj.key === _item.key
             })
@@ -353,23 +353,48 @@ function DataDiskTable({
     // let dataDiskFake = [{"key":"AAA","disk_type":"Standard_LRS","disk_size":"16","host_caching":"ReadOnly", "mount_point":"mount point A","disk_label":"Data disk for database"},
     // {"key":"BBB","disk_type":"Premium_LRS","disk_size":"512","host_caching":"ReadOnly", "mount_point":"mount point B","disk_label":"Data disk for aplication"}];
 
+    //ukazka:
+    // [   
+    //     {     
+    //       "disk_type": "Standard SSD",     
+    //       "disk_size": "32",     
+    //       "host_caching": "ReadOnly",     
+    //       "mountpoint": [{"path": "/web"}],     
+    //       "label": ["WEB"]   
+    //   }
+    // ]
+
     const DataDiskOptions = [
-        { text: 'Standard_LRS', name: 'Standard_LRS', value: 'Standard_LRS' },
-        { text: 'StandardSSD_LRS', name: 'StandardSSD_LRS', value: 'StandardSSD_LRS' },
-        { text: 'Premium_LRS', name: 'Premium_LRS', value: 'Premium_LRS' },]
+        { text: 'Standard LRS', name: 'Standard LRS', value: 'Standard LRS' },
+        { text: 'Standard SSD', name: 'Standard SSD', value: 'Standard SSD' },
+        { text: 'Premium', name: 'Premium', value: 'Premium' },]
     const DiskSizeOptions = [
-        { text: '4GB', name: '4GB', value: '4' },
-        { text: '8GB', name: '8GB', value: '8' },
-        { text: '16GB', name: '16GB', value: '16' },
-        { text: '32GB', name: '32GB', value: '32' },
-        { text: '64GB', name: '64GB', value: '64' },
-        { text: '128GB', name: '128GB', value: '128' },
-        { text: '256GB', name: '256GB', value: '256' },
-        { text: '512GB', name: '512GB', value: '512' },]
+        { text: '4GB', name: '4GB', value: 4 },
+        { text: '8GB', name: '8GB', value: 8 },
+        { text: '16GB', name: '16GB', value: 16 },
+        { text: '32GB', name: '32GB', value: 32 },
+        { text: '64GB', name: '64GB', value: 64 },
+        { text: '128GB', name: '128GB', value: 128 },
+        { text: '256GB', name: '256GB', value: 256 },
+        { text: '512GB', name: '512GB', value: 512 },]
     const DataDiskHostingCashOptions = [
         { text: 'None', name: 'None', value: 'None' },
         { text: 'ReadOnly', name: 'ReadOnly', value: 'ReadOnly' },
         { text: 'ReadWrite', name: 'ReadWrite', value: 'ReadWrite' },]
+
+    const getDiskLabelValueToBlueprintFormat = (_value: string) => {
+        //"label": ["WEB"]
+        var _obj = [];
+        _obj.push({_value})
+        return _obj;
+    }
+
+    const getDiskMountpointValueToBlueprintFormat = (_value: string) => {
+        //"mountpoint": [{"path": "/web"}],
+        var _obj = [];
+        _obj.push({"path":_value});
+        return _obj;
+    }
 
     return (
             <div>
@@ -413,16 +438,16 @@ function DataDiskTable({
                                 <Form.Input
                                         name="mount_point"
                                         placeholder={'Mount point'}
-                                        value={item.mount_point}
-                                        onChange={(e, { value }) => onItemChange(e.target,item,"mount_point",value)}
+                                        value={item.mountpoint[0].path}
+                                        onChange={(e, { value }) => onItemChange(e.target,item,"mountpoint",getDiskMountpointValueToBlueprintFormat(value))}
                                 />
                              </DataTable.Data>
                              <DataTable.Data style={{ width: '30%' }}>
                                 <Form.Input
-                                        name="disk_label"
+                                        name="label"
                                         placeholder={'Disk label'}
-                                        value={item.disk_label}
-                                        onChange={(e, { value }) => onItemChange(e.target,item,"disk_label",value)}
+                                        value={item.label[0]}
+                                        onChange={(e, { value }) => onItemChange(e.target,item,"label",getDiskLabelValueToBlueprintFormat(value))}
                                 />
                              </DataTable.Data>
                              <DataTable.Data style={{ width: '5%' }}>
@@ -478,7 +503,7 @@ export default function InputFields({
     const AddDisk = () => {
         console.log("add disk");
         let dataDisks = JSON.parse(inputsState["data_disks"]);
-        dataDisks.push({"key":uniqueID(),"disk_type":"Standard_LRS","disk_size":"16","host_caching":"None", "mount_point":"","disk_label":""});
+        dataDisks.push({"key":uniqueID(),"disk_type":"Standard SSD","disk_size":16,"host_caching":"None", "mountpoint":[{"path":""}],"label":[]});
         toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
     }
 
