@@ -106,7 +106,11 @@ function FormSearchField({
 
             <><div className="field">
             <label style={{ display: "inline-block" }}>{input.display_label}</label>
-            <div className="field"><div className="ui fluid icon input"><input style={{backgroundColor:"rgba(0,0,0,.05)"}} value={value} readOnly /></div></div>
+            <div className="field">
+                <div className="ui fluid icon input">
+                    <input style={{backgroundColor:"rgba(0,0,0,.05)"}} value={value} readOnly />
+                </div>
+            </div>
             </div><div id="id_search_results">
 
                 <Form.Field>
@@ -618,11 +622,20 @@ export default function InputFields({
             if (input.name=="business_service") {
                 //console.log("form type business_service");
                 //console.log("business_service:"+JSON.stringify(input));
+
+                let _valueCalculated = value;
+                gsnData.result.forEach((element: {name: string; u_number: string; }) => {
+                    if (element.u_number.toLowerCase().includes(value.toLowerCase())) {
+                        _valueCalculated = value+" ("+element.name+")";
+                    }
+                });
+
+                
                             return ( 
                                 <div style={{marginTop: "280px"}}>
                                     <FormSearchField
                                         input={input}
-                                        value={value}
+                                        value={_valueCalculated}
                                         onChange={onChange}
                                         error={errorsState[input.name]}
                                         toolbox={toolbox}
