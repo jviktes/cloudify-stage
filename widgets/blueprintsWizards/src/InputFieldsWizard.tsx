@@ -382,10 +382,27 @@ function DataDiskTable({
         { text: 'ReadOnly', name: 'ReadOnly', value: 'ReadOnly' },
         { text: 'ReadWrite', name: 'ReadWrite', value: 'ReadWrite' },]
 
+    const getDiskLabelValue = (_valueLabel: any) => {
+        try {
+            return _valueLabel[0];
+        } catch (error) {
+            return "";
+        }
+    }
+
+    const getDiskMountingPointValue = (_valueMountingPoint: any) => {
+        try {
+            return _valueMountingPoint[0].path;
+        } catch (error) {
+            return "";
+        }
+        
+    }
+
     const getDiskLabelValueToBlueprintFormat = (_value: string) => {
         //"label": ["WEB"]
         var _obj = [];
-        _obj.push({_value})
+        _obj.push(_value);
         return _obj;
     }
 
@@ -438,7 +455,7 @@ function DataDiskTable({
                                 <Form.Input
                                         name="mount_point"
                                         placeholder={'Mount point'}
-                                        value={item.mountpoint[0].path}
+                                        value={getDiskMountingPointValue(item.mountpoint)}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"mountpoint",getDiskMountpointValueToBlueprintFormat(value))}
                                 />
                              </DataTable.Data>
@@ -446,7 +463,7 @@ function DataDiskTable({
                                 <Form.Input
                                         name="label"
                                         placeholder={'Disk label'}
-                                        value={item.label[0]}
+                                        value={getDiskLabelValue(item.label)}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"label",getDiskLabelValueToBlueprintFormat(value))}
                                 />
                              </DataTable.Data>

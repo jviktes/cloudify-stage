@@ -867,7 +867,23 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                     
                     const _deploymentName = this.getDeploymentNameByTime(blueprint);
                     this.setState({deploymentName: _deploymentName});
-                     
+                    
+                    console.log("check keys in data_disks");
+
+                    //check keys in data_disks:
+                    if (deploymentInputs.data_disks) {
+                        
+                        var uniqueID = function () {
+                            return '_' + Math.random().toString(36).slice(2, 11);
+                        };
+
+                        let dataDiskData = JSON.parse(deploymentInputs.data_disks);
+                        _.map(dataDiskData, item => (
+                            item.key = uniqueID())
+                        )
+                        deploymentInputs.data_disks = JSON.stringify(dataDiskData);
+                    }    
+
                     this.setState({
                         deploymentInputs,
                         blueprint,
