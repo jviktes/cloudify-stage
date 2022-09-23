@@ -344,7 +344,9 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                 
                     const _country = gsnCountries[key];
                     if (_selectedRegions.includes(_country.countryData.region_code)==true) {
-                        _updatedCountries.push(_country);
+                        if (_country.countryName) {
+                            _updatedCountries.push(_country.countryName);
+                        }
                     }
             }
 
