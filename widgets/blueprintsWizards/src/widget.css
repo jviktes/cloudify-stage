@@ -134,7 +134,7 @@
   }
   .box .steps ul li.active div {
     border-color: RGB(212,5,17) !important;
-    color: rgb(0, 0, 0) !important;
+    color: rgb(255, 255, 255) !important;
     background: RGB(212,5,17) !important;
     list-style: none;
     font-weight: bolder;
