@@ -125,20 +125,22 @@
 
   .box .steps ul li.done div {
     border-color: RGB(255,204,0) !important;
-    color: #fff !important;
+    color: rgb(0, 0, 0) !important;
     background: RGB(255,204,0) !important;
+    font-weight: bolder;
   }
   .box .steps ul li.done div::after {
     border-left: 30px solid RGB(255,204,0);
   }
   .box .steps ul li.active div {
-    border-color: RGB(235,122,22) !important;
-    color: #fff !important;
-    background: RGB(235,122,22) !important;
+    border-color: RGB(212,5,17) !important;
+    color: rgb(0, 0, 0) !important;
+    background: RGB(212,5,17) !important;
     list-style: none;
+    font-weight: bolder;
   }
   .box .steps ul li.active div::after {
-    border-left: 30px solid RGB(235,122,22);
+    border-left: 30px solid RGB(212,5,17);
   }
    
 
