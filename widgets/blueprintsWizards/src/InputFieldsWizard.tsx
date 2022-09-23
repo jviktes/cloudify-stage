@@ -364,10 +364,15 @@ function DataDiskTable({
     //   }
     // ]
 
+
+    // - Standard HDD
+    // - Standard SSD
+    // - Premium SSD
+
     const DataDiskOptions = [
-        { text: 'Standard LRS', name: 'Standard LRS', value: 'Standard LRS' },
+        { text: 'Standard HDD', name: 'Standard HDD', value: 'Standard HDD' },
         { text: 'Standard SSD', name: 'Standard SSD', value: 'Standard SSD' },
-        { text: 'Premium', name: 'Premium', value: 'Premium' },]
+        { text: 'Premium SSD', name: 'Premium SSD', value: 'Premium SSD' },]
     const DiskSizeOptions = [
         { text: '4GB', name: '4GB', value: 4 },
         { text: '8GB', name: '8GB', value: 8 },
@@ -520,7 +525,7 @@ export default function InputFields({
     const AddDisk = () => {
         console.log("add disk");
         let dataDisks = JSON.parse(inputsState["data_disks"]);
-        dataDisks.push({"key":uniqueID(),"disk_type":"Standard SSD","disk_size":16,"host_caching":"None", "mountpoint":[{"path":""}],"label":[]});
+        dataDisks.push({"key":uniqueID(),"disk_type":"Standard HDD","disk_size":16,"host_caching":"None", "mountpoint":[{"path":""}],"label":[]});
         toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
     }
 
