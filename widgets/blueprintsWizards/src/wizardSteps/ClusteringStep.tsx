@@ -33,6 +33,7 @@ export default function ClusteringStep(this: any, { toolbox, blueprint, index,ti
                 fileLoading={fileLoading}
                 onDeploymentInputChange={onDeploymentInputChange}
                 deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
+                allDeploymentInputs = {deploymentInputs}
                 errors={errors}
                 gsnData = {{}}
                 gsnCountries = {{}}

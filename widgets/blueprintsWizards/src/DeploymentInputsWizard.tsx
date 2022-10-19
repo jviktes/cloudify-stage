@@ -14,6 +14,7 @@ interface Props {
     fileLoading: boolean;
     onDeploymentInputChange: OnChange;
     deploymentInputs: { [key: string]: unknown };
+    allDeploymentInputs : { [key: string]: unknown };
     errors: Record<string, string>;
     toolbox: Stage.Types.Toolbox;
     gsnData:{};
@@ -27,6 +28,7 @@ const DeploymentInputs: FunctionComponent<Props> = ({
     //fileLoading,
     onDeploymentInputChange,
     deploymentInputs,
+    allDeploymentInputs,
     errors,
     toolbox,
     gsnData,
@@ -39,29 +41,14 @@ const DeploymentInputs: FunctionComponent<Props> = ({
         <>
             {blueprint.id && (
                 <>
-                    {/* {deploymentHasInputs && (
-                        <YamlFileButton
-                            onChange={onYamlFileChange}
-                            dataType="deployment's inputs"
-                            fileLoading={fileLoading}
-                            iconButton
-                        />
-                    )} */}
-                    {/* {!_.isEmpty(blueprint.plan.data_types) && (
-                        <DataTypesButton iconButton types={blueprint.plan.data_types} />
-                    )} */}
-                    {/* {deploymentHasInputs ? (
-                        <InputsHelpIcon />
-                    ) : (
-                        <Message content={t('inputs.deploymentInputs.noInputs')} />
-                    )} */}
                 </>
             )}
-
+            
             <InputFields
                 inputs={blueprint.plan.inputs}
                 onChange={onDeploymentInputChange}
                 inputsState={deploymentInputs}
+                allDeploymentInputs = {allDeploymentInputs}
                 errorsState={errors}
                 toolbox={toolbox}
                 dataTypes={blueprint.plan.data_types}

@@ -569,8 +569,10 @@ function DataDiskTable({
 
 export default function InputFields({
     inputs,
+
     onChange,
     inputsState,
+    allDeploymentInputs,
     errorsState,
     toolbox,
     dataTypes,
@@ -582,6 +584,7 @@ export default function InputFields({
     inputs: Record<string, any>;
     onChange: OnChange;
     inputsState: Record<string, any>;
+    allDeploymentInputs:Record<string, any>;
     errorsState: Record<string, any>;
     toolbox: Stage.Types.Toolbox;
     dataTypes?: Record<string, any>;
@@ -592,7 +595,11 @@ export default function InputFields({
     //inputs je nutne srovnat podle poradi, nyni je poradi podle nacteni z blueprint souboru:
 
     inputs = getInputsOrderByCategories(inputs);
-
+    const getQuantity = ()=> {
+        let _quantity  = allDeploymentInputs["quantity"];
+        console.log(_quantity);
+        return _quantity;
+    };
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
         .reject('hidden')
@@ -607,7 +614,6 @@ export default function InputFields({
             if (_.isUndefined(inputsState[input.name])) {
                 return ;
             }
-
             //product_name_
             if (input.name=="product_name") {
                 //console.log("form type product_name");
@@ -630,7 +636,51 @@ export default function InputFields({
                     //nebude se renderovat za danych podminek:
                     return;
                 }
-                
+                else {
+
+                    const availabilityOptionsFull =  [
+                        { text: '1', name: '1', value: '1' },
+                        { text: '2', name: '2', value: '2' },
+                        { text: '3', name: '2', value: '3' },
+                        { text: 'Equal split', name: 'Equal split', value: 'Equal split' },
+                    ];
+                    const availabilityOptionsForOne =  [
+                        { text: '1', name: '1', value: '1' },
+                        { text: '2', name: '2', value: '2' },
+                        { text: '3', name: '2', value: '3' },
+                    ]
+                    console.log("quantity");
+                    let _quantity= getQuantity();
+
+                    if (_quantity==1) {
+                        //if default value:
+                        let _value = value;
+                        if (value=='Equal split') {
+                            _value='1';
+                        }
+                        return <div className="field"><label style={{ display: "inline-block" }}>{input.display_label}</label>
+                                    <Form.Dropdown
+                                        name="availability_zone"
+                                        selection
+                                        options={availabilityOptionsForOne}
+                                        value={_value}
+                                        onChange={onChange}
+                                    />
+                            </div>
+                    }
+                    else {
+                        return <div className="field"><label style={{ display: "inline-block" }}>{input.display_label}</label>
+                                    <Form.Dropdown
+                                        name="availability_zone"
+                                        selection
+                                        options={availabilityOptionsFull}
+                                        value={value}
+                                        onChange={onChange}
+                                    />
+                                </div>
+                    }
+
+                }
             }
 
             //impacted_region
@@ -760,6 +810,7 @@ export default function InputFields({
             }
 
             if (input.name=="location") {
+
                 return <div className="field"><label style={{ display: "inline-block" }}>{input.display_label}</label>
                     <Form.Dropdown
                         name="location"

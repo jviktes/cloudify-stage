@@ -402,12 +402,12 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
         const { toolbox } = this.props;
 
-        if (field.name == "quantity" && field.value==1) {
-            toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','availability_zone','"1 "');
-        }
-        if (field.name == "quantity" && field.value!=1) {
-            toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','availability_zone','Equal split');
-        }
+        // if (field.name == "quantity" && field.value==1) {
+        //     toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','availability_zone','"1 "');
+        // }
+        // if (field.name == "quantity" && field.value!=1) {
+        //     toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','availability_zone','Equal split');
+        // }
         this.setState({ deploymentInputs: { ...deploymentInputs, ...fieldNameValue } });
     }
 
