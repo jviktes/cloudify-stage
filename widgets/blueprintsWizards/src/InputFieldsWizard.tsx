@@ -310,10 +310,12 @@ function RegionSelectField({
 
 function DataDiskTable({
     //diskData,
+    vmInfo,
     toolbox,
     inputStates,
 }: {
     diskData: any;
+    vmInfo:any;
     toolbox: Stage.Types.Toolbox;
     inputStates:any;
 }) {
@@ -348,6 +350,46 @@ function DataDiskTable({
         dataDisks.splice(indexOfObject, 1);
         toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
 
+    }
+    var uniqueID = function () {
+        return '_' + Math.random().toString(36).slice(2, 11);
+    };
+    const AddDisk2= ()=> {
+        console.log("AddDisk2");
+        let dataDisks = inputStates;
+
+        if (dataDisks.length<GetDiskCountLimit()) {
+            dataDisks.push({"key":uniqueID(),"disk_type":"Standard HDD","disk_size":16,"host_caching":"None", "mountpoint":[{"path":""}],"label":[]});
+            toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
+        }
+        else {
+            alert("limit disk");
+        }
+
+    }
+
+    const GetDiskCountLimit = () => {
+        let vm_size = vmInfo;
+        //TODO parsing max disk..
+        console.log(vm_size); //(2 CPU, 8GB RAM, max 4 data disks)
+        let maxDiskCount = 0;
+        
+        console.log("pokus o nalezni pocstu diks:");
+
+        try {
+            maxDiskCount = vm_size.substring(
+                vm_size.indexOf("max ") + 4, 
+                vm_size.lastIndexOf(" data disk")
+            );
+        } catch (error) {
+            
+        }
+
+        console.log(maxDiskCount);   
+        let dataDisks = inputStates;
+        console.log("current number disk");
+        console.log(dataDisks.length);
+        return maxDiskCount;
     }
 
     // let dataDiskFake = [{"key":"AAA","disk_type":"Standard_LRS","disk_size":"16","host_caching":"ReadOnly", "mount_point":"mount point A","disk_label":"Data disk for database"},
@@ -417,7 +459,39 @@ function DataDiskTable({
         _obj.push({"path":_value});
         return _obj;
     }
-
+    const htmlRenderAddButton=(disks:any,diskLimit: number)=> {
+        
+        let htmlButtonAddPossible = <div style={{float:"right",margin:"3px"}}>
+                            <Icon
+                            name="add"
+                            color='green'
+                            link
+                            bordered
+                            title="Add data disk"
+                            onClick={(event: Event) => {
+                                event.stopPropagation();
+                                AddDisk2();
+                            } } />
+                        </div> 
+        let txtTooltip = "Limits of "+diskLimit+" disks reached";
+        let htmlButtonLimitReached = <div style={{float:"right",margin:"3px"}}>
+                <Icon
+                name="add"
+                color='blue'
+                link
+                bordered
+                disabled
+                title={txtTooltip}/>
+            </div> 
+            
+            if (disks.length>=diskLimit) {
+                return htmlButtonLimitReached;
+            }  
+            else {
+                return htmlButtonAddPossible;
+            }              
+        
+    }
     return (
             <div>
                 <DataTable className="agentsGsnCountries table-scroll-gsn">
@@ -487,6 +561,8 @@ function DataDiskTable({
                         </DataTable.Row>
                     ))}
                 </DataTable>
+                         {htmlRenderAddButton(inputStates,GetDiskCountLimit())}
+                         <div>Max data disks: {GetDiskCountLimit()}</div>
             </div>
         );
 }
@@ -518,17 +594,22 @@ export default function InputFields({
     inputs = getInputsOrderByCategories(inputs);
     //const [dataGsnCountries] = React.useState(JSON.parse(JSON.stringify(gsnCountries)));
 
-    var uniqueID = function () {
-        return '_' + Math.random().toString(36).slice(2, 11);
-    };
+    // var uniqueID = function () {
+    //     return '_' + Math.random().toString(36).slice(2, 11);
+    // };
 
-    const AddDisk = () => {
-        console.log("add disk");
-        let dataDisks = JSON.parse(inputsState["data_disks"]);
-        dataDisks.push({"key":uniqueID(),"disk_type":"Standard HDD","disk_size":16,"host_caching":"None", "mountpoint":[{"path":""}],"label":[]});
-        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
-    }
-
+    // const AddDisk = () => {
+    //     console.log("add disk");
+    //     let dataDisks = JSON.parse(inputsState["data_disks"]);
+    //     dataDisks.push({"key":uniqueID(),"disk_type":"Standard HDD","disk_size":16,"host_caching":"None", "mountpoint":[{"path":""}],"label":[]});
+    //     toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
+    // }
+    // const GetDiskCountLimit = () => {
+    //     let vm_size = inputsState["vm_size"];
+    //     //TODO parsing max disk..
+    //     console.log(vm_size);
+    //     return 4;
+    // }
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
         .reject('hidden')
@@ -646,22 +727,26 @@ export default function InputFields({
 
             if (input.name=="data_disks") {
                 console.log("data_disks");
+                // let maxDisk = GetDiskCountLimit();
+                // console.log(maxDisk);
                 return <div className="field">
                     <label style={{ display: "inline-block" }}>{input.display_label}</label>
 
-                        <DataDiskTable diskData={input} toolbox={toolbox} inputStates={JSON.parse(inputsState[input.name])}></DataDiskTable>
-                        <div style={{float:"right",margin:"3px"}}>
-                            <Icon
-                            name="add"
-                            color='green'
-                            link
-                            bordered
-                            title="Add data disk"
-                            onClick={(event: Event) => {
-                                event.stopPropagation();
-                                AddDisk();
-                            } } />
-                        </div>
+                        <DataDiskTable diskData={input} vmInfo={inputsState["vm_size"]} toolbox={toolbox} inputStates={JSON.parse(inputsState[input.name])}></DataDiskTable>
+                       
+                         {/* <div style={{float:"right",margin:"3px"}}>
+                                <Icon
+                                name="add"
+                                color='green'
+                                link
+                                bordered
+                                title="Add data disk"
+                                onClick={(event: Event) => {
+                                    event.stopPropagation();
+                                    AddDisk();
+                                } } />
+                         </div>  */}
+                        
                 </div>
             }
             
