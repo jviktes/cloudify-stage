@@ -2,10 +2,11 @@ import Help from  '../../common/src/inputs/InputHelp'; //'./InputHelp';
 import InputField from './InputFieldWizard';
 //import getInputFieldInitialValue from '../../common/src/inputs/utils/getInputFieldInitialValue'; //'./utils/getInputFieldInitialValue';
 import type { DataType, Input, OnChange } from '../../common/src/inputs/types'; //'./types';
-import { DataTable } from 'cloudify-ui-components';
+import { DataTable, Form } from 'cloudify-ui-components';
 import React from 'react';
 import {Icon } from 'semantic-ui-react';
 import { getInputsOrderByCategories } from './wizardUtils';
+import LocationLabels from './LocationLabels';
 
 function normalizeValue(input: Input, inputsState: Record<string, any>, dataType: DataType) {
     if ((input.type === 'integer' || input.type === 'float') && Number.isNaN(inputsState[input.name])) {
@@ -758,6 +759,18 @@ export default function InputFields({
                 )
             }
 
+            if (input.name=="location") {
+                return <div className="field"><label style={{ display: "inline-block" }}>{input.display_label}</label>
+                    <Form.Dropdown
+                        name="location"
+                        selection
+                        options={LocationLabels.locationOptions}
+                        value={value}
+                        //onChange={(e, { value }) => onItemChange(e.target,item,"disk_type",value)}
+                        onChange={onChange}
+                    />
+                </div>
+            }
             //business_unit: 
             if (input.name=="business_unit") {
                 return (<div style={{width: "20%", marginTop:"5px", float:"left"}}>
