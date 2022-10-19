@@ -6,7 +6,7 @@ import { DataTable, Form } from 'cloudify-ui-components';
 import React from 'react';
 import {Icon } from 'semantic-ui-react';
 import { getInputsOrderByCategories } from './wizardUtils';
-import LocationLabels from './LocationLabels';
+//TODO - tranlations: import LocationLabels from './LocationLabels';
 
 function normalizeValue(input: Input, inputsState: Record<string, any>, dataType: DataType) {
     if ((input.type === 'integer' || input.type === 'float') && Number.isNaN(inputsState[input.name])) {
@@ -600,6 +600,25 @@ export default function InputFields({
         console.log(_quantity);
         return _quantity;
     };
+
+    const locationTranslationOptions = [
+        { text: 'West Europe', name: 'westeurope', value: 'westeurope' },
+        { text: 'Southeast Asia', name: 'southeastasia', value: 'southeastasia' },
+        { text: 'East us', name: 'eastus', value: 'eastus' },
+    ]
+
+    const getTranslatedLocation=(_item:string) => {
+        let indexOfObject = locationTranslationOptions.findIndex((object: { value: any; }) => {
+            return object.value === _item;
+            });
+        if (indexOfObject!=-1) {
+            return locationTranslationOptions.splice(indexOfObject, 1);
+        }
+        else {
+            return null;
+        }
+    }
+
     const inputFields = _(inputs)
         .map((input, name) => ({ name, ...input }))
         .reject('hidden')
@@ -810,14 +829,31 @@ export default function InputFields({
             }
 
             if (input.name=="location") {
+                console.log("location");
+                console.log(input);
+
+                let _locationOptions = [];
+
+                for (const key in input.constraints[0].valid_values) {
+                    if (Object.prototype.hasOwnProperty.call(input.constraints[0].valid_values, key)) {
+                        const _itemLocation = input.constraints[0].valid_values[key];
+                        let translatedItemLocation = getTranslatedLocation(_itemLocation);
+                        if (translatedItemLocation!=null && translatedItemLocation.length>0) {
+                            _locationOptions.push(translatedItemLocation[0]);
+                        }
+                        else {
+                            _locationOptions.push({ text: _itemLocation, name: _itemLocation, value:_itemLocation});
+                        }
+
+                    }
+                }
 
                 return <div className="field"><label style={{ display: "inline-block" }}>{input.display_label}</label>
                     <Form.Dropdown
                         name="location"
                         selection
-                        options={LocationLabels.locationOptions}
+                        options={_locationOptions}
                         value={value}
-                        //onChange={(e, { value }) => onItemChange(e.target,item,"disk_type",value)}
                         onChange={onChange}
                     />
                 </div>

@@ -6,42 +6,49 @@ export default {
     ]
 };
 
-//TODO:
+// /* //TODO:
 // { text: 'Australia Central', name: 'AustraliaCentral', value: 'AustraliaCentral' },
-
 // { text: 'Australia Central 2', name: 'AustraliaCentral2', value: 'AustraliaCentral2' },
-
 // { text: 'Australia East', name: 'AustraliaEast', value: 'AustraliaEast' },
-
 // { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // BrazilSouth	
 // Brazil South
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // BrazilSoutheast	
 // Brazil Southeast
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // CanadaCentral	
 // Canada Central
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // CanadaEast	
 // Canada East
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // CentralIndia	
 // Central India
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // CentralUS	
 // Central US
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // CentralUSEUAP	
 // Central US EUAP
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // ChinaEast	
 // China East
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // ChinaEast2	
 // China East 2
 
+// { text: 'Australia Southeast', name: 'AustraliaSoutheast', value: 'AustraliaSoutheast' },
 // ChinaEast3	
 // China East 3
 
