@@ -31,6 +31,7 @@ export default function VMConfigStep(this: any, { toolbox, blueprint, index,titl
                 fileLoading={fileLoading}
                 onDeploymentInputChange={onDeploymentInputChange}
                 deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
+                allDeploymentInputs = {deploymentInputs}
                 errors={errors}
                 gsnData = {{}}
                 gsnCountries = {{}}

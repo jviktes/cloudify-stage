@@ -35,6 +35,7 @@ export default function GeneralGSNStepStep(this: any, { toolbox, blueprint, inde
                             fileLoading={fileLoading}
                             onDeploymentInputChange={onDeploymentInputChange}
                             deploymentInputs={getDeploymentInputsByCategories(deploymentInputs,category)}
+                            allDeploymentInputs = {deploymentInputs}
                             errors={errors}
                             gsnData = {gsnData}
                             gsnCountries = {gsnCountries}

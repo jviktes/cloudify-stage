@@ -37,6 +37,7 @@ export default function SWConfigStep(this: any, { toolbox, blueprint, index,titl
             fileLoading={fileLoading}
             onDeploymentInputChange={onDeploymentInputChange}
             deploymentInputs={orderedInputsWithoutValues}
+            allDeploymentInputs = {deploymentInputs}
             errors={errors}
             gsnData = {{}}
             gsnCountries = {{}}
