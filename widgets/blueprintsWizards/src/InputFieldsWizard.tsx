@@ -727,7 +727,7 @@ export default function InputFields({
                             </div>
                             <div style={{float:'left', marginLeft:"20px"}}>
                                 <label className='fieldCustomLabel'>Impacted countries</label>
-                                <div className="field" style={{ maxHeight: "160px", overflowY:"scroll"}}>
+                                <div className="field" style={{ maxHeight: "195px", overflowY:"scroll"}}>
                                     <DataTable className="agentsGsnCountries table-scroll-gsn">
                                         <DataTable.Column label="check" name="" style={{display:"none"}}/>
                                         <DataTable.Column label="country" name="" style={{display:"none"}}/>
@@ -799,7 +799,7 @@ export default function InputFields({
 
                 
                             return ( 
-                                <div style={{marginTop: "280px"}}>
+                                <div style={{marginTop: "310px"}}>
                                     <FormSearchField
                                         input={input}
                                         value={_valueCalculated}
