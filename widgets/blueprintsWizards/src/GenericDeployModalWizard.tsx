@@ -398,16 +398,6 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         let { deploymentInputs } = this.state;
         const fieldNameValue = Stage.Basic.Form.fieldNameValue(field);
         console.log("handleDeploymentInputChange:"+JSON.stringify(fieldNameValue));
-        //handleDeploymentInputChange:{"ha_concept":"Availability zone"}
-
-        const { toolbox } = this.props;
-
-        // if (field.name == "quantity" && field.value==1) {
-        //     toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','availability_zone','"1 "');
-        // }
-        // if (field.name == "quantity" && field.value!=1) {
-        //     toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','availability_zone','Equal split');
-        // }
         this.setState({ deploymentInputs: { ...deploymentInputs, ...fieldNameValue } });
     }
 
