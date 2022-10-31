@@ -604,7 +604,7 @@ export default function InputFields({
     const locationTranslationOptions = [
         { text: 'West Europe', name: 'westeurope', value: 'westeurope' },
         { text: 'Southeast Asia', name: 'southeastasia', value: 'southeastasia' },
-        { text: 'East us', name: 'eastus', value: 'eastus' },
+        { text: 'East US', name: 'eastus', value: 'eastus' },
     ]
 
     const getTranslatedLocation=(_item:string) => {
@@ -645,28 +645,26 @@ export default function InputFields({
 
             //ha_concept:
             if (input.name=="availability_zone") {
-                //console.log("form type availability_zone");
                 //console.log("availability_zone:"+JSON.stringify(input));
                 //console.log("inputsState_ha_concept");
                 //console.log(inputsState["ha_concept"]);
 
                 if (inputsState["ha_concept"]=="None") {
-                    //toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','availability_zone',"1");
                     //nebude se renderovat za danych podminek:
                     return;
                 }
                 else {
 
                     const availabilityOptionsFull =  [
-                        { text: '1', name: '1', value: '1' },
-                        { text: '2', name: '2', value: '2' },
-                        { text: '3', name: '2', value: '3' },
+                        { text: '1', name: '1', value: '1 ' },
+                        { text: '2', name: '2', value: '2 ' },
+                        { text: '3', name: '2', value: '3 ' },
                         { text: 'Equal split', name: 'Equal split', value: 'Equal split' },
                     ];
                     const availabilityOptionsForOne =  [
-                        { text: '1', name: '1', value: '1' },
-                        { text: '2', name: '2', value: '2' },
-                        { text: '3', name: '2', value: '3' },
+                        { text: '1', name: '1', value: '1 ' },
+                        { text: '2', name: '2', value: '2 ' },
+                        { text: '3', name: '2', value: '3 ' },
                     ]
                     console.log("quantity");
                     let _quantity= getQuantity();
@@ -675,7 +673,7 @@ export default function InputFields({
                         //if default value:
                         let _value = value;
                         if (value=='Equal split') {
-                            _value='1';
+                            _value='1 ';
                         }
                         return <div className="field"><label style={{ display: "inline-block" }}>{input.display_label}</label>
                                     <Form.Dropdown
