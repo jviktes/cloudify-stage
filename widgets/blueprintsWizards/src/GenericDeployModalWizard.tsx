@@ -334,14 +334,12 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
 
     DisableNextButtonFunc() {
         console.log("DisableNextButtonFunc...");
-        //this.setState({ fileLoading: true });
         this.setState({ disableNextButton: true });
         
     }
 
     EnableNextButtonFunc() {
         console.log("EnableNextButtonFunc...");
-        //this.setState({ fileLoading: true });
         this.setState({ disableNextButton: false });
     }
 

@@ -498,10 +498,18 @@ function DataDiskTable({
             return null;
         }
         else {
-            return <p >{_error}</p>
+            return <p style={{ color: 'red' }}>{_error}</p>
         }
     }
 
+    const htmlRenderEmptyErrorState=(_error:any, margin:string)=>{
+        if (_error=="" || _error==null) {
+            return null;
+        }
+        else {
+            return <p style={{ color: 'red', height:margin}}></p>
+        }
+    }
     return (
             <div>
                 <DataTable className="agentsGsnCountries table-scroll-gsn">
@@ -521,6 +529,7 @@ function DataDiskTable({
                                         value={item.disk_type}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"disk_type",value)}
                                 />
+                                {htmlRenderEmptyErrorState(item.error,'31px')}
                             </DataTable.Data>
                             <DataTable.Data style={{ width: '10%' }}>
                                 <Form.Dropdown
@@ -530,6 +539,7 @@ function DataDiskTable({
                                         value={item.disk_size}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"disk_size",value)}
                                 />
+                                {htmlRenderEmptyErrorState(item.error,'31px')}
                             </DataTable.Data>
                             <DataTable.Data style={{ width: '10%' }}>
                                 <Form.Dropdown
@@ -539,6 +549,7 @@ function DataDiskTable({
                                         value={item.host_caching}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"host_caching",value)}
                                 />
+                                {htmlRenderEmptyErrorState(item.error,'31px')}
                              </DataTable.Data>
                              <DataTable.Data style={{ width: '30%' }}>
                                 <Form.Input
@@ -547,6 +558,7 @@ function DataDiskTable({
                                         value={getDiskMountingPointValue(item.mountpoint)}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"mountpoint",getDiskMountpointValueToBlueprintFormat(value))}
                                 />
+                                {htmlRenderEmptyErrorState(item.error,'18px')}
                              </DataTable.Data>
                              <DataTable.Data style={{ width: '30%' }}>
                                 <Form.Input
