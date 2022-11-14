@@ -354,12 +354,13 @@ function DataDiskTable({
     }
 
     const ValidateDataDisk = (_changedDataDisk:any)=> {
-        if (_changedDataDisk[0].label==null || _changedDataDisk[0].label=="") {
-            _changedDataDisk[0].error = "label is empty";
+        if (_changedDataDisk[0].label==null || _changedDataDisk[0].label=="" || _changedDataDisk[0].mountpoint==null  || getDiskMountingPointValue(_changedDataDisk[0].mountpoint)=="") {
+            _changedDataDisk[0].error = "Label and Mount point may not be blank.";
         }
         else {
             _changedDataDisk[0].error = "";
         }
+
     }
 
     const RemoveDisk=(_item: any)=> {
