@@ -218,7 +218,8 @@ type GenericDeployModalState = {
     selectedApproveButton: ApproveButtons;
     steps: WizardState[],
     activeStep: WizardState,
-    showDeployModalActions:boolean,
+    showDeployModalActions: boolean,
+    disableNextButton: boolean,
 };
 
 // type ContryData = {
@@ -287,7 +288,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         activeStep: { key: 'GeneralStep', label: 'General', isDone: true, component: EmptyComponent },
         //activeStep: { key: 'GSNStep', label: 'GSN', isDone: false, component: EmptyComponent },
         //activeStep: { key: 'VMConfigStep', label: 'VM configuration', isDone: false, component: EmptyComponent },
-        showDeployModalActions:false,
+        showDeployModalActions: false,
+        disableNextButton: false,
     };
 
     constructor(props: GenericDeployModalProps) {
@@ -325,11 +327,22 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         });
         const { toolbox } = this.props;
         toolbox.getEventBus().on('blueprint:setDeploymentIputs', this.setDeploymentIputs, this);
-        toolbox.getEventBus().on('blueprint:dataDiskValidateError', this.DisableNextButton);
+        toolbox.getEventBus().on('blueprint:dataDiskValidateError', this.DisableNextButtonFunc, this);
+        toolbox.getEventBus().on('blueprint:dataDiskValidateOK', this.EnableNextButtonFunc,this);
+        this.setState({disableNextButton:false});
     }
 
-    DisableNextButton() {
-        console.log("DisableNexrButton...");
+    DisableNextButtonFunc() {
+        console.log("DisableNextButtonFunc...");
+        //this.setState({ fileLoading: true });
+        this.setState({ disableNextButton: true });
+        
+    }
+
+    EnableNextButtonFunc() {
+        console.log("EnableNextButtonFunc...");
+        //this.setState({ fileLoading: true });
+        this.setState({ disableNextButton: false });
     }
 
     setDeploymentIputs(fieldName: string,fieldNameValue: string) {
@@ -360,30 +373,6 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             deploymentInputs["impacted_country"] = JSON.stringify(_updatedCountries);
 
         }
-
-        // if (fieldName=="impacted_country") {
-        //     let _selectedCountries = deploymentInputs["impacted_country"];
-        //     //let _selectedRegions = JSON.parse(String(deploymentInputs["impacted_region"]));
-        //     let _updatedRegions = [];
-        //     //const { gsnCountries } = this.state;
-        //     const { gsnRegions } = this.state;
-        //     console.log(_selectedCountries);
-        //     console.log(deploymentInputs["impacted_region"])
-
-        //     for (const key in gsnRegions) {
-                
-        //             const _region = gsnRegions[key];
-        //             if (_selectedCountries.countryData.region_code.includes(_region)==true) {
-        //                 _updatedRegions.push(_region);
-        //             }
-        //     }
-
-        //     deploymentInputs["impacted_region"] = JSON.stringify(_updatedRegions);
-
-        // }
-
-
-
         this.setState({deploymentInputs});
 
     }
@@ -962,9 +951,6 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     render() {
         const { Form, Icon, LoadingOverlay, Modal, VisibilityField } = Stage.Basic;
 
-
-
-
         const renderWizardStepContent= () =>{
 
             if (activeStep.key==="GeneralStep") {
@@ -1103,7 +1089,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
             selectedApproveButton,
             steps,
             activeStep,
-            showDeployModalActions
+            showDeployModalActions,
+            disableNextButton
         } = this.state;
         
         const { DEPLOYMENT_SECTIONS } = GenericDeployModal;
@@ -1215,7 +1202,12 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                             {!showDeployModalActions && (
                                 <div style={{float:"left"}}>
                                 <button onClick={this.onCancel} className="ui button basic cancel"><i aria-hidden="true" className="remove icon"></i>Cancel</button>
-                                <input type="button" key={"key_next"} className='ui positive button ok' value='Next' onClick={handleNext} />
+                                {!disableNextButton && (
+                                    <input type="button" key={"key_next"} className='ui positive button ok' value='Next' onClick={handleNext} />
+                                )}
+                                {disableNextButton && (
+                                    <input type="button" key={"key_next_disabled"} disabled className='ui positive button' value='Next' />
+                                )}
                                 </div>
                              )
                             }

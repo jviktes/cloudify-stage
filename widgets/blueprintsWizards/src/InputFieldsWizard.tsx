@@ -326,27 +326,31 @@ function DataDiskTable({
         console.log("DataDisk e.target:" + e);
 
         let dataDisks = inputStates;
-
-        if (_typeProperty=="disk_type" || _typeProperty=="disk_size" || _typeProperty=="host_caching" 
-        || _typeProperty=="mountpoint" || _typeProperty=="label") {
-            var changedDataDisk = dataDisks.filter((obj: { key: any; }) => {
-                return obj.key === _item.key
-            })
-            if (changedDataDisk[0]!=null) {
-                changedDataDisk[0][_typeProperty] = _value;
-                ValidateDataDisk(changedDataDisk);
-                toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
-            }
-
-        } 
-
+        if (_item!=null) {
+                if (_typeProperty=="disk_type" || _typeProperty=="disk_size" || _typeProperty=="host_caching" 
+                || _typeProperty=="mountpoint" || _typeProperty=="label") {
+                    var changedDataDisk = dataDisks.filter((obj: { key: any; }) => {
+                        return obj.key === _item.key
+                    })
+                    if (changedDataDisk[0]!=null) {
+                        changedDataDisk[0][_typeProperty] = _value;
+                        ValidateDataDisk(changedDataDisk);
+                        toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
+                    }
+                }
+        }
+        let isErrorInDisk = false;
         //enable NextButon - pokud jsou vsechny OK, toto by nejak melo fungovat:
-        dataDisks.forEach((obj: { key: any; }) => {
-            if (obj.key["error"]!="") {
-                console.log("label is empty for key:"+obj.key);
-                    toolbox.getEventBus().trigger('blueprint:dataDiskValidateError');
+        dataDisks.forEach((obj: { error: any; key:any }) => {
+            if (obj.error!="") {
+                console.log("label is empty for key"+obj.key);
+                toolbox.getEventBus().trigger('blueprint:dataDiskValidateError');
+                isErrorInDisk = true;
             }
         });
+        if (!isErrorInDisk) {
+            toolbox.getEventBus().trigger('blueprint:dataDiskValidateOK');
+        }
     }
 
     const ValidateDataDisk = (_changedDataDisk:any)=> {
@@ -367,7 +371,7 @@ function DataDiskTable({
         });
         dataDisks.splice(indexOfObject, 1);
         toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
-
+        onItemChange("removeDiskEvent",null,"label","");
     }
     var uniqueID = function () {
         return '_' + Math.random().toString(36).slice(2, 11);
@@ -551,10 +555,9 @@ function DataDiskTable({
                                         value={getDiskLabelValue(item.label)}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"label",getDiskLabelValueToBlueprintFormat(value))}
                                 />
-
-                            {htmlRenderErrorState(item.error)}
-
+                                {htmlRenderErrorState(item.error)}
                              </DataTable.Data>
+
                              <DataTable.Data style={{ width: '5%' }}>
                                 <Icon
                                     name="remove"
