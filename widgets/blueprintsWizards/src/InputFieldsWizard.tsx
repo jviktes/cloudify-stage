@@ -3,7 +3,6 @@ import InputField from './InputFieldWizard';
 //import getInputFieldInitialValue from '../../common/src/inputs/utils/getInputFieldInitialValue'; //'./utils/getInputFieldInitialValue';
 import type { DataType, Input, OnChange } from '../../common/src/inputs/types'; //'./types';
 import { DataTable, Form } from 'cloudify-ui-components';
-import React from 'react';
 import {Icon } from 'semantic-ui-react';
 import { getInputsOrderByCategories } from './wizardUtils';
 //TODO - tranlations: import LocationLabels from './LocationLabels';
@@ -335,10 +334,28 @@ function DataDiskTable({
             })
             if (changedDataDisk[0]!=null) {
                 changedDataDisk[0][_typeProperty] = _value;
+                ValidateDataDisk(changedDataDisk);
                 toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
             }
 
         } 
+
+        //enable NextButon - pokud jsou vsechny OK, toto by nejak melo fungovat:
+        dataDisks.forEach((obj: { key: any; }) => {
+            if (obj.key["error"]!="") {
+                console.log("label is empty for key:"+obj.key);
+                    toolbox.getEventBus().trigger('blueprint:dataDiskValidateError');
+            }
+        });
+    }
+
+    const ValidateDataDisk = (_changedDataDisk:any)=> {
+        if (_changedDataDisk[0].label==null || _changedDataDisk[0].label=="") {
+            _changedDataDisk[0].error = "label is empty";
+        }
+        else {
+            _changedDataDisk[0].error = "";
+        }
     }
 
     const RemoveDisk=(_item: any)=> {
@@ -360,8 +377,10 @@ function DataDiskTable({
         let dataDisks = inputStates;
 
         if (dataDisks.length<GetDiskCountLimit()) {
-            dataDisks.push({"key":uniqueID(),"disk_type":"Standard HDD","disk_size":16,"host_caching":"None", "mountpoint":[{"path":""}],"label":[]});
+            let newDisk = {"key":uniqueID(),"disk_type":"Standard HDD","disk_size":16,"host_caching":"None", "mountpoint":[{"path":""}],"label":[],"error":""};
+            dataDisks.push(newDisk);
             toolbox.getEventBus().trigger('blueprint:setDeploymentIputs','data_disks',JSON.stringify(dataDisks));
+            onItemChange("addDiskEvent",newDisk,"label","");
         }
         else {
             alert("limit disk");
@@ -371,10 +390,10 @@ function DataDiskTable({
     const GetDiskCountLimit = () => {
         let vm_size = vmInfo;
         
-        console.log(vm_size); //(2 CPU, 8GB RAM, max 4 data disks)
+        //console.log(vm_size); //(2 CPU, 8GB RAM, max 4 data disks)
         let maxDiskCount = 0;
         
-        console.log("pokus o nalezni poctu disku:");
+        //console.log("pokus o nalezni poctu disku:");
 
         try {
             maxDiskCount = vm_size.substring(
@@ -385,31 +404,8 @@ function DataDiskTable({
             
         }
 
-        console.log(maxDiskCount);   
-        let dataDisks = inputStates;
-        console.log("current number disk");
-        console.log(dataDisks.length);
         return maxDiskCount;
     }
-
-    // let dataDiskFake = [{"key":"AAA","disk_type":"Standard_LRS","disk_size":"16","host_caching":"ReadOnly", "mount_point":"mount point A","disk_label":"Data disk for database"},
-    // {"key":"BBB","disk_type":"Premium_LRS","disk_size":"512","host_caching":"ReadOnly", "mount_point":"mount point B","disk_label":"Data disk for aplication"}];
-
-    //ukazka:
-    // [   
-    //     {     
-    //       "disk_type": "Standard SSD",     
-    //       "disk_size": "32",     
-    //       "host_caching": "ReadOnly",     
-    //       "mountpoint": [{"path": "/web"}],     
-    //       "label": ["WEB"]   
-    //   }
-    // ]
-
-
-    // - Standard HDD
-    // - Standard SSD
-    // - Premium SSD
 
     const DataDiskOptions = [
         { text: 'Standard HDD', name: 'Standard HDD', value: 'Standard HDD' },
@@ -492,6 +488,16 @@ function DataDiskTable({
             }              
         
     }
+
+    const htmlRenderErrorState=(_error:any)=>{
+        if (_error=="" || _error==null) {
+            return null;
+        }
+        else {
+            return <p >{_error}</p>
+        }
+    }
+
     return (
             <div>
                 <DataTable className="agentsGsnCountries table-scroll-gsn">
@@ -545,6 +551,9 @@ function DataDiskTable({
                                         value={getDiskLabelValue(item.label)}
                                         onChange={(e, { value }) => onItemChange(e.target,item,"label",getDiskLabelValueToBlueprintFormat(value))}
                                 />
+
+                            {htmlRenderErrorState(item.error)}
+
                              </DataTable.Data>
                              <DataTable.Data style={{ width: '5%' }}>
                                 <Icon
@@ -559,6 +568,7 @@ function DataDiskTable({
                                     }} />
                             </DataTable.Data>
                         </DataTable.Row>
+                        
                     ))}
                 </DataTable>
                          {htmlRenderAddButton(inputStates,GetDiskCountLimit())}
@@ -593,6 +603,14 @@ export default function InputFields({
     gsnRegions:any;
 }) {
     //inputs je nutne srovnat podle poradi, nyni je poradi podle nacteni z blueprint souboru:
+
+    // const cssValidateDisks=()=>{
+    //     console.log("cssValidateDisks");
+    //     toolbox.refresh();
+        
+    // };
+
+    //toolbox.getEventBus().on('blueprint:dataDiskValidateError',cssValidateDisks());
 
     inputs = getInputsOrderByCategories(inputs);
     const getQuantity = ()=> {

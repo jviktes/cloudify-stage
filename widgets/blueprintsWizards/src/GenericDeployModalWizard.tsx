@@ -40,6 +40,7 @@ import VMConfigStep from './wizardSteps/VMConfigStep';
 //import getDeploymentInputsByCategories from './wizardUtils';
 
 import GSNBusinessServiceProps from './GSNBusinessService';
+
 //import GSNCountries from './GSNCountries';
 
 const { i18n } = Stage;
@@ -324,7 +325,13 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         });
         const { toolbox } = this.props;
         toolbox.getEventBus().on('blueprint:setDeploymentIputs', this.setDeploymentIputs, this);
+        toolbox.getEventBus().on('blueprint:dataDiskValidateError', this.DisableNextButton);
     }
+
+    DisableNextButton() {
+        console.log("DisableNexrButton...");
+    }
+
     setDeploymentIputs(fieldName: string,fieldNameValue: string) {
         console.log("setDeploymentIputs:"+fieldName + ";"+fieldNameValue);
         const { deploymentInputs } = this.state;
@@ -382,7 +389,8 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
     }
     componentWillUnmount() {
         const { toolbox } = this.props;
-        toolbox.getEventBus().off('blueprint:setDeploymentIputs', this.setDeploymentIputs);  
+        toolbox.getEventBus().off('blueprint:setDeploymentIputs', this.setDeploymentIputs); 
+
     }
     componentDidUpdate(prevProps: GenericDeployModalProps) {
         const { blueprintId, open } = this.props;
@@ -868,11 +876,22 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
                         var uniqueID = function () {
                             return '_' + Math.random().toString(36).slice(2, 11);
                         };
-
+                        var isLabelValid = function(_item:any) {
+                            if (_item.label=="" || _item.label==null) {
+                                return "label is empty";
+                            } 
+                            else {
+                                return "";
+                            }
+                        }
                         let dataDiskData = JSON.parse(deploymentInputs.data_disks);
                         _.map(dataDiskData, item => (
                             item.key = uniqueID())
                         )
+                        //TODO validace na vstupu disku
+                        _.map(dataDiskData, item => (
+                            item.error = isLabelValid(item))
+                        )        
                         deploymentInputs.data_disks = JSON.stringify(dataDiskData);
                     }    
 
@@ -1090,6 +1109,7 @@ class GenericDeployModal extends React.Component<GenericDeployModalProps, Generi
         const { DEPLOYMENT_SECTIONS } = GenericDeployModal;
 
         const handleNext = () => {
+            console.log(activeStep.key);
             if (steps[steps.length - 1].key === activeStep.key) {
               console.log('You have completed all steps.');
               this.setState({showDeployModalActions:true});
