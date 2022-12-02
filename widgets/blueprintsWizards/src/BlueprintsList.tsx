@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react';
 import BlueprintsCatalog from './BlueprintsCatalog';
 import BlueprintsTable from './BlueprintsTable';
 import type { BlueprintDataResponse, BlueprintsViewProps, BlueprintsWidgetConfiguration } from './types';
-import BlueprintUploadActionsMenu from './BlueprintUploadActionsMenu';
+//import BlueprintUploadActionsMenu from './BlueprintUploadActionsMenu';
 import DeployBlueprintModalWizard from './DeployBlueprintModalWizard';
 
 interface BlueprintListProps {
@@ -159,7 +159,7 @@ export default class BlueprintList extends React.Component<BlueprintListProps, B
             <div>
                 <ErrorMessage error={error} onDismiss={() => this.setState({ error: null })} autoHide />
 
-                <div className="uploadBlueprintButton">
+                {/* <div className="uploadBlueprintButton">
                     <BlueprintUploadActionsMenu
                         upward={false}
                         direction="left"
@@ -168,7 +168,7 @@ export default class BlueprintList extends React.Component<BlueprintListProps, B
                             !toolbox.getManager().isCommunityEdition() && widget.configuration.showComposerOptions
                         }
                     />
-                </div>
+                </div> */}
                 <BlueprintsView
                     widget={widget}
                     data={data}

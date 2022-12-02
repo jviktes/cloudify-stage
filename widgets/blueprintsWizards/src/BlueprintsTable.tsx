@@ -1,24 +1,26 @@
-import BlueprintState from './BlueprintState';
+//import BlueprintState from './BlueprintState';
+import React from 'react';
+import { Button } from 'semantic-ui-react';
 import type { BlueprintsViewProps } from './types';
 
 export default function BlueprintsTable({
     data,
     fetchData,
     noDataMessage,
-    onCreateDeployment,
+    //onCreateDeployment,
     onCreateDeploymentWizard,
-    onDeleteBlueprint,
+    //onDeleteBlueprint,
     onSelectBlueprint,
-    onSetVisibility,
+    //onSetVisibility,
     toolbox,
     widget
 }: BlueprintsViewProps) {
-    const { DataTable, Icon, ResourceVisibility } = Stage.Basic;
+    const { DataTable } = Stage.Basic;
     const { Blueprints } = Stage.Common;
-    const { allowedVisibilitySettings } = Stage.Common.Consts;
+    //const { allowedVisibilitySettings } = Stage.Common.Consts;
     const manager = toolbox.getManager();
     const tableName = 'blueprintsTable';
-    const { fieldsToShow } = widget.configuration;
+    //const { fieldsToShow } = widget.configuration;
 
     return (
         <DataTable
@@ -32,14 +34,8 @@ export default function BlueprintsTable({
             className={tableName}
             noDataMessage={noDataMessage}
         >
-            <DataTable.Column label="Name" name="id" width="20%" />
-            <DataTable.Column show={fieldsToShow?.includes('Created')} label="Created" name="created_at" width="15%" />
-            <DataTable.Column show={fieldsToShow?.includes('Updated')} label="Updated" name="updated_at" width="15%" />
-            <DataTable.Column show={fieldsToShow?.includes('Creator')} label="Creator" name="created_by" width="15%" />
-            <DataTable.Column label="Main blueprint file" name="main_file_name" width="15%" />
-            <DataTable.Column show={fieldsToShow?.includes('State')} label="State" name="state" />
-            <DataTable.Column show={fieldsToShow?.includes('Deployments')} label="# Deployments" />
-            <DataTable.Column width="10%" />
+            <DataTable.Column label="Name" name="id" width="80%" />
+            <DataTable.Column width="20%" />
 
             {data.items.map(item => (
                 <DataTable.Row
@@ -59,22 +55,6 @@ export default function BlueprintsTable({
                         <a className="blueprintName" href="#!">
                             {item.id}
                         </a>
-                        <ResourceVisibility
-                            visibility={item.visibility}
-                            onSetVisibility={visibility => onSetVisibility(item.id, visibility)}
-                            allowedSettingTo={allowedVisibilitySettings}
-                            className="rightFloated"
-                        />
-                    </DataTable.Data>
-                    <DataTable.Data>{item.created_at}</DataTable.Data>
-                    <DataTable.Data>{item.updated_at}</DataTable.Data>
-                    <DataTable.Data>{item.created_by}</DataTable.Data>
-                    <DataTable.Data>{item.main_file_name}</DataTable.Data>
-                    <DataTable.Data>
-                        <BlueprintState blueprint={item} />
-                    </DataTable.Data>
-                    <DataTable.Data style={{ textAlign: 'center' }}>
-                        <div className="ui green horizontal label">{item.depCount}</div>
                     </DataTable.Data>
 
                     <DataTable.Data className="center aligned rowActions">
@@ -82,52 +62,19 @@ export default function BlueprintsTable({
                             <>
                                 {Blueprints.Actions.isUploaded(item) && (
                                     <>
-                                        {!manager.isCommunityEdition() && widget.configuration.showComposerOptions && (
-                                            <Icon
-                                                name="external share"
-                                                bordered
-                                                title="Edit a copy in Composer"
-                                                onClick={(event: Event) => {
-                                                    event.stopPropagation();
-                                                    new Stage.Common.Blueprints.Actions(toolbox).doEditInComposer(
-                                                        item.id,
-                                                        item.main_file_name
-                                                    );
-                                                }}
-                                            />
-                                        )}
-                                        <Icon
-                                            name="rocket"
-                                            link
-                                            bordered
-                                            title="Create deployment"
-                                            onClick={(event: Event) => {
-                                                event.stopPropagation();
-                                                onCreateDeployment(item);
-                                            }}
-                                        />
-                                        <Icon
-                                            name="wizard"
-                                            link
-                                            bordered
-                                            title="Run deployment wizard"
-                                            onClick={(event: Event) => {
-                                                event.stopPropagation();
-                                                onCreateDeploymentWizard(item);
-                                            }}
+                                        <Button
+                                        icon="wizard"
+                                        content="Create"
+                                        basic
+                                        labelPosition="left"
+                                        title="Run deployment wizard"
+                                        onClick={event => {
+                                            event.stopPropagation();
+                                            onCreateDeploymentWizard(item);
+                                        }}
                                         />
                                     </>
                                 )}
-                                <Icon
-                                    name="trash"
-                                    link
-                                    bordered
-                                    title="Delete blueprint"
-                                    onClick={(event: Event) => {
-                                        event.stopPropagation();
-                                        onDeleteBlueprint(item);
-                                    }}
-                                />
                             </>
                         )}
                     </DataTable.Data>
