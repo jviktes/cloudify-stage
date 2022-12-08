@@ -27,11 +27,7 @@
   .deployBlueprintModal {
     width: 1200px !important;
   }
-  /* .agentsGsnCountries tr{
-    height: 15px;
-    line-height: 15px;
-  } */
-
+  
 .blueprintsTable th:nth-child(6) {
     min-width: 81px;
 }
